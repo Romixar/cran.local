@@ -36,7 +36,7 @@ class Router{
     
     
     public function start(){
-        
+        session_start();
         $this->getCtrlAndAction($ctrl, $act);
         $c = new $ctrl();
         $c->$act();
