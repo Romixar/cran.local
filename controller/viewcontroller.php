@@ -2,18 +2,25 @@
 
 class ViewController{
     
+    //public $vars = [];
+    
+    
     
     public function render($tmpl,$data=[]){
         
-        $content = $this->prerender($tmpl,$data);
+        //$content = $this->prerender($tmpl,$data);
         
-        $this->display('main',compact('content'));
+
+        
+        $this->display($tmpl,$data);
     }
     
     
     public function prerender($tmpl,$data=[]){
         
-        $file = 'D:\OpenServer\domains\cran.local\view\\'.$tmpl.'_tpl.php';
+        //echo Config::$adm;
+        
+        $file = 'view/'.$tmpl.'_tpl.php';
         
         if(file_exists($file)){
             

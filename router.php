@@ -14,12 +14,13 @@ class Router{
         
         $arr = explode('/',$url);
         
-        if(count($arr) == 2){
+        if(count($arr) == 2 && $arr[1] == ''){
             $ctrl = '';
             $act = 'Index';
         }else{
-            $ctrl = ucfirst($arr[1]);
-            $act = ucfirst($arr[2]);
+            $ctrl = '';
+            
+            $act = ucfirst($arr[1]);
         }
         
         $ctrl = $ctrl.'Controller';
