@@ -54,6 +54,18 @@ class DB{
         
     }
     
+    public function save($data){
+        
+        $sql = "INSERT INTO `users` VALUES('','".$data['login']."','".$data['password']."','".$data['ip']."',".$data['balance'].",'".$data['date_reg']."','".$data['date_act']."')";
+        
+        $sth = $this->dbh->query($sql);
+        
+        // кол-во модифицир-х строк
+        if($sth->rowCount()) return true;
+        return false;
+        
+    }
+    
     
     
     

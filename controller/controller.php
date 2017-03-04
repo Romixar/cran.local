@@ -11,6 +11,8 @@ class Controller{
     public function __construct(){
         
         if(isset($_POST)) $this->xss($_POST);
+        if(isset($_GET)) $this->xss($_GET);
+        
         
         $this->view = new ViewController();
         
@@ -40,7 +42,7 @@ class Controller{
         }
         $this->data = $data;
         if(isset($data['do_login_f'])) $this->validateLogin();
-        if(isset($data['do_regist_f'])) $this->validateData();
+        if(isset($data['do_regist_f'])) $this->validateRegData();
 
         
     }
@@ -84,15 +86,24 @@ class Controller{
         
     }
     
-    public function validateData(){
-        
+    public function validateRegData(){
+
         $user = new User();
-        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?']);
-        
-        exit();
-        
-        //debug($this->data);die;
-        
+        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','btn'=>true]);
+        else{
+            if($pos = strpos($this->data['ip'],'_0'))
+                $this->data['ip'] = substr($this->data['ip'],0,$pos);
+            $this->data['balance'] = 0;
+            $this->data['date_reg'] = date('d-m-Y',time());
+            $this->data['date_act'] = date('d-m-Y',time());
+            if($user->save($this->data)){
+                
+                // создать сообщ об успешной регистрации
+            
+                exit('{"redirect":"profile"}');
+                
+            }   
+        }
     }
     
     public function actionProfile(){

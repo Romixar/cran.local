@@ -2,6 +2,7 @@
     
     var act = 'controller/controller';
     
+
     $('div.form a.login').click(function(e){
         
         e.preventDefault;
@@ -28,7 +29,9 @@
     
     
     
-    
+    function test(){
+        alert('тестовое сообщение!');
+    }
     
     
     
@@ -51,7 +54,8 @@
                         obj = JSON.parse(res);
                         if(obj.redirect) location.href = obj.redirect;
                         if(obj.alert) alert(obj.alert);
-                        if(obj.sysmes) getMessage(obj.sysmes);
+                        if(obj.sysmes) viewMessage(obj.sysmes);
+                        if(obj.btn) viewButtons();
                     };
                     
 
@@ -61,12 +65,19 @@
     };
     
     
-    function getMessage(mes){
+    function viewMessage(mes){
         var sysmes = $('div#sysmes');
         if(sysmes) sysmes.remove();
         $('div.form').before('<div id="sysmes">'+mes+'</div>');
         
     }
+    
+    function viewButtons(){
+        var sysmes = $('div#sysmes');
+        if(sysmes) $('div.form').before('<a href="#" onclick="rem()" class="btn btn-success col-md-3">Да</a><a href="registration" class="btn btn-danger col-md-3">Нет</a>');
+    }
+    
+    
     
     
     
