@@ -54,34 +54,22 @@ class Controller{
     
     public function actionIndex(){
         
-        $left = $this->view->prerender('left');
         
-        //if(!isset($_SESSION['user'])) LoginController::Auth();
-        $attr = $this->btn;
         
-        $right = $this->view->prerender('right',$attr);
-        
-        $login = $_SESSION['user']['login'];
-        
-        $this->view->render('main',compact('left','content','right','login'));
-        
+        $this->render('index');
     }
     
     public function actionLogin(){
         
+        if(isset($_SESSION['user'])) $this->redirect('profile');
+        else $this->render('login');
         
+    }
+    
+    public function actionLogout(){
         
-        $left = $this->view->prerender('left');
-        
-        $content = $this->view->prerender('login');
-        
-        $attr = $this->btn;
-        
-        $right = $this->view->prerender('right',$attr);
-
-        
-        
-        $this->view->render('main',compact('left','content','right'));
+        session_destroy();
+        $this->redirect('/');
     }
     
     public function validateLogin(){// поиск пользов-ля в БД
@@ -138,7 +126,9 @@ class Controller{
     
     
     
-    
+    public function redirect($uri){
+        header('Location: '.$uri);
+    }
     
     
     
@@ -149,9 +139,7 @@ class Controller{
         
         $content = $this->view->prerender($tmpl,$data);
         
-        
-        
-        $right = $this->view->prerender('right');
+        $right = $this->view->prerender('right',$this->btn);
 
         
         
