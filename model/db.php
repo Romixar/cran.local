@@ -61,7 +61,12 @@ class DB{
         $sth = $this->dbh->query($sql);
         
         // кол-во модифицир-х строк
-        if($sth->rowCount()) return true;
+        if($sth->rowCount()){
+            $_SESSION['user']['login'] = $data['login'];
+            $_SESSION['user']['balance'] = $data['balance'];
+            //$_SESSION['user']['date_reg'] = $res[0]->date_reg;
+            return true;
+        }
         return false;
         
     }

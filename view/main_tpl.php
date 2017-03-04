@@ -21,11 +21,12 @@
   <![endif]-->
   <script type="text/javascript">
       function rem(){
-          $('div#sysmes').remove();
+          $('div.alert').remove();
           $('div.main a.col-md-3').remove();
           $('input#ip').val($('input#ip').val()+'_0');
           return false;
-      }
+      };
+      
 
   </script>
 </head>
@@ -42,7 +43,9 @@
         <div class="col-md-6">
            
            <div class="main">
+             
               <div class="col-md-12">
+                   <?= $sysmes ?>
 
                    <?= $content ?>
                    

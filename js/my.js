@@ -28,10 +28,7 @@
     
     
     
-    
-    function test(){
-        alert('тестовое сообщение!');
-    }
+
     
     
     
@@ -65,16 +62,18 @@
     };
     
     
-    function viewMessage(mes){
+    function viewMessage(sysmes){
         var sysmes = $('div#sysmes');
         if(sysmes) sysmes.remove();
-        $('div.form').before('<div id="sysmes">'+mes+'</div>');
+        $('div.form').before(sysmes);
+        
+        
         
     }
     
     function viewButtons(){
         var sysmes = $('div#sysmes');
-        if(sysmes) $('div.form').before('<a href="#" onclick="rem()" class="btn btn-success col-md-3">Да</a><a href="registration" class="btn btn-danger col-md-3">Нет</a>');
+        if(sysmes) $('div.form').before('<div class="col-md-12"><a href="#" onclick="rem()" class="btn btn-success col-md-3">Да</a><a href="registration" class="btn btn-danger col-md-3">Нет</a></div>');
     }
     
     

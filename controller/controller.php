@@ -5,7 +5,7 @@ class Controller{
     public $view;// объект видов
     public $btn = []; // кнопка авторизации
     
-    public $sysmes; // системные сообщения
+    public $sysmes = ''; // системные сообщения
     public $data; // POST массив
     
     public function __construct(){
@@ -24,6 +24,9 @@ class Controller{
             $uri = 'logout';
         }
         $this->btn = compact('text','uri');
+        
+            
+        $this->sysmes = Session::flash('sysmes');
         
     }
     
@@ -54,7 +57,6 @@ class Controller{
     public function actionIndex(){
         
         
-        
         $this->render('index');
     }
     
@@ -72,12 +74,22 @@ class Controller{
     }
     
     public function validateLogin(){// поиск пользов-ля в БД
-        
+        $view = new Viewcontroller();
         $user = new User();
         if($user->findUser($this->data)) exit('{"redirect":"profile"}');// пройдена авторизация
         else{
             
-            echo json_encode(['sysmes'=>'авторизация не пройдена!']);
+            $type = 'danger';
+            $mes = 'Авторизация не пройдена!';
+                
+            $sysmes = $view->prerender('message',compact('type','mes'));
+            
+            
+            echo json_encode(['sysmes'=>$sysmes]);
+            //echo json_encode(['sysmes'=>['mes'=>'Авторизация не пройдена!','type'=>'danger']]);
+            
+            
+            //Session::flash('sysmes','авторизация не пройдена!');
             exit();
                 // сообщение о непройденной авторизации
                 // асинхронно вывожу сообщение
@@ -87,9 +99,11 @@ class Controller{
     }
     
     public function validateRegData(){
-
+        $view = new Viewcontroller();
         $user = new User();
-        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','btn'=>true]);
+        ///if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','btn'=>true]);
+        
+        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>['mes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','type'=>'danger'],'btn'=>true]);
         else{
             if($pos = strpos($this->data['ip'],'_0'))
                 $this->data['ip'] = substr($this->data['ip'],0,$pos);
@@ -98,15 +112,25 @@ class Controller{
             $this->data['date_act'] = date('d-m-Y',time());
             if($user->save($this->data)){
                 
+                $type = 'success';
+                $mes = 'Вы успешно зарегистрировались!';
+                
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                
                 // создать сообщ об успешной регистрации
-            
+                Session::flash('sysmes',$sysmes);
+                
                 exit('{"redirect":"profile"}');
                 
             }   
         }
+        exit();
     }
     
     public function actionProfile(){
+        
+        //debug($this->sysmes);
         
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
@@ -114,8 +138,6 @@ class Controller{
             $login = $_SESSION['user']['login'];
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             
-            
-
 
             $this->render('profile',compact('login','balance'));
             
@@ -172,10 +194,12 @@ class Controller{
         $content = $this->view->prerender($tmpl,$data);
         
         $right = $this->view->prerender('right',$this->btn);
+        
+
+        $sysmes = ($this->sysmes) ? $this->sysmes : '';
 
         
-        
-        $this->view->render('main',compact('left','content','right'));
+        $this->view->render('main',compact('left','sysmes','content','right'));
         
     }
     
