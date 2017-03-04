@@ -23,10 +23,18 @@ class DB{
     }
     
     
+    public function validateIp($data){
+        $sql = "SELECT * FROM `users` WHERE `ip` = '".$data['ip']."'";
+        
+        $res = $this->execute($sql);
+        
+        if(!empty($res)) return true;
+        return false;
+    }
+    
     
     public function findUser($data){
         
-        //$stmt = $this->dbh->query("SELECT * FROM `users` WHERE `login` = 'romario'", PDO::FETCH_ASSOC);
         $sql = "SELECT * FROM `users` WHERE `login` = '".$data['login']."' AND `password` = '".$data['password']."'";
         
         $res = $this->execute($sql);
@@ -40,7 +48,7 @@ class DB{
             
             return true;
             
-        }else echo 'такого пользователя не существует';
+        }else return false;
 
         
         

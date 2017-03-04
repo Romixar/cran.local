@@ -3,19 +3,14 @@
 class Controller{
     
     public $view;// объект видов
-    public $btn = []; // кнопки авторизации
+    public $btn = []; // кнопка авторизации
     
     public $sysmes; // системные сообщения
     public $data; // POST массив
     
     public function __construct(){
         
-        if(isset($_POST)) $this->data = $this->xss($_POST);
-        
-        
-        if(isset($this->data['do_login_f'])) $this->validateLogin();
-            
-
+        if(isset($_POST)) $this->xss($_POST);
         
         $this->view = new ViewController();
         
@@ -43,7 +38,9 @@ class Controller{
             $data[$key] = htmlspecialchars($val);//все HTML теги в сущности
 			
         }
-        return $data;
+        $this->data = $data;
+        if(isset($data['do_login_f'])) $this->validateLogin();
+        if(isset($data['do_regist_f'])) $this->validateData();
 
         
     }
@@ -77,6 +74,9 @@ class Controller{
         $user = new User();
         if($user->findUser($this->data)) exit('{"redirect":"profile"}');// пройдена авторизация
         else{
+            
+            echo json_encode(['sysmes'=>'авторизация не пройдена!']);
+            exit();
                 // сообщение о непройденной авторизации
                 // асинхронно вывожу сообщение
         }
@@ -84,19 +84,40 @@ class Controller{
         
     }
     
+    public function validateData(){
+        
+        $user = new User();
+        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?']);
+        
+        exit();
+        
+        //debug($this->data);die;
+        
+    }
+    
     public function actionProfile(){
         
-        if(!isset($_SESSION['user'])) $this->actionLogin();
+        if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
             
             $login = $_SESSION['user']['login'];
-            $balance = $_SESSION['user']['balance'];
+            $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
+            
+            
 
 
             $this->render('profile',compact('login','balance'));
             
         }
         
+    }
+    
+    public function actionRegistration(){
+        
+        
+        $ip = $_SERVER['REMOTE_ADDR'];
+        
+        $this->render('regist',compact('ip'));
     }
     
     

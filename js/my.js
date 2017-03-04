@@ -1,45 +1,72 @@
 (function(){
     
-    $('div.login a').click(function(e){
-        //console.log(e);
+    var act = 'controller/controller';
+    
+    $('div.form a.login').click(function(e){
+        
         e.preventDefault;
         
-        var str = '&login='+$('div.login input#login').val()+'&password='+$('div.login input#password').val();
+        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val();
         var name = 'do_login';
-        var url = 'controller/controller';
         
-        //console.log(str);
-        
-        post_query(url, name, str);
-        
-        
-        
+        post_query(name, str);
+
     });
     
-    function post_query(url, name, str){
+    $('div.form a.registration').click(function(e){
+        
+        e.preventDefault;
+        
+        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val()+'&wallet='+$('div.form input#wallet').val()+'&ip='+$('div.form input#ip').val();
+        var name = 'do_regist';
+        
+        post_query(name, str);
+
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    function post_query(name, str){
 
         console.log(str);
 
         $.ajax({// отправляем её
 
-                url: url,
+                url: act,
                 type: 'POST',
                 data: name + '_f=' + str,
                 cache: false,
                 success: function(res){
 
                     //alert(res);
+                    console.log(res);
                     if(res){
                         obj = JSON.parse(res);
                         if(obj.redirect) location.href = obj.redirect;
+                        if(obj.alert) alert(obj.alert);
+                        if(obj.sysmes) getMessage(obj.sysmes);
                     };
-                    //console.log(res);
                     
 
 
                 },
             });
     };
+    
+    
+    function getMessage(mes){
+        var sysmes = $('div#sysmes');
+        if(sysmes) sysmes.remove();
+        $('div.form').before('<div id="sysmes">'+mes+'</div>');
+        
+    }
     
     
     

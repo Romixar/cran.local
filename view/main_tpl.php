@@ -8,7 +8,7 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
 
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
   
@@ -25,7 +25,7 @@
 <div class="container">
     <div class="row">
         
-        <div class="col-md-3 sidebar" style="border:1px solid blue">
+        <div class="col-md-3 sidebar">
             
             <?= $left ?>
             
@@ -33,16 +33,16 @@
         <div class="col-md-6">
            
            <div class="main">
-              <div class="col-md-12" style="border:1px solid red">
-<!--                  <p>Главный main шаблон</p>-->
+              <div class="col-md-12">
 
                    <?= $content ?>
+                   
               </div>
            </div>
            
             
         </div>
-        <div class="col-md-3 sidebar" style="border:1px solid blue">
+        <div class="col-md-3 sidebar">
            
            <?= $right ?>
             
@@ -61,6 +61,6 @@
 
  
  
-  <script src="/js/my.js"></script>
+  <script src="js/my.js"></script>
 </body>
 </html>
