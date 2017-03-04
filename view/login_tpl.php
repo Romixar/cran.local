@@ -9,7 +9,6 @@
     </p>
     <p>
         <a href="###" class="btn btn-success">Войти</a>
-<!--        <button class="btn btn-success">Войти</button>-->
     </p>
             
             

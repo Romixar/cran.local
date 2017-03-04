@@ -35,6 +35,7 @@
            <div class="main">
               <div class="col-md-12" style="border:1px solid red">
 <!--                  <p>Главный main шаблон</p>-->
+                  <?php debug($login) ?>
                    <?= $content ?>
               </div>
            </div>

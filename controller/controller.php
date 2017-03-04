@@ -5,14 +5,16 @@ class Controller{
     public $view;// объект видов
     public $btn = []; // кнопки авторизации
     
+    public $sysmes; // системные сообщения
+    public $data; // POST массив
+    
     public function __construct(){
         
-        if(isset($_POST['do_login_f'])){
-            $user = new User();
-            $res = $user->findUser($this->xss($_POST));
-            exit('{"redirect":"profile"}');
-            //if($res) header('Location: /profile');
-        }
+        if(isset($_POST)) $this->data = $this->xss($_POST);
+        
+        
+        if(isset($this->data['do_login_f'])) $this->validateLogin();
+            
 
         
         $this->view = new ViewController();
@@ -51,6 +53,7 @@ class Controller{
     
     
     public function actionIndex(){
+        
         $left = $this->view->prerender('left');
         
         //if(!isset($_SESSION['user'])) LoginController::Auth();
@@ -58,13 +61,15 @@ class Controller{
         
         $right = $this->view->prerender('right',$attr);
         
-        $this->view->render('main',compact('left','content','right'));
+        $login = $_SESSION['user']['login'];
+        
+        $this->view->render('main',compact('left','content','right','login'));
         
     }
     
     public function actionLogin(){
         
-        //debug($_POST);
+        
         
         $left = $this->view->prerender('left');
         
@@ -79,12 +84,30 @@ class Controller{
         $this->view->render('main',compact('left','content','right'));
     }
     
+    public function validateLogin(){// поиск пользов-ля в БД
+        
+        $user = new User();
+        if($user->findUser($this->data)) exit('{"redirect":"profile"}');// пройдена авторизация
+        else{
+                // сообщение о непройденной авторизации
+                // асинхронно вывожу сообщение
+        }
+        
+        
+    }
+    
     public function actionProfile(){
         
-        $this->render('profile');
-        
-        
-        
+        if(!isset($_SESSION['user'])) $this->actionLogin();
+        else{
+            
+            $login = $_SESSION['user']['login'];
+            $balance = $_SESSION['user']['balance'];
+
+
+            $this->render('profile',compact('login','balance'));
+            
+        }
         
     }
     
@@ -124,7 +147,7 @@ class Controller{
         
         $left = $this->view->prerender('left');
         
-        $content = $this->view->prerender($tmpl);
+        $content = $this->view->prerender($tmpl,$data);
         
         
         

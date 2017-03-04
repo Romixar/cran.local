@@ -32,13 +32,16 @@ class DB{
         $res = $this->execute($sql);
         
         
-        if(empty($res)) echo 'такого пользователя не существует';
-        //else{
+        if(!empty($res) && count($res) == 1){
             
+            $_SESSION['user']['login'] = $res[0]->login;
+            $_SESSION['user']['balance'] = $res[0]->balance;
+            //$_SESSION['user']['date_reg'] = $res[0]->date_reg;
             
-            //$_SESSION['user']['login'] = $res[0]->login;
+            return true;
             
-        //}
+        }else echo 'такого пользователя не существует';
+
         
         
     }
