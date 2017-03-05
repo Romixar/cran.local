@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
 
-  <title>The HTML5 Herald</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+  <title><?= $title ?></title>
+  <meta name="description" content="<?= $meta_desc ?>">
+  <meta name="keywords" content="<?= $meta_key ?>">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -32,6 +32,34 @@
 </head>
 
 <body>
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Cran.local</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="/">Главная</a></li>
+              <li><a href="/rules">Правила</a></li>
+              <li><a href="/news">Новости</a></li>
+              <li><a href="/statistic">Статистика</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="/works">Задания</a></li>
+              <li><a href="/reklams">Рекламодателям</a></li>
+              <li><a href="/contacts">Контакты</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
 <div class="container">
     <div class="row">
         
@@ -62,6 +90,7 @@
         
         
     </div>
+    
     <div class="row">
        <div class="col-md-12 footer">
            footer

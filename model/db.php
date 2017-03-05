@@ -13,7 +13,7 @@ class DB{
         
     }
     
-    public function execute($sql){
+    public function select($sql){
         
         $sth = $this->dbh->query($sql);
         return $sth->fetchAll(PDO::FETCH_CLASS, 'user');// возвр объект указанного класса
@@ -26,7 +26,7 @@ class DB{
     public function validateIp($data){
         $sql = "SELECT * FROM `users` WHERE `ip` = '".$data['ip']."'";
         
-        $res = $this->execute($sql);
+        $res = $this->select($sql);
         
         if(!empty($res)) return true;
         return false;
@@ -37,21 +37,34 @@ class DB{
         
         $sql = "SELECT * FROM `users` WHERE `login` = '".$data['login']."' AND `password` = '".$data['password']."'";
         
-        $res = $this->execute($sql);
+        $res = $this->select($sql);
         
         
         if(!empty($res) && count($res) == 1){
             
             $_SESSION['user']['login'] = $res[0]->login;
             $_SESSION['user']['balance'] = $res[0]->balance;
-            //$_SESSION['user']['date_reg'] = $res[0]->date_reg;
+            $_SESSION['user']['date_reg'] = $res[0]->date_reg;
+            $_SESSION['user']['date_act'] = $res[0]->date_act;
+            $_SESSION['user']['ip'] = $res[0]->ip;
             
-            return true;
+            // запишу текущ дату посещения
+            if($this->saveDateAct($data['login'],$data['password'])) return true;
+            return 'ошибка обновления даты последнего посещения';
+            
             
         }else return false;
 
         
         
+    }
+    
+    public function saveDateAct($login,$pass){
+        
+        $sql = "UPDATE `users` SET `date_act` = '".date('d-m-Y',time())."' WHERE `login` = '".$login."' AND `password` = '".$pass."'";
+        
+        $sth = $this->dbh->query($sql);
+        return $sth->rowCount();
     }
     
     public function save($data){
@@ -65,6 +78,8 @@ class DB{
             $_SESSION['user']['login'] = $data['login'];
             $_SESSION['user']['balance'] = $data['balance'];
             //$_SESSION['user']['date_reg'] = $res[0]->date_reg;
+            
+            
             return true;
         }
         return false;

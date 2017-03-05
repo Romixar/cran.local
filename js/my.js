@@ -1,8 +1,10 @@
 (function(){
     
+    activeMenu();// определение активного пункта меню
+    
+    
     var act = 'controller/controller';
     
-
     $('div.form a.login').click(function(e){
         
         e.preventDefault;
@@ -62,13 +64,10 @@
     };
     
     
-    function viewMessage(sysmes){
+    function viewMessage(mes){
         var sysmes = $('div#sysmes');
         if(sysmes) sysmes.remove();
-        $('div.form').before(sysmes);
-        
-        
-        
+        $('div.main div.col-md-12 h4').before(mes);    
     }
     
     function viewButtons(){
@@ -76,6 +75,27 @@
         if(sysmes) $('div.form').before('<div class="col-md-12"><a href="#" onclick="rem()" class="btn btn-success col-md-3">Да</a><a href="registration" class="btn btn-danger col-md-3">Нет</a></div>');
     }
     
+    function activeMenu(){
+        var loc = location.href;
+        var items = $('ul.navbar-nav li');// колллекция LI где ссылки меню
+        var arr = loc.split('/');// 3 элемент это активная страница
+
+        $.each(items, function(){
+
+            var href = this.children[0].getAttribute('href');// uri ссылки меню
+
+            if(arr[3] !== ''){
+
+                // адрес ссылки включ в себя часть URL
+                if(href.indexOf(arr[3], 1) !== -1) $(this).addClass('active');
+            }
+            if(arr[3] === '' && href === '/') $(this).addClass('active');// главная
+         });
+    }
+    
+
+    
+
     
     
     

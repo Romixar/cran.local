@@ -8,6 +8,10 @@ class Controller{
     public $sysmes = ''; // системные сообщения
     public $data; // POST массив
     
+    public $title;
+    public $meta_desc;
+    public $meta_key;
+    
     public function __construct(){
         
         if(isset($_POST)) $this->xss($_POST);
@@ -54,13 +58,12 @@ class Controller{
     
     
     
-    public function actionIndex(){
-        
-        
-        $this->render('index');
-    }
+    
     
     public function actionLogin(){
+        $this->title = 'Страница авторизации';
+        $this->meta_desc = 'Страница авторизации мета описание';
+        $this->meta_key = 'Страница авторизации мета кей';
         
         if(isset($_SESSION['user'])) $this->redirect('profile');
         else $this->render('login');
@@ -84,15 +87,10 @@ class Controller{
                 
             $sysmes = $view->prerender('message',compact('type','mes'));
             
-            
+            // сообщение о непройденной авторизации
+            // асинхронно вывожу сообщение
             echo json_encode(['sysmes'=>$sysmes]);
-            //echo json_encode(['sysmes'=>['mes'=>'Авторизация не пройдена!','type'=>'danger']]);
-            
-            
-            //Session::flash('sysmes','авторизация не пройдена!');
-            exit();
-                // сообщение о непройденной авторизации
-                // асинхронно вывожу сообщение
+            exit();                
         }
         
         
@@ -129,23 +127,31 @@ class Controller{
     }
     
     public function actionProfile(){
-        
-        //debug($this->sysmes);
+
         
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
             
             $login = $_SESSION['user']['login'];
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
+            $date_reg = $_SESSION['user']['date_reg'];
+            $date_act = $_SESSION['user']['date_act'];
+            $ip = $_SESSION['user']['ip'];
             
 
-            $this->render('profile',compact('login','balance'));
+            $this->title = 'Страница '.$login;
+            $this->meta_desc = 'Страница профиля мета описание';
+            $this->meta_key = 'Страница профиля мета кей';
             
+            $this->render('profile',compact('login','balance','date_reg','date_act','ip')); 
         }
         
     }
     
     public function actionRegistration(){
+        $this->title = 'Страница регистрациии';
+        $this->meta_desc = 'Страница регистрации мета описание';
+        $this->meta_key = 'Страница регистрации мета кей';
         
         
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -188,18 +194,20 @@ class Controller{
     
     
     public function render($tmpl,$data=[]){
+        $title = $this->title;
+        $meta_desc = $this->meta_desc;
+        $meta_key = $this->meta_key;
         
         $left = $this->view->prerender('left');
         
         $content = $this->view->prerender($tmpl,$data);
         
         $right = $this->view->prerender('right',$this->btn);
-        
 
         $sysmes = ($this->sysmes) ? $this->sysmes : '';
 
         
-        $this->view->render('main',compact('left','sysmes','content','right'));
+        $this->view->render('main', compact('title','meta_desc','meta_key','left','sysmes','content','right'));
         
     }
     

@@ -2,7 +2,19 @@
 
 class Router{
     
-    public $route = [];
+    public $routes = [
+        '/rules' => 'main/rules',
+        '/news' => 'news/index',
+        '/statistic' => 'statistic/index',
+        '/faq' => 'main/faq',
+        '/works' => 'works/index',
+        '/reklams' => 'main/reklams',
+        '/contacts' => 'main/contacts',
+        '/login' => 'main/login',
+        '/profile' => 'main/profile',
+        '/logout' => 'main/logout',
+        '/registration' => 'main/registration',
+    ];
     
     public function getURL(){
         return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);// без GET
@@ -14,14 +26,37 @@ class Router{
         
         $arr = explode('/',$url);
         
-        if(count($arr) == 2 && $arr[1] == ''){
-            $ctrl = '';
-            $act = 'Index';
-        }else{
-            $ctrl = '';
+        //debug($arr);die;
+        $ctrl = '';
+        $act = '';
+        
+        if(count($arr) == 2 && !empty($arr[1])){
             
-            $act = ucfirst($arr[1]);
+            foreach($this->routes as $k => $v){
+                
+                $arrk = explode('/',$k);
+                
+                if($arrk[1] == $arr[1]){
+                    
+                    $arrv = explode('/',$v);
+                    $ctrl = $arrv[0];
+                    $act = $arrv[1];
+                }
+                
+            }
+            if($ctrl !== '' && $act !== ''){
+                $ctrl = ucfirst($ctrl).'Controller';
+                $act = 'action'.ucfirst($act);
+                return;
+            }
+            
         }
+        
+        // в случае если не найдено контроллеров, запуск главной стьраницы
+        $ctrl = 'Main';
+        $act = 'Index';
+            
+        
         
         $ctrl = $ctrl.'Controller';
         $act = 'action'.$act;
