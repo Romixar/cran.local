@@ -144,6 +144,12 @@ class Controller{
 
                     exit('{"redirect":"profile"}');
                 }
+            }else{
+                $type = 'danger';
+                $mes = 'Неверно заполнена капча';
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                echo json_encode(['sysmes'=>$sysmes]);
             }
         }
         exit();

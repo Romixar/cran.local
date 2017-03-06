@@ -1,6 +1,7 @@
 (function(){
     
     activeMenu();// определение активного пункта меню
+    inpFocus();// проверка фокуса полей
     
     
     var act = 'controller/controller';
@@ -20,10 +21,43 @@
         
         e.preventDefault;
         
-        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val()+'&wallet='+$('div.form input#wallet').val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+grecaptcha.getResponse();
-        var name = 'do_regist';
-                
-        post_query(name, str);
+        var lg = $('div.form input#login');
+        var pwd = $('div.form input#password');
+        var wt = $('div.form input#wallet');
+        
+        
+        if(lg.val() === '') validMessage(lg);
+        
+        if(pwd.val() === '') validMessage(pwd);
+        
+        if(wt.val() === '') validMessage(wt);
+        
+        
+        // проверка капчи перед отправкой
+        var response = grecaptcha.getResponse();
+
+        if(response == ""){
+            
+            var rc = $('div.g-recaptcha');
+            
+            $('div.rc-anchor').css('border','1px solid red');
+            
+            rc.prev().find('span').append("Подтвердите, что Вы не являетесь роботом!");
+
+            return false;
+        }else{
+            
+            var str = '&login='+lg.val()+'&password='+pwd.val()+'&wallet='+wt.val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+response;
+            var name = 'do_regist';
+
+            post_query(name, str);
+            
+            
+            
+        }
+        
+        
+        
 
     });
     
@@ -64,6 +98,10 @@
             });
     };
     
+    function validMessage(el){
+        el.css('border','1px solid red').prev().append("Заполните пожалуйста это поле!");
+    }
+    
     
     function viewMessage(mes){
         var sysmes = $('div#sysmes');
@@ -94,6 +132,17 @@
          });
     }
     
+    function inpFocus(){
+        
+        var inp = $('input');
+        
+        inp.focusin(function(){
+            $(this).css('border','none');
+            $(this).prev().text('');
+        })
+        
+        
+    }
 
     
 
