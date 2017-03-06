@@ -4,17 +4,17 @@
     <p>Логин:</p>
     <p>
        <span></span>
-        <input type="text" id="login" name="login" />    
+        <input type="text" id="login" name="login" placeholder="Ваш логин" autofocus />    
     </p>
     <p>Пароль:</p>
     <p>
        <span></span>
-        <input type="password" id="password" name="password" />
+        <input type="password" id="password" name="password" placeholder="Ваш пароль" />
     </p>
     <p>Номер кошелька PAYER:</p>
     <p>
        <span></span>
-        <input type="text" id="wallet" name="password" />
+        <input type="text" id="wallet" name="password" placeholder="P123456789" />
         <input type="hidden" id="ip" value="<?= $ip ?>">
     </p>
     <p>

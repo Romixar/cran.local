@@ -1,37 +1,90 @@
 (function(){
     
+    var submit;// разрешение на отправку формы
+    
     activeMenu();// определение активного пункта меню
     inpFocus();// проверка фокуса полей
-    
-    
+
     var act = 'controller/controller';
+    
+    $('div.form a.mes').click(function(e){
+        
+        e.preventDefault;
+        submit = true;
+
+        var nm = $('div.form input#name');
+        var em = $('div.form input#email');
+        var mes = $('div.form textarea#message');
+        var pattern = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
+        
+        if(nm.val() === '') validMessage(nm, 'ERR_EMP');
+        if(nm.val().length > 100) validMessage(nm, 'ERR_LEN');
+        
+        if(em.val() === '') validMessage(em, 'ERR_EMP');
+        else if(!pattern.test(em.val())) validMessage(em, 'ERR_EML');
+        
+        if(mes.val() === '') validMessage(mes, 'ERR_EMP');
+        if(mes.val().length > 3000) validMessage(mes, 'ERR_LEN');
+        
+        
+        
+        if(submit){
+            var str = '&name='+$.trim(nm.val())+'&email='+$.trim(em.val())+'&message='+$.trim(mes.val());
+            var name = 'do_message';
+
+            post_query(name, str);
+        }
+
+    });
     
     $('div.form a.login').click(function(e){
         
         e.preventDefault;
+        submit = true;
+
+        var lg = $('div.form input#login');
+        var pwd = $('div.form input#password');
         
-        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val();
-        var name = 'do_login';
+        if(lg.val() === '') validMessage(lg, 'ERR_EMP');
+        if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
+        if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
         
-        post_query(name, str);
+        if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
+        if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
+        if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
+        
+        if(submit){
+            var str = '&login='+lg.val()+'&password='+pwd.val();
+            var name = 'do_login';
+
+            post_query(name, str);
+        }
 
     });
     
     $('div.form a.registration').click(function(e){
         
         e.preventDefault;
+        submit = true;
         
         var lg = $('div.form input#login');
         var pwd = $('div.form input#password');
         var wt = $('div.form input#wallet');
         
+        if(lg.val() === '') validMessage(lg, 'ERR_EMP');
+        if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
+        if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
         
-        if(lg.val() === '') validMessage(lg);
+        if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
+        if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
+        if((pwd.val()).length > 100) validMessage(pwd, 'ERR_LEN');
         
-        if(pwd.val() === '') validMessage(pwd);
+        if(wt.val() === '') validMessage(wt, 'ERR_EMP');
+        if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
+        if((wt.val()).length > 30) validMessage(wt, 'ERR_LEN');
         
-        if(wt.val() === '') validMessage(wt);
-        
+        // перв символ или пусто после первого или только цифры с перв символа
+        if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
         
         // проверка капчи перед отправкой
         var response = grecaptcha.getResponse();
@@ -39,25 +92,16 @@
         if(response == ""){
             
             var rc = $('div.g-recaptcha');
-            
-            $('div.rc-anchor').css('border','1px solid red');
-            
-            rc.prev().find('span').append("Подтвердите, что Вы не являетесь роботом!");
-
-            return false;
-        }else{
-            
+            rc.prev().find('span').text('').append("Подтвердите, что Вы не являетесь роботом!");
+            submit = false;
+        }
+        
+        if(submit){
             var str = '&login='+lg.val()+'&password='+pwd.val()+'&wallet='+wt.val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+response;
             var name = 'do_regist';
 
             post_query(name, str);
-            
-            
-            
         }
-        
-        
-        
 
     });
     
@@ -98,8 +142,16 @@
             });
     };
     
-    function validMessage(el){
-        el.css('border','1px solid red').prev().append("Заполните пожалуйста это поле!");
+    function validMessage(el, k){
+        var err = {
+            'ERR_EMP': 'Заполните пожалуйста это поле!',
+            'ERR_LEN': 'Превышена длина текстового поля!',
+            'ERR_WAL': 'Формат кошелька указан неверно!',
+            'ERR_NBS': 'Пробелы недопустимы в этом поле!',
+            'ERR_EML': 'E-mail введён некорректно!'
+        };            
+        el.css('border','1px solid red').prev().text('').append(err[k]);
+        submit = false;
     }
     
     
@@ -135,13 +187,16 @@
     function inpFocus(){
         
         var inp = $('input');
+        var txt = $('textarea');
         
         inp.focusin(function(){
             $(this).css('border','none');
             $(this).prev().text('');
-        })
-        
-        
+        });
+        txt.focusin(function(){
+            $(this).css('border','none');
+            $(this).prev().text('');
+        });
     }
 
     
