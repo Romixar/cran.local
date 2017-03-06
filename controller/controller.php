@@ -50,6 +50,7 @@ class Controller{
         $this->data = $data;
         if(isset($data['do_login_f'])) $this->validateLogin();
         if(isset($data['do_regist_f'])) $this->validateRegData();
+        if(isset($data['do_message_f'])) $this->sendEmail();
 
         
     }
@@ -188,7 +189,23 @@ class Controller{
         $this->render('regist',compact('ip'));
     }
     
-    
+    public function sendEmail(){
+        $view = new Viewcontroller();
+        
+        $title = 'Сообщение с сайта cran.local';
+        $name = $this->data['name'];
+        $uemail = $this->data['email'];
+        $text = nl2br($this->data['message']);
+        
+        $body = $view->prerender('mail',compact('title','name','uemail','text'));
+        $email = Config::$admEmail;
+        
+        $head = 'From: admin@zolushka18.ru'."\r\n".'MIME-Version 1.0'."\r\n".'Content-type: text/html; charset=UTF-8';
+        
+        mail($email,$title,$body,$head);
+        
+        exit();
+    }
     
     
     

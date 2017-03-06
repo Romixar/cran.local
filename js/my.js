@@ -25,14 +25,16 @@
         
         if(mes.val() === '') validMessage(mes, 'ERR_EMP');
         if(mes.val().length > 3000) validMessage(mes, 'ERR_LEN');
-        
-        
-        
+
         if(submit){
             var str = '&name='+$.trim(nm.val())+'&email='+$.trim(em.val())+'&message='+$.trim(mes.val());
             var name = 'do_message';
 
             post_query(name, str);
+            
+            viewMessage(getTplMes('Спасибо!<br/>Ваше обращение отправлено администратору.','success'));
+            
+            $('div.form').remove();// удаляю форму
         }
 
     });
@@ -159,6 +161,10 @@
         var sysmes = $('div#sysmes');
         if(sysmes) sysmes.remove();
         $('div.main div.col-md-12 h4').after(mes);    
+    }
+    
+    function getTplMes(mes, type){
+        return '<div class="alert alert-' +type+ ' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +mes+ '</div>';
     }
     
     function viewButtons(){
