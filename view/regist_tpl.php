@@ -14,6 +14,7 @@
         <input type="text" id="wallet" name="password" />
         <input type="hidden" id="ip" value="<?= $ip ?>">
     </p>
+    <div class="g-recaptcha" data-sitekey="6LfvuRcUAAAAAOosHGNNbcWvnLcYQ70Jew5MWzYf"></div>
     <p>
         <a href="###" class="btn btn-success registration">Зарегистрироваться</a>
     </p>

@@ -29,6 +29,7 @@
       
 
   </script>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
 <body>
@@ -103,5 +104,6 @@
  
  
   <script src="js/my.js"></script>
+  
 </body>
 </html>

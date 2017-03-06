@@ -20,9 +20,9 @@
         
         e.preventDefault;
         
-        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val()+'&wallet='+$('div.form input#wallet').val()+'&ip='+$('div.form input#ip').val();
+        var str = '&login='+$('div.form input#login').val()+'&password='+$('div.form input#password').val()+'&wallet='+$('div.form input#wallet').val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+grecaptcha.getResponse();
         var name = 'do_regist';
-        
+                
         post_query(name, str);
 
     });
@@ -51,6 +51,7 @@
                     console.log(res);
                     if(res){
                         obj = JSON.parse(res);
+                        
                         if(obj.redirect) location.href = obj.redirect;
                         if(obj.alert) alert(obj.alert);
                         if(obj.sysmes) viewMessage(obj.sysmes);
@@ -67,12 +68,12 @@
     function viewMessage(mes){
         var sysmes = $('div#sysmes');
         if(sysmes) sysmes.remove();
-        $('div.main div.col-md-12 h4').before(mes);    
+        $('div.main div.col-md-12 h4').after(mes);    
     }
     
     function viewButtons(){
         var sysmes = $('div#sysmes');
-        if(sysmes) $('div.form').before('<div class="col-md-12"><a href="#" onclick="rem()" class="btn btn-success col-md-3">Да</a><a href="registration" class="btn btn-danger col-md-3">Нет</a></div>');
+        if(sysmes) $('div.alert').append('<a href="#" onclick="rem()" class="btn btn-sm btn-default" style="margin-left: 25px">Да</a><a href="registration" class="btn btn-sm btn-default">Нет</a>');
     }
     
     function activeMenu(){

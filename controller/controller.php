@@ -101,27 +101,50 @@ class Controller{
         $user = new User();
         ///if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','btn'=>true]);
         
-        if($user->validateIp($this->data)) echo json_encode(['sysmes'=>['mes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','type'=>'danger'],'btn'=>true]);
+        if($user->validateIp($this->data)){
+            
+            $type = 'danger';
+            $mes = 'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+            
+            echo json_encode(['sysmes'=>$sysmes,'btn'=>true]);
+            
+        }
         else{
             if($pos = strpos($this->data['ip'],'_0'))
                 $this->data['ip'] = substr($this->data['ip'],0,$pos);
             $this->data['balance'] = 0;
             $this->data['date_reg'] = date('d-m-Y',time());
             $this->data['date_act'] = date('d-m-Y',time());
-            if($user->save($this->data)){
+            
+            //debug($this->data);die;
+            
+            // проверка рекапча
+            $secret = '6LfvuRcUAAAAAOnEtZTBkEbVtKeqmU6vgcqIJx3a';
+            //$response = $this->data['g-recaptcha-response'];// отправить POST запрос в гугл
+            $response = $this->data['g-recaptcha-response'];// отправить POST запрос в гугл
+            $remoteip = $_SERVER['REMOTE_ADDR'];
+            
+            $obj = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response.'&remoteip='.$remoteip);// обработка гугл капчи
+            
+            $res = json_decode($obj,true);// верну в виде массива ответ гугла
+            
+            if($res['success']){
                 
-                $type = 'success';
-                $mes = 'Вы успешно зарегистрировались!';
+                if($user->save($this->data)){
                 
-                $sysmes = $view->prerender('message',compact('type','mes'));
+                    $type = 'success';
+                    $mes = 'Вы успешно зарегистрировались!';
 
-                
-                // создать сообщ об успешной регистрации
-                Session::flash('sysmes',$sysmes);
-                
-                exit('{"redirect":"profile"}');
-                
-            }   
+                    $sysmes = $view->prerender('message',compact('type','mes'));
+
+
+                    // создать сообщ об успешной регистрации
+                    Session::flash('sysmes',$sysmes);
+
+                    exit('{"redirect":"profile"}');
+                }
+            }
         }
         exit();
     }
