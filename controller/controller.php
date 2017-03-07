@@ -192,7 +192,7 @@ class Controller{
     public function sendEmail(){
         $view = new Viewcontroller();
         
-        $title = 'Сообщение с сайта cran.local';
+        $title = 'Сообщение с сайта cran.local';// тема письма
         $name = $this->data['name'];
         $uemail = $this->data['email'];
         $text = nl2br($this->data['message']);

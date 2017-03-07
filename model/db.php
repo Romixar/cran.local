@@ -48,8 +48,11 @@ class DB{
             $_SESSION['user']['date_act'] = $res[0]->date_act;
             $_SESSION['user']['ip'] = $res[0]->ip;
             
+            if($res[0]->n !== 9) $n = $res[0]->n + 1;// кол-во посещений
+            else $this->saveDateActAndPass($data['login'],$this->generatePass($data['password']),$n=0);
+            
             // запишу текущ дату посещения
-            if($this->saveDateAct($data['login'],$data['password'])) return true;
+            if($this->saveDateAct($data['login'],$data['password'],$n)) return true;
             return 'ошибка обновления даты последнего посещения';
             
             
@@ -59,12 +62,19 @@ class DB{
         
     }
     
-    public function saveDateAct($login,$pass){
+    public function saveDateAct($login,$pass,$n){
         
-        $sql = "UPDATE `users` SET `date_act` = '".date('d-m-Y',time())."' WHERE `login` = '".$login."' AND `password` = '".$pass."'";
+        $sql = "UPDATE `users` SET `n` = ".$n.", `date_act` = '".date('d-m-Y',time())."' WHERE `login` = '".$login."' AND `password` = '".$pass."'";
         
         $sth = $this->dbh->query($sql);
         return $sth->rowCount();
+    }
+    
+    public function saveDateActAndPass($login,$pass,$n){
+        
+        
+        
+        
     }
     
     public function save($data){
