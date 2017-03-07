@@ -80,31 +80,80 @@ class Controller{
     public function validateLogin(){// поиск пользов-ля в БД
         $view = new Viewcontroller();
         $user = new User();
-        if($user->findUser($this->data)) exit('{"redirect":"profile"}');// пройдена авторизация
-        else{
-            
-            $type = 'danger';
-            $mes = 'Авторизация не пройдена!';
+        
+        if($data = $user->findLogin($this->data['login']))
+            if($this->verifyUserPass($data)) exit('{"redirect":"profile"}');// авторизация пройдена
+        
+        // авторизация не пройдена 
+        $type = 'danger';
+        $mes = 'Авторизация не пройдена!';
                 
-            $sysmes = $view->prerender('message',compact('type','mes'));
+        $sysmes = $view->prerender('message',compact('type','mes'));
             
-            // сообщение о непройденной авторизации
-            // асинхронно вывожу сообщение
-            echo json_encode(['sysmes'=>$sysmes]);
-            exit();                
+        // сообщение о непройденной авторизации
+        // асинхронно вывожу сообщение
+        echo json_encode(['sysmes'=>$sysmes]);
+        exit();                
+        
+    }
+    
+    public function verifyUserPass($data){
+        
+        // сравнить введенное пользователем и найденное в БД
+        // предварительно захешировать
+        
+        if($this->data['password'].$data[0]->salt === $data[0]->password){
+            
+            // авторизация пройдена
+            $_SESSION['user']['login'] = $data[0]->login;
+            $_SESSION['user']['balance'] = $data[0]->balance;
+            $_SESSION['user']['date_reg'] = $data[0]->date_reg;
+            $_SESSION['user']['date_act'] = $data[0]->date_act;
+            $_SESSION['user']['ip'] = $data[0]->ip;
+                        
+            if($this->updateUserData($data)) return true;
+            
+        }else{
+            
+            // авторизация не пройдена
+            
+            return false;
+            
         }
+        
         
         
     }
     
-    public function generatePass(&$salt){
+    public function updateUserData($data){
         
-        $salt1 = substr(str_shuffle(Config::$salt),0,Config::$len);
+        $user = new User();
         
-        echo $salt1;
-        exit();
+        $id = $data[0]->id;// ID пользователя
+        
+        if($data[0]->n != 9) $n = $data[0]->n + 1;// кол-во посещений
+        else{
+            
+            // запишу текущ дату посещения с обновлением пароля
+            $ctrl = new LoginController();
+                
+            $newpass = $ctrl->generatePass($this->data['password'], $salt);
+                
+            if($user->saveDateActAndPass($id, $newpass, $salt, $n=0)) return true;
+            return 'ошибка обновления даты последнего посещения';
+            
+        }
+            
+        // запишу текущ дату посещения 
+        if($user->saveDateAct($id, $n)) return true;
+        return 'ошибка обновления даты последнего посещения';
+            
+        return true;
+        
         
     }
+    
+
     
     public function validateRegData(){
         $view = new Viewcontroller();

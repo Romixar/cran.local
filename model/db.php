@@ -32,54 +32,53 @@ class DB{
         return false;
     }
     
-    
-    public function findUser($data){
-        
-        $sql = "SELECT * FROM `users` WHERE `login` = '".$data['login']."' AND `password` = '".$data['password']."'";
+    public function findLogin($lg){
+        $sql = "SELECT * FROM `users` WHERE `login` = '".$lg."'";
         
         $res = $this->select($sql);
         
-        
-        if(!empty($res) && count($res) == 1){
-            
-            $_SESSION['user']['login'] = $res[0]->login;
-            $_SESSION['user']['balance'] = $res[0]->balance;
-            $_SESSION['user']['date_reg'] = $res[0]->date_reg;
-            $_SESSION['user']['date_act'] = $res[0]->date_act;
-            $_SESSION['user']['ip'] = $res[0]->ip;
-            $id = $res[0]->id;
-            
-            
-            //debug($res);die;
-            
-            if($res[0]->n != 9) $n = $res[0]->n + 1;// кол-во посещений
-            else{
-                
-                //debug($res);die;
-                // запишу текущ дату посещения с обновлением пароля
-                $ctrl = new LoginController();
-                
-                //debug($ctrl);die;
-                
-                $newpass = $ctrl->generatePass($data['password'], $salt);
-                
-                echo 'нов пароль '.$newpass.' - '.$salt;
-                die;
-                
-                if($this->saveDateActAndPass($id, $newpass, $salt, $n=0)) return true;
-                return 'ошибка обновления даты последнего посещения';
-            }
-
-            // запишу текущ дату посещения 
-            if($this->saveDateAct($id, $n)) return true;
-            return 'ошибка обновления даты последнего посещения';
-            
-            
-        }else return false;
-
-        
-        
+        if(!empty($res) && count($res) == 1) return $res;
+        return false;
     }
+    
+    
+//    public function findUser($data){
+//        
+//        $sql = "SELECT * FROM `users` WHERE `login` = '".$data['login']."' AND `password` = '".$data['password']."'";
+//        
+//        $res = $this->select($sql);
+//        
+//        
+//        if(!empty($res) && count($res) == 1){
+//            
+//            $_SESSION['user']['login'] = $res[0]->login;
+//            $_SESSION['user']['balance'] = $res[0]->balance;
+//            $_SESSION['user']['date_reg'] = $res[0]->date_reg;
+//            $_SESSION['user']['date_act'] = $res[0]->date_act;
+//            $_SESSION['user']['ip'] = $res[0]->ip;
+//            $id = $res[0]->id;
+//            
+//            if($res[0]->n != 9) $n = $res[0]->n + 1;// кол-во посещений
+//            else{
+//                // запишу текущ дату посещения с обновлением пароля
+//                $ctrl = new LoginController();
+//                
+//                $newpass = $ctrl->generatePass($data['password'], $salt);
+//                
+//                if($this->saveDateActAndPass($id, $newpass, $salt, $n=0)) return true;
+//                return 'ошибка обновления даты последнего посещения';
+//            }
+//
+//            // запишу текущ дату посещения 
+//            if($this->saveDateAct($id, $n)) return true;
+//            return 'ошибка обновления даты последнего посещения';
+//            
+//            
+//        }else return false;
+//
+//        
+//        
+//    }
     
     public function saveDateAct($id, $n){
         
