@@ -47,12 +47,31 @@ class DB{
             $_SESSION['user']['date_reg'] = $res[0]->date_reg;
             $_SESSION['user']['date_act'] = $res[0]->date_act;
             $_SESSION['user']['ip'] = $res[0]->ip;
+            $id = $res[0]->id;
             
-            if($res[0]->n !== 9) $n = $res[0]->n + 1;// кол-во посещений
-            else $this->saveDateActAndPass($data['login'],$this->generatePass($data['password']),$n=0);
             
-            // запишу текущ дату посещения
-            if($this->saveDateAct($data['login'],$data['password'],$n)) return true;
+            //debug($res);die;
+            
+            if($res[0]->n != 9) $n = $res[0]->n + 1;// кол-во посещений
+            else{
+                
+                //debug($res);die;
+                // запишу текущ дату посещения с обновлением пароля
+                $ctrl = new LoginController();
+                
+                //debug($ctrl);die;
+                
+                $newpass = $ctrl->generatePass($data['password'], $salt);
+                
+                echo 'нов пароль '.$newpass.' - '.$salt;
+                die;
+                
+                if($this->saveDateActAndPass($id, $newpass, $salt, $n=0)) return true;
+                return 'ошибка обновления даты последнего посещения';
+            }
+
+            // запишу текущ дату посещения 
+            if($this->saveDateAct($id, $n)) return true;
             return 'ошибка обновления даты последнего посещения';
             
             
@@ -62,19 +81,21 @@ class DB{
         
     }
     
-    public function saveDateAct($login,$pass,$n){
+    public function saveDateAct($id, $n){
         
-        $sql = "UPDATE `users` SET `n` = ".$n.", `date_act` = '".date('d-m-Y',time())."' WHERE `login` = '".$login."' AND `password` = '".$pass."'";
+        $sql = "UPDATE `users` SET `n` = ".$n.", `date_act` = '".date('d-m-Y',time())."' WHERE `id` = ".$id;
         
         $sth = $this->dbh->query($sql);
         return $sth->rowCount();
     }
     
-    public function saveDateActAndPass($login,$pass,$n){
+    public function saveDateActAndPass($id, $newpass, $salt, $n){
         
+        $sql = "UPDATE `users` SET `password` = '".$newpass."', `salt` = '".$salt."', `n` = ".$n.", `date_act` = '".date('d-m-Y',time())."' WHERE `id` = ".$id;
         
-        
-        
+        $sth = $this->dbh->query($sql);
+        return $sth->rowCount();
+
     }
     
     public function save($data){

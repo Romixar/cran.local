@@ -97,6 +97,15 @@ class Controller{
         
     }
     
+    public function generatePass(&$salt){
+        
+        $salt1 = substr(str_shuffle(Config::$salt),0,Config::$len);
+        
+        echo $salt1;
+        exit();
+        
+    }
+    
     public function validateRegData(){
         $view = new Viewcontroller();
         $user = new User();

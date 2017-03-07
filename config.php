@@ -9,8 +9,9 @@ class Config{
     
     public static $admEmail = 'rommyB22@rambler.ru';
     
-    public static $secret_str = 'ABCDE';// для генерации пароля
-    public static $salt = '01234';// для генерации пароля
+    public static $secret_str = 'ABCDEFGHIGKLMNOP';// для генерации пароля
+    public static $loc_salt = '01234567';// для генерации пароля
+    public static $len = 8;
     
     
     public static $adm = 'admin/';// папка админа
