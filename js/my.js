@@ -7,6 +7,54 @@
 
     var act = 'controller/controller';
     
+    // reg_login_f
+    
+
+        
+    $("div.registration input#login").on("change", function(){
+
+        //alert('Событие change!');
+        
+        submit = true;
+        
+        var lg = $('div.registration input#login');
+        //var pwd = $('div.form input#password');
+                
+        if(lg.val() === '') validMessage(lg, 'ERR_EMP');
+        if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
+        if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
+                
+//                if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
+//                if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
+//                if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
+                
+        if(submit){
+            var str = '&login='+lg.val();
+            var name = 'reg_login';
+        
+            post_query(name, str);
+        }
+        
+        
+        
+        
+    });
+        
+        
+        
+
+                
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     $('div.form a.mes').click(function(e){
         
         e.preventDefault;

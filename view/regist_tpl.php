@@ -1,5 +1,5 @@
 <h4>Страница регистрации</h4>
-<div class="form">
+<div class="form registration">
             
     <p>Логин:</p>
     <p>

@@ -48,9 +48,10 @@ class Controller{
 			
         }
         $this->data = $data;
-        if(isset($data['do_login_f'])) $this->validateLogin();
-        if(isset($data['do_regist_f'])) $this->validateRegData();
+        if(isset($data['do_login_f'])) $this->validateLogin(); // логин / пароль при авторизации
+        if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
         if(isset($data['do_message_f'])) $this->sendEmail();
+        if(isset($data['reg_login_f'])) $this->validateRagLogin();// логин при регистрации
 
         
     }
@@ -113,16 +114,7 @@ class Controller{
                         
             if($this->updateUserData($data)) return true;
             
-        }else{
-            
-            // авторизация не пройдена
-            
-            return false;
-            
-        }
-        
-        
-        
+        } return false; // авторизация не пройдена
     }
     
     public function updateUserData($data){
@@ -133,7 +125,6 @@ class Controller{
         
         if($data[0]->n != 9) $n = $data[0]->n + 1;// кол-во посещений
         else{
-            
             // запишу текущ дату посещения с обновлением пароля
             $ctrl = new LoginController();
                 
@@ -141,16 +132,11 @@ class Controller{
                 
             if($user->saveDateActAndPass($id, $newpass, $salt, $n=0)) return true;
             return 'ошибка обновления даты последнего посещения';
-            
         }
             
         // запишу текущ дату посещения 
         if($user->saveDateAct($id, $n)) return true;
         return 'ошибка обновления даты последнего посещения';
-            
-        return true;
-        
-        
     }
     
 
@@ -158,7 +144,6 @@ class Controller{
     public function validateRegData(){
         $view = new Viewcontroller();
         $user = new User();
-        ///if($user->validateIp($this->data)) echo json_encode(['sysmes'=>'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?','btn'=>true]);
         
         if($user->validateIp($this->data)){
             
@@ -168,8 +153,7 @@ class Controller{
             
             echo json_encode(['sysmes'=>$sysmes,'btn'=>true]);
             
-        }
-        else{
+        }else{
             if($pos = strpos($this->data['ip'],'_0'))
                 $this->data['ip'] = substr($this->data['ip'],0,$pos);
             $this->data['balance'] = 0;
@@ -193,7 +177,7 @@ class Controller{
                 if($user->save($this->data)){
                 
                     $type = 'success';
-                    $mes = 'Вы успешно зарегистрировались!';
+                    $mes = 'Поздравляем!<br/>Вы успешно зарегистрировались.';
 
                     $sysmes = $view->prerender('message',compact('type','mes'));
 
@@ -210,6 +194,22 @@ class Controller{
 
                 echo json_encode(['sysmes'=>$sysmes]);
             }
+        }
+        exit();
+    }
+    
+    public function validateRagLogin(){
+        
+        debug($this->data);die;
+        
+        if(!$user->findLogin($this->data['login'])) return true;// такой логин свободен
+        else{
+            // такой логин уже существует
+            $type = 'danger';
+            $mes = 'Ваш логин уже используется на сайте!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+
+            echo json_encode(['sysmes'=>$sysmes]);
         }
         exit();
     }
