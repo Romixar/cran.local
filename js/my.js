@@ -6,8 +6,8 @@
     inpFocus();// проверка фокуса полей
 
     var act = 'controller/controller';
-    var patLogPas = /^[a-z0-9]+$/i;
-
+    var patLogPas = /^[a-z0-9]+$/i; // проверка логина/пароля
+    var patWal = 
         
     $("div.registration input#login").on("change", function(){// набран текст и убран фокус
         
@@ -25,21 +25,40 @@
         }
     });
     $("div.registration input#password").on("change", function(){// набран текст и убран фокус
+        
+        submit = true;
 
         if(!patLogPas.test($(this).val())) validMessage($(this), 'ERR_CHR');
         
         if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
         
         if($(this).val().length > 15) validMessage($(this), 'ERR_LEN');
+        
+        if(submit) viewIcon2($(this), 'ok');
+        else viewIcon2($(this), 'remove', 'onclick="rem4()"');
                 
         
-    });    
+    });
+    $("div.registration input#wallet").on("change", function(){// набран текст и убран фокус
+        
+        submit = true;
+
+        // перв символ или пусто после первого или только цифры с перв символа
+        if(($(this).val())[0] !== 'P' || ($(this).val()).substring(1) === '' || isNaN(+($(this).val()).substring(1))) validMessage($(this), 'ERR_WAL');
+        
+        if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
+        
+        if($(this).val().length > 20) validMessage($(this), 'ERR_LEN');
+        
+        if(submit) viewIcon2($(this), 'ok');
+        else viewIcon2($(this), 'remove', 'onclick="rem3()"');
+        
+    });
 
 
                 
 
 
-    //romaroma
     
     
     
@@ -124,7 +143,7 @@
         
         if(wt.val() === '') validMessage(wt, 'ERR_EMP');
         if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
-        if((wt.val()).length > 30) validMessage(wt, 'ERR_LEN');
+        if((wt.val()).length > 20) validMessage(wt, 'ERR_LEN');
         
         // перв символ или пусто после первого или только цифры с перв символа
         if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
@@ -204,23 +223,20 @@
     
     function viewIcon(type, click=''){
 
-        //var p = $('div.registration input#login').parent();
         var span = $('div.registration input#login').next();
         
-        //console.log(p);
+        //console.log(span);
         
         span.text('').append('<span class="glyphicon" '+click+'><i class="glyphicon glyphicon-' +type+ '"></i></span>');
+
+    }
+    
+    function viewIcon2(el, type, click=''){
+        var span = el.next();
         
-//        $('div.registration input#login').next().text('').append('<i class="glyphicon glyphicon-' +type+ '"></i>');
-        //span.append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+        //console.log(el);
         
-        
-        
-        
-        
-        //'<i class="glyphicon glyphicon-refresh gly-spin"></i>';
-        //'<i class="glyphicon glyphicon-ok"></i>';
-        //'<i class="glyphicon glyphicon-remove"></i>'
+        span.text('').append('<span class="glyphicon" '+click+'><i class="glyphicon glyphicon-' +type+ '"></i></span>');
     }
     
     

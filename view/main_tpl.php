@@ -26,14 +26,21 @@
           $('input#ip').val($('input#ip').val()+'_0');
           return false;
       };
-      
       function rem2(){
-          var i = $('i.glyphicon-remove');
-          if(i){
-              $('input#login').val('');
-              $('span.glyphicon').remove();
-          }
+          
+          $('input#login').val('');
+          $('input#login').next().html('');// очистить весь HTML внутри span.icon
       };
+      function rem3(){
+          
+          $('input#wallet').val('');
+          $('input#wallet').next().html('');// очистить весь HTML внутри span.icon
+      };
+      function rem4(){
+          
+          $('input#password').val('');
+          $('input#password').next().html('');// очистить весь HTML внутри span.icon
+      }
       
 
 
