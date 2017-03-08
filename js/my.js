@@ -6,21 +6,15 @@
     inpFocus();// проверка фокуса полей
 
     var act = 'controller/controller';
-    
-    // reg_login_f
-    
 
         
-    $("div.registration input#login").on("change", function(){
-
-        //alert('Событие change!');
+    $("div.registration input#login").on("change", function(){// набран текст и убран фокус
         
         submit = true;
         
         var lg = $('div.registration input#login');
         //var pwd = $('div.form input#password');
-                
-        if(lg.val() === '') validMessage(lg, 'ERR_EMP');
+        
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
         if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
                 
@@ -34,10 +28,6 @@
         
             post_query(name, str);
         }
-        
-        
-        
-        
     });
         
         
@@ -184,6 +174,8 @@
                         if(obj.alert) alert(obj.alert);
                         if(obj.sysmes) viewMessage(obj.sysmes);
                         if(obj.btn) viewButtons();
+                        if(obj.icon) viewIcon(obj.icon);
+                        if(obj.err) validMessage($('div.registration input#login'), 'ERR_DBL');
                     };
                     
 
@@ -198,10 +190,24 @@
             'ERR_LEN': 'Превышена длина текстового поля!',
             'ERR_WAL': 'Формат кошелька указан неверно!',
             'ERR_NBS': 'Пробелы недопустимы в этом поле!',
-            'ERR_EML': 'E-mail введён некорректно!'
+            'ERR_EML': 'E-mail введён некорректно!',
+            'ERR_DBL': 'Ваш логин уже используется на сайте!',
+            'ERR_CHR': 'Только символы латинского алфавита и цифры!',
+            
         };            
         el.css('border','1px solid red').prev().text('').append(err[k]);
         submit = false;
+    }
+    
+    function viewIcon(type){
+        
+        //console.log($('div.registration input#login').next());
+        
+        $('div.registration input#login').next().text('').append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+        
+        //'<i class="glyphicon glyphicon-refresh gly-spin"></i>';
+        //'<i class="glyphicon glyphicon-ok"></i>';
+        //'<i class="glyphicon glyphicon-remove"></i>'
     }
     
     

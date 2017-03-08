@@ -4,7 +4,9 @@
     <p>Логин:</p>
     <p>
        <span></span>
-        <input type="text" id="login" name="login" placeholder="Ваш логин" autofocus />    
+        <input type="text" id="login" name="login" style="width:90%" placeholder="Ваш логин" autofocus /><span class="glyphicon"></span>
+<!--        <span class="glyphicon"><i class="glyphicon glyphicon-refresh gly-spin"></i></span>-->
+        
     </p>
     <p>Пароль:</p>
     <p>

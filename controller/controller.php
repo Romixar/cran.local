@@ -199,19 +199,22 @@ class Controller{
     }
     
     public function validateRagLogin(){
+        $view = new Viewcontroller();
+        $user = new User();
         
-        debug($this->data);die;
-        
-        if(!$user->findLogin($this->data['login'])) return true;// такой логин свободен
+        if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
         else{
+            
+            exit('{"icon":"remove","err":"true"}'); // иконку чтобы очистить поле
+            
             // такой логин уже существует
-            $type = 'danger';
-            $mes = 'Ваш логин уже используется на сайте!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-
-            echo json_encode(['sysmes'=>$sysmes]);
+//            $type = 'danger';
+//            $mes = 'Ваш логин уже используется на сайте!';
+//            $sysmes = $view->prerender('message',compact('type','mes'));
+//
+//            echo json_encode(['sysmes'=>$sysmes]);
         }
-        exit();
+        //exit();
     }
     
     public function actionProfile(){
