@@ -205,7 +205,7 @@ class Controller{
         if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
         else{
             
-            exit('{"icon":"remove","err":"true"}'); // иконку чтобы очистить поле
+            exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\"rem2()\""}'); // иконку чтобы очистить поле и выделить ошибку
             
             // такой логин уже существует
 //            $type = 'danger';

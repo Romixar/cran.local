@@ -6,37 +6,40 @@
     inpFocus();// проверка фокуса полей
 
     var act = 'controller/controller';
+    var patLogPas = /^[a-z0-9]+$/i;
 
         
     $("div.registration input#login").on("change", function(){// набран текст и убран фокус
         
         submit = true;
         
-        var lg = $('div.registration input#login');
-        //var pwd = $('div.form input#password');
-        
-        if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
-        if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
-                
-//                if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
-//                if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
-//                if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
+        if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
+        if(!patLogPas.test($(this).val())) validMessage($(this), 'ERR_CHR');
+        if(($(this).val()).length > 100) validMessage($(this), 'ERR_LEN');
                 
         if(submit){
-            var str = '&login='+lg.val();
+            var str = '&login='+$(this).val();
             var name = 'reg_login';
         
             post_query(name, str);
         }
     });
+    $("div.registration input#password").on("change", function(){// набран текст и убран фокус
+
+        if(!patLogPas.test($(this).val())) validMessage($(this), 'ERR_CHR');
         
+        if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
         
+        if($(this).val().length > 15) validMessage($(this), 'ERR_LEN');
+                
         
+    });    
+
 
                 
 
 
-    
+    //romaroma
     
     
     
@@ -174,8 +177,8 @@
                         if(obj.alert) alert(obj.alert);
                         if(obj.sysmes) viewMessage(obj.sysmes);
                         if(obj.btn) viewButtons();
-                        if(obj.icon) viewIcon(obj.icon);
-                        if(obj.err) validMessage($('div.registration input#login'), 'ERR_DBL');
+                        if(obj.icon) viewIcon(obj.icon, obj.click);
+                        if(obj.err) validMessage($('div.registration input#login'), obj.err);
                     };
                     
 
@@ -192,18 +195,28 @@
             'ERR_NBS': 'Пробелы недопустимы в этом поле!',
             'ERR_EML': 'E-mail введён некорректно!',
             'ERR_DBL': 'Ваш логин уже используется на сайте!',
-            'ERR_CHR': 'Только символы латинского алфавита и цифры!',
+            'ERR_CHR': 'Только латинский алфавит и цифры!',
             
         };            
         el.css('border','1px solid red').prev().text('').append(err[k]);
         submit = false;
     }
     
-    function viewIcon(type){
+    function viewIcon(type, click=''){
+
+        //var p = $('div.registration input#login').parent();
+        var span = $('div.registration input#login').next();
         
-        //console.log($('div.registration input#login').next());
+        //console.log(p);
         
-        $('div.registration input#login').next().text('').append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+        span.text('').append('<span class="glyphicon" '+click+'><i class="glyphicon glyphicon-' +type+ '"></i></span>');
+        
+//        $('div.registration input#login').next().text('').append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+        //span.append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+        
+        
+        
+        
         
         //'<i class="glyphicon glyphicon-refresh gly-spin"></i>';
         //'<i class="glyphicon glyphicon-ok"></i>';
@@ -251,7 +264,8 @@
         
         inp.focusin(function(){
             $(this).css('border','none');
-            $(this).prev().text('');
+            $(this).prev().text('');// очистка текста перед полем
+            $(this).next().text('');// очистка глификонки
         });
         txt.focusin(function(){
             $(this).css('border','none');
@@ -259,7 +273,7 @@
         });
     }
 
-    
+
 
     
     

@@ -27,6 +27,15 @@
           return false;
       };
       
+      function rem2(){
+          var i = $('i.glyphicon-remove');
+          if(i){
+              $('input#login').val('');
+              $('span.glyphicon').remove();
+          }
+      };
+      
+
 
   </script>
   <script src='https://www.google.com/recaptcha/api.js'></script>
