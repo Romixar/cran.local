@@ -83,8 +83,8 @@ class Controller{
     
     public function validateEmailAuth(){
         
-        debug($this->data);exit();
-        
+        //debug($this->data);exit();
+        $view = new ViewController();
         $user = new User();
         
         if($user->findEmail($this->data['email'])){
@@ -94,27 +94,30 @@ class Controller{
             $mes = 'Пользователь с таким E-mail уже существует!';
             $sysmes = $view->prerender('message',compact('type','mes'));
             
-            echo json_encode(['sysmes'=>$sysmes]);
-            
+            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+            exit();
         }else{
             
+            $this->unsetEl('do_profile_f');
+
             // E-mail не существует
-            if($user->saveData($this->data['email'])){
+            if($user->saveData($this->data)){
                 
                 $type = 'succes';
-                $mes = 'Изменения сохранены';
+                $mes = 'Изменения сохранены!';
                 $sysmes = $view->prerender('message',compact('type','mes'));
 
-                echo json_encode(['sysmes'=>$sysmes]);
+                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+                exit();
                 
             }else{
                 
                 $type = 'danger';
-                $mes = 'Ошибка сохранения';
+                $mes = 'Ошибка сохранения!';
                 $sysmes = $view->prerender('message',compact('type','mes'));
 
-                echo json_encode(['sysmes'=>$sysmes]);
-                
+                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+                exit();
             }
             
         }
@@ -346,6 +349,9 @@ class Controller{
     
     
     
+    public function unsetEl($el){
+        unset($this->data[$el]);
+    }
     
     public function redirect($uri){
         header('Location: '.$uri);

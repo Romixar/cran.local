@@ -78,9 +78,14 @@
         $('a.login').removeClass('disabled');
         
         $('a.login').text('Войти');
+
+    });
+    $('div.profile input#email').on('focus', function(){ // снять блокироку кнопки
         
+        $('a.profile').removeClass('disabled');
         
-        
+        $('a.profile').text('Сохранить');
+
     });
 
 
@@ -145,7 +150,7 @@
     });
     $('div.login').keyup(function(e){
         
-        if(e.keyCode == 13) validEmailAndSubmit();
+        if(e.keyCode == 13) validLogAndSubmit();
     });
     $('div.profile a.profile').click(function(e){
         
@@ -170,7 +175,7 @@
         
         if(submit){
             
-            viewIcon3($('div.login a.login'), 'refresh gly-spin');// запуск крутилки в кнопке
+            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
 
             var str = '&email='+em.val();
             var name = 'do_profile';
@@ -323,7 +328,7 @@
     }
     
     
-    function viewMessage(mes, sub='false'){
+    function viewMessage(mes, sub=false){
         
         console.log(mes);
         
@@ -333,7 +338,9 @@
         if(al) al.remove();
         $('div.main div.col-md-12 h4').after(mes);
         
-        if(sub){
+        console.log(sub);
+        
+        if(sub !== false){
             
             $('div.form a').text(sub);
             

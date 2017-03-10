@@ -23,6 +23,11 @@ class DB{
     }
     
     
+    
+    
+    
+    
+    
     public function validateIp($data){
         $sql = "SELECT * FROM `users` WHERE `ip` = '".$data['ip']."'";
         
@@ -32,6 +37,18 @@ class DB{
         return false;
     }
     
+    public function findEmail($em){
+        
+        $sql = "SELECT * FROM `users` WHERE `email` = '".$em."'";
+        
+        $res = $this->select($sql);
+        
+        if(!empty($res)) return true;
+        return false;
+        
+        
+    }
+    
     public function findLogin($lg){
         $sql = "SELECT * FROM `users` WHERE `login` = '".$lg."'";
         
@@ -39,6 +56,32 @@ class DB{
         
         if(!empty($res) && count($res) == 1) return $res;
         return false;
+    }
+    
+    public function saveData($fields){
+        
+        if(is_array($fields)){
+            
+            $keys = [];// массив полей
+            $vals = [];// массив значений
+
+            debug($fields);exit();
+
+            foreach($fields as $k => $v){
+                $keys[] = $k;
+                $vals[] = $v;
+            }
+            
+        }else return false;
+        
+        
+        debug($keys);exit('массив ключей');
+        
+        $sql = 'INSERT INTO tbl_name (col1,col2) VALUES (15,col1*2)';
+        
+        
+        return false;
+        
     }
 
     
