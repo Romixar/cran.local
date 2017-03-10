@@ -13,6 +13,8 @@ class Config{
     public static $loc_salt = '01234567';// для генерации пароля
     public static $len = 8;
     
+    public static $size = 1000000; // 1 Мб допустимый размер аватарки
+    
     
     public static $adm = 'admin/';// папка админа
     

@@ -174,7 +174,10 @@
         if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
         
-        if(submit) send_json(formData);
+        if(submit){
+            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
+            send_json(formData);
+        }
         
         
         
@@ -392,12 +395,8 @@
         
         console.log(sub);
         
-        if(sub !== false){
+        if(sub !== false) $('div.form a').text(sub);
             
-            $('div.form a').text(sub);
-            
-        }
-        
     }
     
     function getTplMes(mes, type){

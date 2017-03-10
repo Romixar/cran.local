@@ -96,10 +96,34 @@ class Controller{
     
     public function validateEmailAuth(){
         
-        if(isset($_FILES['avatar'])) $this->validFiles();
-die;
         $view = new ViewController();
         $user = new User();
+        
+        
+        if(isset($_FILES['avatar'])){
+            
+            if($this->validFiles()){
+            
+                $type = 'success';
+                $mes = 'Аватарка сохранена!';
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+                exit();
+
+            }else{
+                $type = 'danger';
+                $mes = 'Неизвестная ошибка сохранения файла!';
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+                exit();
+            }
+        }
+        
+        
+die;
+        
         
         if($user->findEmail($this->data['email'])){
             
@@ -137,13 +161,28 @@ die;
     }
     
     public function validFiles(){
+        
+//        ob_start();
+//        debug($_FILES);
+//        $res = ob_get_clean();
+//        echo json_encode($res);exit;
+        
         $view = new ViewController();
 
-        
         $type = $_FILES['avatar']['type'];
         $size = $_FILES['avatar']['size'];
         $name = $_FILES['avatar']['name'];
-        if($type != 'image/png' || $type != 'image/jpg' || $type != 'image/jpeg' || $type != 'image/gif'){
+
+        if(!preg_match("/\.png|jpg|jpeg|gif\$/i",$name)){
+            $type = 'danger';
+            $mes = 'Недопустимое расширение файла!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+
+            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+            exit();
+        }
+        
+        if($type !== 'image/png' && $type !== 'image/jpg' && $type !== 'image/jpeg' && $type !== 'image/gif'){
             $type = 'danger';
             $mes = 'Недопустимый тип файла!';
             $sysmes = $view->prerender('message',compact('type','mes'));
@@ -151,7 +190,7 @@ die;
             echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
             exit();
         }
-        if($size > 100){
+        if($size > Config::$size){
             $type = 'danger';
             $mes = 'Превышен допустимый размер файла!';
             $sysmes = $view->prerender('message',compact('type','mes'));
@@ -159,25 +198,10 @@ die;
             echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
             exit();
         }
-        $uploadedfile = "images/".$name;
+        $file = "images/".$name;
         
-        
-        
-        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadedfile)){
-            
-            $type = 'success';
-            $mes = 'Аватарка сохранена!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-
-            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-            exit();   
-        }
-        $type = 'danger';
-        $mes = 'Неизвестная ошибка сохранения файла!';
-        $sysmes = $view->prerender('message',compact('type','mes'));
-
-        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-        exit();
+        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return true;
+        return false;
         
     }
     
