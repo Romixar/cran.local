@@ -43,7 +43,7 @@ class DB{
         
         $res = $this->select($sql);
         
-        if(!empty($res)) return true;
+        if(!empty($res)) return $res;
         return false;
         
         

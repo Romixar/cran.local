@@ -296,8 +296,8 @@
                 type: 'POST',
                 data: name + '_f=' + str,
                 cache: false,
-                contentType: false,
-                processData: false,
+//                contentType: false,
+//                processData: false,
                 success: function(res){
 
                     console.log(res);

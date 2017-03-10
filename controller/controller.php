@@ -53,20 +53,6 @@ class Controller{
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['email'])) $this->validateEmailAuth();// email авторизованного
-        
-//        if(isset($data['email'])){
-//        
-//            ob_start();
-//        print_r($_POST);
-//        print_r($_FILES);
-//        //exit();
-//        $req = ob_get_clean();
-//        echo json_encode($req); // вернем полученное в ответе
-//  exit;
-//            
-//        }
-        
-        
 
         
     }
@@ -99,63 +85,50 @@ class Controller{
         $view = new ViewController();
         $user = new User();
         
+        $uplfile = '';
         
-        if(isset($_FILES['avatar'])){
+        if(!empty($_FILES['avatar']['name'])){
             
-            if($this->validFiles()){
-            
-                $type = 'success';
-                $mes = 'Аватарка сохранена!';
-                $sysmes = $view->prerender('message',compact('type','mes'));
-
-                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-                exit();
-
-            }else{
-                $type = 'danger';
-                $mes = 'Неизвестная ошибка сохранения файла!';
-                $sysmes = $view->prerender('message',compact('type','mes'));
-
-                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-                exit();
+            if(!$uplfile = $this->validFiles()){
+                
+                $this->sysMessage('danger','Неизвестная ошибка сохранения файла!');
             }
         }
         
+//                ob_start();
+//        debug($this->data);
+//        $res = ob_get_clean();
+//        echo json_encode($res);exit;
         
-die;
-        
-        
-        if($user->findEmail($this->data['email'])){
+        if(!empty($uplfile)) $this->data['img'] = $uplfile;
+                    
+        if($res = $user->findEmail($this->data['email'])){
             
-            // E-mail уже существует
-            $type = 'danger';
-            $mes = 'Пользователь с таким E-mail уже существует!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
+            if($res[0]->id == $_SESSION['user']['id']){
+                
+                // отправить на update файл, если есть
+                $user->update($this->data, "`login` = '".$_SESSION['user']['login']."'");
+                
+                $this->sysMessage('success','Изменения сохранены!');
+                
+            }else{
+                // E-mail уже существует
+                $this->sysMessage('danger','Пользователь с таким E-mail уже существует!');
+            }
             
-            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-            exit();
+            
         }else{
             
-            $this->unsetEl('do_profile_f');
+            //$this->unsetEl('do_profile_f');
 
             // E-mail не существует
             if($user->update($this->data, "`login` = '".$_SESSION['user']['login']."'")){
                 
-                $type = 'success';
-                $mes = 'Изменения сохранены!';
-                $sysmes = $view->prerender('message',compact('type','mes'));
-
-                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-                exit();
+                $this->sysMessage('success','Изменения сохранены!');
                 
             }else{
                 
-                $type = 'danger';
-                $mes = 'Ошибка сохранения!';
-                $sysmes = $view->prerender('message',compact('type','mes'));
-
-                echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-                exit();
+                $this->sysMessage('danger','Ошибка сохранения!');
             }   
         }   
     }
@@ -174,33 +147,21 @@ die;
         $name = $_FILES['avatar']['name'];
 
         if(!preg_match("/\.png|jpg|jpeg|gif\$/i",$name)){
-            $type = 'danger';
-            $mes = 'Недопустимое расширение файла!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-
-            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-            exit();
+            
+            $this->sysMessage('danger','Недопустимое расширение файла!');
         }
         
         if($type !== 'image/png' && $type !== 'image/jpg' && $type !== 'image/jpeg' && $type !== 'image/gif'){
-            $type = 'danger';
-            $mes = 'Недопустимый тип файла!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-
-            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-            exit();
+            
+            $this->sysMessage('danger','Недопустимый тип файла!');
         }
         if($size > Config::$size){
-            $type = 'danger';
-            $mes = 'Превышен допустимый размер файла!';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-
-            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
-            exit();
+            
+            $this->sysMessage('danger','Превышен допустимый размер файла!');
         }
         $file = "images/".$name;
         
-        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return true;
+        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return $name;
         return false;
         
     }
@@ -234,6 +195,7 @@ die;
         if($this->data['password'].$data[0]->salt === $data[0]->password){
             
             // авторизация пройдена
+            $_SESSION['user']['id'] = $data[0]->id;
             $_SESSION['user']['login'] = $data[0]->login;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
@@ -437,6 +399,14 @@ die;
         header('Location: '.$uri);
     }
     
+    public function sysMessage($type,$mes){
+        //$type = 'success';
+        //$mes = 'Изменения сохранены!';
+        $sysmes = $view->prerender('message',compact('type','mes'));
+
+        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+        exit();        
+    }
     
     
     
