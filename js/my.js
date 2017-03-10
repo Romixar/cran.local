@@ -84,7 +84,7 @@
         
         $('a.profile').removeClass('disabled');
         
-        $('a.profile').text('Сохранить');
+        $('a.profile').text('Сохранить настройки');
 
     });
 
@@ -165,26 +165,45 @@
     
     function validEmailAndSubmit(){
         
+        formData = new FormData($('#my_form').get(0)); // в экземпляр объекта передаем форму
+        
         submit = true;
         
         var em = $('div.profile input#email');
         
-        
-        if(em.val() === '') validMessage(em, 'ERR_EMP');
-        else if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
-        
-        if(submit){
-            
-            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
-
-            var str = '&email='+em.val();
-            var name = 'do_profile';
-
-            post_query(name, str);
-        }
+        if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
         
-    }
+        if(submit) send_json(formData);
+        
+        
+        
+        
+    };
+    
+    
+    
+//    function validEmailAndSubmit(){
+//        
+//        submit = true;
+//        
+//        var em = $('div.profile input#email');
+//        
+//        if(em.val() === '') validMessage(em, 'ERR_EMP');
+//        else if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
+//        
+//        if(submit){
+//            
+//            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
+//
+//            var str = '&email='+em.val();
+//            var name = 'do_profile';
+//
+//            post_query(name, str);
+//        }
+//        
+//        
+//    }
     
     
     function validLogAndSubmit(){
@@ -274,6 +293,8 @@
                 type: 'POST',
                 data: name + '_f=' + str,
                 cache: false,
+                contentType: false,
+                processData: false,
                 success: function(res){
 
                     console.log(res);
@@ -290,6 +311,37 @@
                 },
             });
     };
+    
+    function send_json(formData){
+
+        $.ajax({
+      url: act,
+      type: 'POST',
+      contentType: false, // важно - убираем форматирование данных по умолчанию
+      processData: false, // важно - убираем преобразование строк по умолчанию
+      data: formData,
+      dataType: 'json',
+      success: function(json){
+          
+          //console.log(json);
+          
+          //obj = JSON.parse(json);
+          
+          console.log(json);
+          
+          if(json.sysmes) viewMessage(json.sysmes, json.submit);
+          
+          
+//        if(json){
+//          $('#my_form').replaceWith(json);
+//        }
+      }
+    });
+        
+        
+    }
+    
+    
     
     function validMessage(el, k){
         var err = {

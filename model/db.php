@@ -61,15 +61,9 @@ class DB{
     public function update($fields, $where=''){
         
         if(is_array($fields)){
-          
             foreach($fields as $k => $v){
                 
-                for($i=0; $i<count($fields); $i++){
-                    
-                    $data[$i] = $k.' = '.$v;
-                    
-                }
-                
+                for($i=0; $i<count($fields); $i++) $data[$i] = "`".$k."` = '".$v."'";
             }
             
         }else return false;
@@ -78,17 +72,10 @@ class DB{
         
         //$sql = 'INSERT INTO tbl_name ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
         
+        if(!empty($where)) $sql .= ' WHERE '.$where;
         
-        
-        
-        if(!empty($where)){
-            $sql .= ' WHERE '.$where;
-        }
-        
-        echo $sql;
-        exit();
-        
-        return false;
+        $sth = $this->dbh->query($sql);
+        return $sth->rowCount();
         
     }
 
@@ -121,11 +108,12 @@ class DB{
         
         // кол-во модифицир-х строк
         if($sth->rowCount()){
-            $_SESSION['user']['login'] = $data['login'];
+            $_SESSION['user']['login'] = $data['login']; // обновление сессии
             $_SESSION['user']['balance'] = $data['balance'];
             $_SESSION['user']['date_reg'] = $data['date_reg'];
             $_SESSION['user']['date_act'] = $data['date_act'];
             $_SESSION['user']['ip'] = $data['ip'];
+            
             
             
             return true;

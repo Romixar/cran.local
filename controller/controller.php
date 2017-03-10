@@ -31,11 +31,10 @@ class Controller{
         
             
         $this->sysmes = Session::flash('sysmes');
-
-        
     }
     
     public function xss($data){
+
 
 		$req = '/script|http|www\.|\'|\`|SELECT|UNION|UPDATE|exe|exec|CREATE|DELETE|INSERT|tmp/i';
 			
@@ -53,7 +52,21 @@ class Controller{
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
-        if(isset($data['do_profile_f'])) $this->validateEmailAuth();// email авторизованного
+        if(isset($data['email'])) $this->validateEmailAuth();// email авторизованного
+        
+//        if(isset($data['email'])){
+//        
+//            ob_start();
+//        print_r($_POST);
+//        print_r($_FILES);
+//        //exit();
+//        $req = ob_get_clean();
+//        echo json_encode($req); // вернем полученное в ответе
+//  exit;
+//            
+//        }
+        
+        
 
         
     }
@@ -83,7 +96,8 @@ class Controller{
     
     public function validateEmailAuth(){
         
-        //debug($this->data);exit();
+        if(isset($_FILES['avatar'])) $this->validFiles();
+die;
         $view = new ViewController();
         $user = new User();
         
@@ -103,7 +117,7 @@ class Controller{
             // E-mail не существует
             if($user->update($this->data, "`login` = '".$_SESSION['user']['login']."'")){
                 
-                $type = 'succes';
+                $type = 'success';
                 $mes = 'Изменения сохранены!';
                 $sysmes = $view->prerender('message',compact('type','mes'));
 
@@ -118,19 +132,55 @@ class Controller{
 
                 echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
                 exit();
-            }
-            
-        }
-        
-        
-        
-        
-        
+            }   
+        }   
+    }
+    
+    public function validFiles(){
+        $view = new ViewController();
 
         
+        $type = $_FILES['avatar']['type'];
+        $size = $_FILES['avatar']['size'];
+        $name = $_FILES['avatar']['name'];
+        if($type != 'image/png' || $type != 'image/jpg' || $type != 'image/jpeg' || $type != 'image/gif'){
+            $type = 'danger';
+            $mes = 'Недопустимый тип файла!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+
+            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+            exit();
+        }
+        if($size > 100){
+            $type = 'danger';
+            $mes = 'Превышен допустимый размер файла!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+
+            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+            exit();
+        }
+        $uploadedfile = "images/".$name;
         
+        
+        
+        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadedfile)){
+            
+            $type = 'success';
+            $mes = 'Аватарка сохранена!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+
+            echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+            exit();   
+        }
+        $type = 'danger';
+        $mes = 'Неизвестная ошибка сохранения файла!';
+        $sysmes = $view->prerender('message',compact('type','mes'));
+
+        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+        exit();
         
     }
+    
     
     public function validateLogin(){// поиск пользов-ля в БД
         $view = new Viewcontroller();
@@ -165,6 +215,8 @@ class Controller{
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
             $_SESSION['user']['date_act'] = $data[0]->date_act;
             $_SESSION['user']['ip'] = $data[0]->ip;
+            $_SESSION['user']['email'] = $data[0]->email;
+            $_SESSION['user']['wallet'] = $data[0]->wallet;
                         
             if($this->updateUserData($data)) return true;
             
@@ -285,13 +337,17 @@ class Controller{
             $date_reg = $_SESSION['user']['date_reg'];
             $date_act = $_SESSION['user']['date_act'];
             $ip = $_SESSION['user']['ip'];
+            $email = $_SESSION['user']['email'];
+            $wal = $_SESSION['user']['wallet'];
             
+            if(!empty($email)) $text = 'Изменить';
+            else $text = 'Добавить';
 
             $this->title = 'Страница '.$login;
             $this->meta_desc = 'Страница профиля мета описание';
             $this->meta_key = 'Страница профиля мета кей';
             
-            $this->render('profile',compact('login','balance','date_reg','date_act','ip')); 
+            $this->render('profile',compact('login','balance','date_reg','date_act','ip','email','wal','text')); 
         }
         
     }
