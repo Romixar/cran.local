@@ -101,7 +101,7 @@ class Controller{
             $this->unsetEl('do_profile_f');
 
             // E-mail не существует
-            if($user->saveData($this->data)){
+            if($user->update($this->data, "`login` = '".$_SESSION['user']['login']."'")){
                 
                 $type = 'succes';
                 $mes = 'Изменения сохранены!';

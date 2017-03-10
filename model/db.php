@@ -58,27 +58,35 @@ class DB{
         return false;
     }
     
-    public function saveData($fields){
+    public function update($fields, $where=''){
         
         if(is_array($fields)){
-            
-            $keys = [];// массив полей
-            $vals = [];// массив значений
-
-            debug($fields);exit();
-
+          
             foreach($fields as $k => $v){
-                $keys[] = $k;
-                $vals[] = $v;
+                
+                for($i=0; $i<count($fields); $i++){
+                    
+                    $data[$i] = $k.' = '.$v;
+                    
+                }
+                
             }
             
         }else return false;
         
+        $sql = 'UPDATE `users` SET '.implode(',',$data);
         
-        debug($keys);exit('массив ключей');
+        //$sql = 'INSERT INTO tbl_name ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
         
-        $sql = 'INSERT INTO tbl_name (col1,col2) VALUES (15,col1*2)';
         
+        
+        
+        if(!empty($where)){
+            $sql .= ' WHERE '.$where;
+        }
+        
+        echo $sql;
+        exit();
         
         return false;
         
