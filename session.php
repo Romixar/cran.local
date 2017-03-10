@@ -1,44 +1,5 @@
 <?php
 
-//class Flash{
-//    
-//    
-//    
-//    public static function set($k,$v=''){
-//        
-////        debug($k);
-////        debug($v);
-//        
-//        if($v=''){
-//            
-//            if(isset($_SESSION[$k])){
-//                
-//                $flash = $_SESSION[$k];
-//                
-//                unset($_SESSION[$k]);
-//                
-//                return $flash;
-//            }
-//            
-//        }else{
-//            
-//            $_SESSION[$k] = $v;
-//            
-//            
-//        }
-//        return;
-//        
-//    }
-//    
-//    
-//    
-//    
-//}
-
-
-?>
-<?php
-
 class Session {
         
         /**
@@ -50,8 +11,13 @@ class Session {
         
 
         public static function flash( $key, $value=null ){
+            
+            
+            
             # Если значение не указано
             if( is_null( $value ) ){
+                
+                //debug($_SESSION);
                 
                 # Если такой ключ в сессии есть            
                 if( isset( $_SESSION[self::$key][$key] ) ){
@@ -62,16 +28,20 @@ class Session {
                     # Уничтожаем значение сессии
                     unset( $_SESSION[self::$key][$key] );
                     
+                    echo 'вернуть - '.$value;
                     # Возвращаем значение
                     return $value;
                 }
- 
+                
                 # По умолчанию
                 return false;
             }
             
+            
             # Записываем значение в сессию
             $_SESSION[self::$key][$key] = $value;
+//            echo 'попал';
+//            debug($_SESSION);
         }
     }
 

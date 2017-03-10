@@ -23,7 +23,10 @@
         <div style="transform:scale(0.80);transform-origin:0 0" class="g-recaptcha" data-sitekey="6LfvuRcUAAAAAOosHGNNbcWvnLcYQ70Jew5MWzYf"></div>
     </p>
     <p>
+<!--       disabled-->
         <a href="###" class="btn btn-success registration">Зарегистрироваться</a>
+
+<!--   <i class="glyphicon glyphicon-refresh gly-spin"></i>-->
     </p>
     
 </div>

@@ -7,9 +7,22 @@
 
     var act = 'controller/controller';
     var patLogPas = /^[a-z0-9]+$/i; // проверка логина/пароля
-    var patWal = 
+    var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
+    
+    
+    
+    
+    
+    
+    
+    
+
         
     $("div.registration input#login").on("change", function(){// набран текст и убран фокус
+        
+        $('a.login').removeClass('disabled');
+        
+        $('a.login').text('Зарегистрироваться');
         
         submit = true;
         
@@ -18,6 +31,11 @@
         if(($(this).val()).length > 100) validMessage($(this), 'ERR_LEN');
                 
         if(submit){
+            
+            viewIcon2($(this), 'refresh gly-spin');// запуск крутилки
+                      
+                      //'<i class="glyphicon glyphicon-refresh gly-spin"></i>'
+            
             var str = '&login='+$(this).val();
             var name = 'reg_login';
         
@@ -54,6 +72,16 @@
         else viewIcon2($(this), 'remove', 'onclick="rem3()"');
         
     });
+    
+    $('div.login input#login').on('change', function(){
+        
+        $('a.login').removeClass('disabled');
+        
+        $('a.login').text('Войти');
+        
+        
+        
+    });
 
 
                 
@@ -75,13 +103,13 @@
         var nm = $('div.form input#name');
         var em = $('div.form input#email');
         var mes = $('div.form textarea#message');
-        var pattern = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
+        //var pattern = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
         
         if(nm.val() === '') validMessage(nm, 'ERR_EMP');
         if(nm.val().length > 100) validMessage(nm, 'ERR_LEN');
         
         if(em.val() === '') validMessage(em, 'ERR_EMP');
-        else if(!pattern.test(em.val())) validMessage(em, 'ERR_EML');
+        else if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
         if(mes.val() === '') validMessage(mes, 'ERR_EMP');
         if(mes.val().length > 3000) validMessage(mes, 'ERR_LEN');
@@ -99,10 +127,64 @@
 
     });
     
-    $('div.form a.login').click(function(e){
+    
+    
+    $('div.form a.registration').click(function(e){
         
         e.preventDefault;
+        validRegAndSubmit();
+    });
+    $("div.registration").keyup(function(e){// запустить валидацию и отправку
+        
+        if(e.keyCode == 13) validRegAndSubmit();
+    });
+    $('div.login a.login').click(function(e){
+        
+        e.preventDefault;
+        validLogAndSubmit();
+    });
+    $('div.login').keyup(function(e){
+        
+        if(e.keyCode == 13) validEmailAndSubmit();
+    });
+    $('div.profile a.profile').click(function(e){
+        
+        e.preventDefault;
+        validEmailAndSubmit();
+    });
+//    $('div.profile').keyup(function(e){  ПОКА НЕ ДЕЛАТЬ
+//        
+//        if(e.keyCode == 13) validEmailAndSubmit();
+//    });
+    
+    
+    function validEmailAndSubmit(){
+        
         submit = true;
+        
+        var em = $('div.profile input#email');
+        
+        
+        if(em.val() === '') validMessage(em, 'ERR_EMP');
+        else if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
+        
+        if(submit){
+            
+            viewIcon3($('div.login a.login'), 'refresh gly-spin');// запуск крутилки в кнопке
+
+            var str = '&email='+em.val();
+            var name = 'do_profile';
+
+            post_query(name, str);
+        }
+        
+        
+    }
+    
+    
+    function validLogAndSubmit(){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
 
         var lg = $('div.form input#login');
         var pwd = $('div.form input#password');
@@ -116,17 +198,21 @@
         if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
         
         if(submit){
+            
+            viewIcon3($('div.login a.login'), 'refresh gly-spin');// запуск крутилки в кнопке
+
             var str = '&login='+lg.val()+'&password='+pwd.val();
             var name = 'do_login';
 
             post_query(name, str);
         }
-
-    });
-    
-    $('div.form a.registration').click(function(e){
         
-        e.preventDefault;
+        
+    }
+    
+
+    function validRegAndSubmit(){
+        
         submit = true;
         
         var lg = $('div.form input#login');
@@ -159,19 +245,17 @@
         }
         
         if(submit){
+            
+            viewIcon3($('div.registration a.registration'), 'refresh gly-spin');// запуск крутилки
+            
             var str = '&login='+lg.val()+'&password='+pwd.val()+'&wallet='+wt.val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+response;
             var name = 'do_regist';
 
             post_query(name, str);
         }
-
-    });
-    
-    
-    
-    
-
-    
+        
+        
+    }
     
     
     
@@ -187,21 +271,17 @@
                 cache: false,
                 success: function(res){
 
-                    //alert(res);
                     console.log(res);
                     if(res){
                         obj = JSON.parse(res);
                         
                         if(obj.redirect) location.href = obj.redirect;
                         if(obj.alert) alert(obj.alert);
-                        if(obj.sysmes) viewMessage(obj.sysmes);
+                        if(obj.sysmes) viewMessage(obj.sysmes, obj.submit);
                         if(obj.btn) viewButtons();
                         if(obj.icon) viewIcon(obj.icon, obj.click);
                         if(obj.err) validMessage($('div.registration input#login'), obj.err);
                     };
-                    
-
-
                 },
             });
     };
@@ -219,31 +299,46 @@
         };            
         el.css('border','1px solid red').prev().text('').append(err[k]);
         submit = false;
+        
+        
     }
     
     function viewIcon(type, click=''){
-
+        
         var span = $('div.registration input#login').next();
         
-        //console.log(span);
-        
         span.text('').append('<span class="glyphicon" '+click+'><i class="glyphicon glyphicon-' +type+ '"></i></span>');
-
     }
     
     function viewIcon2(el, type, click=''){
         var span = el.next();
-        
-        //console.log(el);
-        
+
         span.text('').append('<span class="glyphicon" '+click+'><i class="glyphicon glyphicon-' +type+ '"></i></span>');
     }
     
+    function viewIcon3(el, type){
+        
+        el.addClass('disabled');
+        el.text('').append('<i class="glyphicon glyphicon-' +type+ '"></i>');
+    }
     
-    function viewMessage(mes){
-        var sysmes = $('div#sysmes');
-        if(sysmes) sysmes.remove();
-        $('div.main div.col-md-12 h4').after(mes);    
+    
+    function viewMessage(mes, sub='false'){
+        
+        console.log(mes);
+        
+        //var sysmes = $('div#sysmes');
+        var al = $('div.alert');
+        //if(sysmes) sysmes.remove();
+        if(al) al.remove();
+        $('div.main div.col-md-12 h4').after(mes);
+        
+        if(sub){
+            
+            $('div.form a').text(sub);
+            
+        }
+        
     }
     
     function getTplMes(mes, type){

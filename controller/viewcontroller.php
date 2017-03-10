@@ -10,7 +10,7 @@ class ViewController{
         
         //$content = $this->prerender($tmpl,$data);
         
-
+//debug($data);
         
         $this->display($tmpl,$data);
     }

@@ -61,7 +61,10 @@ class DB{
     
     public function save($data){
         
-        $sql = "INSERT INTO `users` VALUES('','".$data['login']."','".$data['password']."','".$data['ip']."',".$data['balance'].",'".$data['date_reg']."','".$data['date_act']."')";
+        //debug($data);die;
+        
+        
+        $sql = "INSERT INTO `users` VALUES ('','".$data['login']."','".$data['password']."', '".$data['salt']."', '".$data['n']."','".$data['ip']."',".$data['balance'].",'".$data['date_reg']."','".$data['date_act']."')";
         
         $sth = $this->dbh->query($sql);
         

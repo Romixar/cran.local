@@ -31,6 +31,7 @@ class Controller{
         
             
         $this->sysmes = Session::flash('sysmes');
+
         
     }
     
@@ -51,7 +52,8 @@ class Controller{
         if(isset($data['do_login_f'])) $this->validateLogin(); // логин / пароль при авторизации
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
         if(isset($data['do_message_f'])) $this->sendEmail();
-        if(isset($data['reg_login_f'])) $this->validateRagLogin();// логин при регистрации
+        if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
+        if(isset($data['do_profile_f'])) $this->validateEmailAuth();// email авторизованного
 
         
     }
@@ -75,7 +77,56 @@ class Controller{
     public function actionLogout(){
         
         session_destroy();
+        unset($_SESSION['flash']);
         $this->redirect('/');
+    }
+    
+    public function validateEmailAuth(){
+        
+        debug($this->data);exit();
+        
+        $user = new User();
+        
+        if($user->findEmail($this->data['email'])){
+            
+            // E-mail уже существует
+            $type = 'danger';
+            $mes = 'Пользователь с таким E-mail уже существует!';
+            $sysmes = $view->prerender('message',compact('type','mes'));
+            
+            echo json_encode(['sysmes'=>$sysmes]);
+            
+        }else{
+            
+            // E-mail не существует
+            if($user->saveData($this->data['email'])){
+                
+                $type = 'succes';
+                $mes = 'Изменения сохранены';
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                echo json_encode(['sysmes'=>$sysmes]);
+                
+            }else{
+                
+                $type = 'danger';
+                $mes = 'Ошибка сохранения';
+                $sysmes = $view->prerender('message',compact('type','mes'));
+
+                echo json_encode(['sysmes'=>$sysmes]);
+                
+            }
+            
+        }
+        
+        
+        
+        
+        
+
+        
+        
+        
     }
     
     public function validateLogin(){// поиск пользов-ля в БД
@@ -91,9 +142,9 @@ class Controller{
                 
         $sysmes = $view->prerender('message',compact('type','mes'));
             
-        // сообщение о непройденной авторизации
+        // сообщение о непройденной авторизации, замена крутилки
         // асинхронно вывожу сообщение
-        echo json_encode(['sysmes'=>$sysmes]);
+        echo json_encode(['sysmes'=>$sysmes,'submit'=>'НЕТ ДОСТУПА']);
         exit();                
         
     }
@@ -174,6 +225,14 @@ class Controller{
             
             if($res['success']){
                 
+                $ctrl = new LoginController();// генерирую пароль
+                
+                $pass = $ctrl->generatePass($this->data['password'], $salt);
+                
+                $this->data['password'] = $pass;
+                $this->data['salt'] = $salt;
+                $this->data['n'] = 0; // первое посещение
+                
                 if($user->save($this->data)){
                 
                     $type = 'success';
@@ -181,10 +240,13 @@ class Controller{
 
                     $sysmes = $view->prerender('message',compact('type','mes'));
 
-
+//debug($sysmes);
                     // создать сообщ об успешной регистрации
-                    Session::flash('sysmes',$sysmes);
-
+                    //Session::flash('sysmes',$sysmes);
+                    
+                    //$_SESSION['flash']['sysmes'] = $sysmes;
+                    
+                    
                     exit('{"redirect":"profile"}');
                 }
             }else{
@@ -198,23 +260,15 @@ class Controller{
         exit();
     }
     
-    public function validateRagLogin(){
+    public function validateRegLogin(){
         $view = new Viewcontroller();
         $user = new User();
         
         if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
         else{
-            
-            exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\"rem2()\""}'); // иконку чтобы очистить поле и выделить ошибку
-            
-            // такой логин уже существует
-//            $type = 'danger';
-//            $mes = 'Ваш логин уже используется на сайте!';
-//            $sysmes = $view->prerender('message',compact('type','mes'));
-//
-//            echo json_encode(['sysmes'=>$sysmes]);
+            // иконку для очистки поля и выделение ошибки
+            exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\'rem2()\'"}');
         }
-        //exit();
     }
     
     public function actionProfile(){
@@ -311,14 +365,16 @@ class Controller{
         
         $right = $this->view->prerender('right',$this->btn);
 
-        $sysmes = ($this->sysmes) ? $this->sysmes : '';
-
+        //$sysmes = (!empty($this->sysmes)) ? $this->sysmes : '';
         
-        $this->view->render('main', compact('title','meta_desc','meta_key','left','sysmes','content','right'));
+        $sysmes = $this->sysmes;// при debug сообщение появляется
+
+        //debug($sysmes);
+        
+        $this->view->render('main',compact('title','meta_desc','meta_key','left','sysmes','content','right'));
         
     }
-    
-    
+
     
 }
 

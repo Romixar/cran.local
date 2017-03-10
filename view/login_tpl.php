@@ -1,6 +1,6 @@
 <h4>Страница авторизации</h4>
 
-<div class="form">
+<div class="form login">
             
     <p>Логин:</p>
     <p>
@@ -13,9 +13,7 @@
         <input type="password" id="password" name="password" placeholder="Ваш пароль" />
     </p>
     <p>
-        <a href="###" class="btn btn-success login">Войти</a>
+        <a href="###" tabindex="-1" class="btn btn-success login">Войти</a>
     </p>
-            
-            
             
 </div>
