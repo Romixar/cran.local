@@ -175,6 +175,9 @@
         if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
         if(fl.val() !== ''){
+            
+            if(!patLogPas.test(fl.val())) validMessage(fl, 'ERR_NME');
+            
             submit = false;
             var ext = Array('jpg','jpeg','png','gif');
             var pos = fl.val().lastIndexOf('.');
@@ -343,6 +346,7 @@
             'ERR_DBL': 'Ваш логин уже используется на сайте!',
             'ERR_CHR': 'Только латинский алфавит и цифры!',
             'ERR_EXT': 'Допустимые расширения jpg, jpeg, png, gif!',
+            'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
             
         };            
         el.css('border','1px solid red').prev().text('').append(err[k]);

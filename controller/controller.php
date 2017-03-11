@@ -147,7 +147,7 @@ class Controller{
         
         $name = $name.'_'.$_SESSION['user']['login'].$extn;
         
-        $file = "images/".$name;
+        $file = "images/".strtolower($name);
         
         if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return $name;
         return false;
