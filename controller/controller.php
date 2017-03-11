@@ -20,6 +20,7 @@ class Controller{
         
         $this->view = new ViewController();
         
+        
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
             $uri = 'login';
@@ -58,41 +59,26 @@ class Controller{
     }
     
 
-    
-    
-    
-    
-    
-    public function actionLogin(){
-        $this->title = 'Страница авторизации';
-        $this->meta_desc = 'Страница авторизации мета описание';
-        $this->meta_key = 'Страница авторизации мета кей';
-        
-        if(isset($_SESSION['user'])) $this->redirect('profile');
-        else $this->render('login');
-        
-    }
-    
-    public function actionLogout(){
-        
-        session_destroy();
-        unset($_SESSION['flash']);
-        $this->redirect('/');
-    }
+
     
     public function validateEmailAuth(){
         
-        $view = new ViewController();
+        if(empty($_FILES['avatar']['name']) && empty($this->data['email'])) exit();
+        
         $user = new User();
         
-        $uplfile = '';
+        //$uplfile = '';
         
         if(!empty($_FILES['avatar']['name'])){
             
-            if(!$uplfile = $this->validFiles()){
+            if($res = $user->findImg($_FILES['avatar']['name'])) $this->sysMessage('danger','Файл с таким названием уже существует!');
+            
+            if(!$uplfile = $this->validateFiles()){// валидация и сохр-е файла
                 
                 $this->sysMessage('danger','Неизвестная ошибка сохранения файла!');
             }
+            $this->data['img'] = $uplfile;
+            $_SESSION['user']['img'] = $uplfile;
         }
         
 //                ob_start();
@@ -100,47 +86,42 @@ class Controller{
 //        $res = ob_get_clean();
 //        echo json_encode($res);exit;
         
-        if(!empty($uplfile)) $this->data['img'] = $uplfile;
-                    
-        if($res = $user->findEmail($this->data['email'])){
+        if(!empty($this->data['email'])){
             
-            if($res[0]->id == $_SESSION['user']['id']){
-                
-                // отправить на update файл, если есть
-                $user->update($this->data, "`login` = '".$_SESSION['user']['login']."'");
-                
-                $this->sysMessage('success','Изменения сохранены!');
-                
-            }else{
-                // E-mail уже существует
-                $this->sysMessage('danger','Пользователь с таким E-mail уже существует!');
-            }
-            
-            
-        }else{
-            
-            //$this->unsetEl('do_profile_f');
+            if(!isset($res)) $res = $user->findEmail($this->data['email']);
 
-            // E-mail не существует
-            if($user->update($this->data, "`login` = '".$_SESSION['user']['login']."'")){
-                
-                $this->sysMessage('success','Изменения сохранены!');
-                
-            }else{
-                
-                $this->sysMessage('danger','Ошибка сохранения!');
-            }   
-        }   
+            if($res != false){
+
+                if($res[0]->id == $_SESSION['user']['id']){
+
+                    if(!isset($this->data['img'])) $this->sysMessage('success','Ваш E-mail подтверждён!');
+                }else{
+                    $this->sysMessage('danger','Пользователь с таким E-mail уже существует!');
+                }
+            }
+            // добавлен новый t-mail
+            $_SESSION['user']['email'] = $this->data['email'];
+        }
+        
+        //$this->unsetEl('do_profile_f');
+
+        if(!empty($this->data['email']) || isset($this->data['img'])){
+            $user->update($this->data, "`login` = '".$_SESSION['user']['login']."'");
+            $this->sysMessage('success','Изменения сохранены!','clear');
+        }
+        $this->sysMessage('danger','Ошибка сохранения настроек пользователя!');
+          
+           
     }
     
-    public function validFiles(){
+    public function validateFiles(){
         
 //        ob_start();
 //        debug($_FILES);
 //        $res = ob_get_clean();
 //        echo json_encode($res);exit;
         
-        $view = new ViewController();
+        //$view = new ViewController();
 
         $type = $_FILES['avatar']['type'];
         $size = $_FILES['avatar']['size'];
@@ -168,7 +149,7 @@ class Controller{
     
     
     public function validateLogin(){// поиск пользов-ля в БД
-        $view = new Viewcontroller();
+        //$view = new Viewcontroller();
         $user = new User();
         
         if($data = $user->findLogin($this->data['login']))
@@ -196,6 +177,7 @@ class Controller{
             
             // авторизация пройдена
             $_SESSION['user']['id'] = $data[0]->id;
+            $_SESSION['user']['img'] = $data[0]->img;
             $_SESSION['user']['login'] = $data[0]->login;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
@@ -280,13 +262,14 @@ class Controller{
                     $mes = 'Поздравляем!<br/>Вы успешно зарегистрировались.';
 
                     $sysmes = $view->prerender('message',compact('type','mes'));
+                    echo json_encode(['sysmes'=>$sysmes]);
 
 //debug($sysmes);
                     // создать сообщ об успешной регистрации
                     //Session::flash('sysmes',$sysmes);
                     
                     //$_SESSION['flash']['sysmes'] = $sysmes;
-                    
+                    exit();
                     
                     exit('{"redirect":"profile"}');
                 }
@@ -302,7 +285,7 @@ class Controller{
     }
     
     public function validateRegLogin(){
-        $view = new Viewcontroller();
+        //$view = new Viewcontroller();
         $user = new User();
         
         if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
@@ -311,44 +294,7 @@ class Controller{
             exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\'rem2()\'"}');
         }
     }
-    
-    public function actionProfile(){
 
-        
-        if(!isset($_SESSION['user'])) $this->redirect('login');
-        else{
-            
-            $login = $_SESSION['user']['login'];
-            $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
-            $date_reg = $_SESSION['user']['date_reg'];
-            $date_act = $_SESSION['user']['date_act'];
-            $ip = $_SESSION['user']['ip'];
-            $email = $_SESSION['user']['email'];
-            $wal = $_SESSION['user']['wallet'];
-            
-            if(!empty($email)) $text = 'Изменить';
-            else $text = 'Добавить';
-
-            $this->title = 'Страница '.$login;
-            $this->meta_desc = 'Страница профиля мета описание';
-            $this->meta_key = 'Страница профиля мета кей';
-            
-            $this->render('profile',compact('login','balance','date_reg','date_act','ip','email','wal','text')); 
-        }
-        
-    }
-    
-    public function actionRegistration(){
-        $this->title = 'Страница регистрациии';
-        $this->meta_desc = 'Страница регистрации мета описание';
-        $this->meta_key = 'Страница регистрации мета кей';
-        
-        
-        $ip = $_SERVER['REMOTE_ADDR'];
-        
-        $this->render('regist',compact('ip'));
-    }
-    
     public function sendEmail(){
         $view = new Viewcontroller();
         
@@ -399,12 +345,12 @@ class Controller{
         header('Location: '.$uri);
     }
     
-    public function sysMessage($type,$mes){
-        //$type = 'success';
-        //$mes = 'Изменения сохранены!';
+    public function sysMessage($type,$mes,$clear=false){
+        $view = new ViewController();
+
         $sysmes = $view->prerender('message',compact('type','mes'));
 
-        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить']);
+        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить','clear'=>$clear]);
         exit();        
     }
     
@@ -414,6 +360,8 @@ class Controller{
         $title = $this->title;
         $meta_desc = $this->meta_desc;
         $meta_key = $this->meta_key;
+        $tit = 'Пользователь '.$_SESSION['user']['login'];
+        $prof = ($_SESSION['user']) ? '<li><a href="/profile" title="'.$tit.'"><i class="glyphicon glyphicon-user"></i></a></li>' : '';
         
         $left = $this->view->prerender('left');
         
@@ -427,7 +375,7 @@ class Controller{
 
         //debug($sysmes);
         
-        $this->view->render('main',compact('title','meta_desc','meta_key','left','sysmes','content','right'));
+        $this->view->render('main',compact('title','meta_desc','meta_key','prof','left','sysmes','content','right'));
         
     }
 

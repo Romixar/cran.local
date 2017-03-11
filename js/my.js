@@ -20,9 +20,9 @@
         
     $("div.registration input#login").on("change", function(){// набран текст и убран фокус
         
-        $('a.login').removeClass('disabled');
+        $('a#submit').removeClass('disabled');
         
-        $('a.login').text('Зарегистрироваться');
+        $('a#submit').text('Зарегистрироваться');
         
         submit = true;
         
@@ -75,16 +75,16 @@
     
     $('div.login input#login').on('change', function(){
         
-        $('a.login').removeClass('disabled');
+        $('a#submit').removeClass('disabled');
         
-        $('a.login').text('Войти');
+        $('a#submit').text('Войти');
 
     });
     $('div.profile input#email').on('focus', function(){ // снять блокироку кнопки
         
-        $('a.profile').removeClass('disabled');
+        $('a#submit').removeClass('disabled');
         
-        $('a.profile').text('Сохранить настройки');
+        $('a#submit').text('Сохранить настройки');
 
     });
 
@@ -143,7 +143,7 @@
         
         if(e.keyCode == 13) validRegAndSubmit();
     });
-    $('div.login a.login').click(function(e){
+    $('div.login a#submit').click(function(e){
         
         e.preventDefault;
         validLogAndSubmit();
@@ -152,7 +152,7 @@
         
         if(e.keyCode == 13) validLogAndSubmit();
     });
-    $('div.profile a.profile').click(function(e){
+    $('div.profile a#submit').click(function(e){
         
         e.preventDefault;
         validEmailAndSubmit();
@@ -163,19 +163,32 @@
 //    });
     
     
-    function validEmailAndSubmit(){
-        
-        formData = new FormData($('#my_form').get(0)); // в экземпляр объекта передаем форму
+    function validEmailAndSubmit(){// отправка на странице PROFILE
         
         submit = true;
         
         var em = $('div.profile input#email');
+        var fl = $('div.profile input#file');
+        
+        if(em.val() == '' && fl.val() == '') submit = false;
         
         if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
+        if(fl.val() !== ''){
+            submit = false;
+            var ext = Array('jpg','jpeg','png','gif');
+            var pos = fl.val().lastIndexOf('.');
+            
+            var str = fl.val().substr(pos+1);
+            
+            if(pos !== -1) for(i=0; i<(ext.length + 1); i++) if(str == ext[i]) submit = true;
+            
+            if(!submit) validMessage(fl, 'ERR_EXT');
+        }
         
         if(submit){
-            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
+            formData = new FormData($('#my_form').get(0)); // в экземпляр объекта передаем форму
+            viewIcon3($('a#submit'), 'refresh gly-spin');// запуск крутилки в кнопке
             send_json(formData);
         }
         
@@ -183,30 +196,7 @@
         
         
     };
-    
-    
-    
-//    function validEmailAndSubmit(){
-//        
-//        submit = true;
-//        
-//        var em = $('div.profile input#email');
-//        
-//        if(em.val() === '') validMessage(em, 'ERR_EMP');
-//        else if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
-//        
-//        if(submit){
-//            
-//            viewIcon3($('a.profile'), 'refresh gly-spin');// запуск крутилки в кнопке
-//
-//            var str = '&email='+em.val();
-//            var name = 'do_profile';
-//
-//            post_query(name, str);
-//        }
-//        
-//        
-//    }
+
     
     
     function validLogAndSubmit(){
@@ -296,8 +286,6 @@
                 type: 'POST',
                 data: name + '_f=' + str,
                 cache: false,
-//                contentType: false,
-//                processData: false,
                 success: function(res){
 
                     console.log(res);
@@ -328,11 +316,10 @@
           
           //console.log(json);
           
-          //obj = JSON.parse(json);
-          
           console.log(json);
           
           if(json.sysmes) viewMessage(json.sysmes, json.submit);
+          if(json.clear) clearAndRepl();
           
           
 //        if(json){
@@ -355,6 +342,7 @@
             'ERR_EML': 'E-mail введён некорректно!',
             'ERR_DBL': 'Ваш логин уже используется на сайте!',
             'ERR_CHR': 'Только латинский алфавит и цифры!',
+            'ERR_EXT': 'Допустимые расширения jpg, jpeg, png, gif!',
             
         };            
         el.css('border','1px solid red').prev().text('').append(err[k]);
@@ -395,8 +383,26 @@
         
         console.log(sub);
         
-        if(sub !== false) $('div.form a').text(sub);
+        if(sub !== false) $('a#submit').text(sub);
             
+    }
+    
+    function clearAndRepl(){// подстановка в DOM e-mail и img
+        
+        var el = $('div.profile input#email');
+        var fl = $('div.profile input#file');
+        
+        if(el.val() != ''){
+            $('span#email').text('').append(el.val());
+            el.val('');// очистка
+        }
+        if(fl.val() != ''){
+            var pos = fl.val().lastIndexOf('\\');// позиция с конца
+            var img = fl.val().substr(pos+1);
+
+            $('div.image img').attr('src','/images/'+img);
+            fl.val('');// очистка
+        }
     }
     
     function getTplMes(mes, type){

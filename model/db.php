@@ -49,6 +49,16 @@ class DB{
         
     }
     
+    public function findImg($img){
+        $sql = "SELECT * FROM `users` WHERE `img` = '".$img."'";
+        
+        $res = $this->select($sql);
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+    }
+    
     public function findLogin($lg){
         $sql = "SELECT * FROM `users` WHERE `login` = '".$lg."'";
         

@@ -63,7 +63,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li><a href="/">Главная</a></li>
+              <li><a href="/"><i class="glyphicon glyphicon-home"></i></a></li>
               <li><a href="/rules">Правила</a></li>
               <li><a href="/news">Новости</a></li>
               <li><a href="/statistic">Статистика</a></li>
@@ -71,6 +71,7 @@
               <li><a href="/works">Задания</a></li>
               <li><a href="/reklams">Рекламодателям</a></li>
               <li><a href="/contacts">Контакты</a></li>
+              <?= $prof ?>
 
             </ul>
         </div><!--/.nav-collapse -->

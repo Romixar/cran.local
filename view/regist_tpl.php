@@ -24,7 +24,7 @@
     </p>
     <p>
 <!--       disabled-->
-        <a href="###" class="btn btn-success registration">Зарегистрироваться</a>
+        <a href="###" id="submit" class="btn btn-success registration">Зарегистрироваться</a>
 
 <!--   <i class="glyphicon glyphicon-refresh gly-spin"></i>-->
     </p>

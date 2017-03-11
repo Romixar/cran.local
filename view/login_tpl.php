@@ -13,7 +13,7 @@
         <input type="password" id="password" name="password" placeholder="Ваш пароль" />
     </p>
     <p>
-        <a href="###" tabindex="-1" class="btn btn-success login">Войти</a>
+        <a href="###" id="submit" tabindex="-1" class="btn btn-success login">Войти</a>
     </p>
             
 </div>

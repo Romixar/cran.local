@@ -19,7 +19,7 @@
         <textarea name="message" id="message" rows="5" placeholder="Текст сообщения"></textarea>
     </p>
     <p>
-        <a href="###" class="btn btn-success mes">Отправить</a>
+        <a href="###" id="submit" class="btn btn-success mes">Отправить</a>
     </p>
             
             
