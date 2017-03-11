@@ -107,7 +107,7 @@ class Controller{
 
         if(!empty($this->data['email']) || isset($this->data['img'])){
             $user->update($this->data, "`login` = '".$_SESSION['user']['login']."'");
-            $this->sysMessage('success','Изменения сохранены!','clear');
+            $this->sysMessage('success','Изменения сохранены!',true,$uplfile);
         }
         $this->sysMessage('danger','Ошибка сохранения настроек пользователя!');
           
@@ -140,6 +140,13 @@ class Controller{
             
             $this->sysMessage('danger','Превышен допустимый размер файла!');
         }
+        
+        $extn = strrchr($name,'.');// строка с послед вхождения (расширение)
+        
+        $name = substr($name,0,strrpos($name,'.'));// имя без расширения (послед вхожд точки)
+        
+        $name = $name.'_'.$_SESSION['user']['login'].$extn;
+        
         $file = "images/".$name;
         
         if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return $name;
@@ -345,12 +352,12 @@ class Controller{
         header('Location: '.$uri);
     }
     
-    public function sysMessage($type,$mes,$clear=false){
+    public function sysMessage($type,$mes,$clear=false,$fl=false){
         $view = new ViewController();
 
         $sysmes = $view->prerender('message',compact('type','mes'));
 
-        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить','clear'=>$clear]);
+        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить','clear'=>$clear,'fl'=>$fl]);
         exit();        
     }
     

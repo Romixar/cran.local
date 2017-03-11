@@ -319,7 +319,7 @@
           console.log(json);
           
           if(json.sysmes) viewMessage(json.sysmes, json.submit);
-          if(json.clear) clearAndRepl();
+          if(json.clear != false) clearAndRepl(json.fl);
           
           
 //        if(json){
@@ -387,7 +387,7 @@
             
     }
     
-    function clearAndRepl(){// подстановка в DOM e-mail и img
+    function clearAndRepl(img){// подстановка в DOM e-mail и img
         
         var el = $('div.profile input#email');
         var fl = $('div.profile input#file');
@@ -396,10 +396,7 @@
             $('span#email').text('').append(el.val());
             el.val('');// очистка
         }
-        if(fl.val() != ''){
-            var pos = fl.val().lastIndexOf('\\');// позиция с конца
-            var img = fl.val().substr(pos+1);
-
+        if(fl.val() != '' && img != false){
             $('div.image img').attr('src','/images/'+img);
             fl.val('');// очистка
         }
