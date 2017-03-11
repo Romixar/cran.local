@@ -79,6 +79,7 @@ class MainController extends Controller{
             $date_reg = $_SESSION['user']['date_reg'];
             $date_act = $_SESSION['user']['date_act'];
             $ip = $_SESSION['user']['ip'];
+            $ref_url = 'http://'.$_SERVER['HTTP_HOST'].'/registration/'.$_SESSION['user']['id'];
             $email = $_SESSION['user']['email'];
             $wal = $_SESSION['user']['wallet'];
             
@@ -89,11 +90,16 @@ class MainController extends Controller{
             $this->meta_desc = 'Страница профиля мета описание';
             $this->meta_key = 'Страница профиля мета кей';
             
-            $this->render('profile',compact('img','login','balance','date_reg','date_act','ip','email','wal','text')); 
+            $this->render('profile',compact('img','login','balance','date_reg','date_act','ip','ref_url','email','wal','text')); 
         }
     }
     
-    public function actionRegistration(){
+    public function actionRegistration($id){
+        
+        if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)) $ref_id = (int)$id;
+
+        
+        
         $this->title = 'Страница регистрациии';
         $this->meta_desc = 'Страница регистрации мета описание';
         $this->meta_key = 'Страница регистрации мета кей';
@@ -101,7 +107,7 @@ class MainController extends Controller{
         
         $ip = $_SERVER['REMOTE_ADDR'];
         
-        $this->render('regist',compact('ip'));
+        $this->render('regist',compact('ip','ref_id'));
     }
     
     

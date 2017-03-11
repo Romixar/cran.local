@@ -6,7 +6,7 @@
     inpFocus();// проверка фокуса полей
 
     var act = 'controller/controller';
-    var patLogPas = /^[a-z0-9]+$/i; // проверка логина/пароля
+    var patLogPas = /^[a-z0-9\._-]+$/i; // проверка логина/пароля
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
     
     
@@ -238,6 +238,9 @@
         var lg = $('div.form input#login');
         var pwd = $('div.form input#password');
         var wt = $('div.form input#wallet');
+        var ip = $('div.form input#ip');
+        var ref_id = $('div.form input#ref_id');
+        
         
         if(lg.val() === '') validMessage(lg, 'ERR_EMP');
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
@@ -250,6 +253,9 @@
         if(wt.val() === '') validMessage(wt, 'ERR_EMP');
         if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
         if((wt.val()).length > 20) validMessage(wt, 'ERR_LEN');
+        
+        
+        
         
         // перв символ или пусто после первого или только цифры с перв символа
         if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
@@ -268,7 +274,7 @@
             
             viewIcon3($('div.registration a.registration'), 'refresh gly-spin');// запуск крутилки
             
-            var str = '&login='+lg.val()+'&password='+pwd.val()+'&wallet='+wt.val()+'&ip='+$('div.form input#ip').val()+'&g-recaptcha-response='+response;
+            var str = '&login='+lg.val()+'&password='+pwd.val()+'&wallet='+wt.val()+'&ip='+ip.val()+'&ref_id='+ref_id.val()+'&g-recaptcha-response='+response;
             var name = 'do_regist';
 
             post_query(name, str);

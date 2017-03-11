@@ -17,6 +17,7 @@
        <span></span>
         <input type="text" id="wallet" name="password" placeholder="P123456789" /><span class="icon" ></span>
         <input type="hidden" id="ip" value="<?= $ip ?>">
+        <input type="hidden" id="ref_id" value="<?= $ref_id ?>">
     </p>
     <p>
        <span></span>

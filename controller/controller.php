@@ -237,6 +237,9 @@ class Controller{
         }else{
             if($pos = strpos($this->data['ip'],'_0'))
                 $this->data['ip'] = substr($this->data['ip'],0,$pos);
+            
+            if(empty($this->data['ref_id'])) $this->data['ref_id'] = 0;// значит не реферал
+            
             $this->data['balance'] = 0;
             $this->data['date_reg'] = date('d-m-Y',time());
             $this->data['date_act'] = date('d-m-Y',time());

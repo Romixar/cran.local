@@ -16,6 +16,8 @@ class Router{
         '/registration' => 'main/registration',
     ];
     
+    public $get; // GET параметры буду передавать
+    
     public function getURL(){
         return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);// без GET
     }
@@ -26,7 +28,18 @@ class Router{
         
         $arr = explode('/',$url);
         
-        //debug($arr);die;
+        // если регистрация и цыфра, то назначить $this->get
+        
+        if(isset($arr[2])){
+            
+            if($arr[1] == 'registration') $this->get = $arr[2];
+            
+            unset($arr[2]);
+        }
+        
+        
+        
+        
         $ctrl = '';
         $act = '';
         
@@ -75,7 +88,7 @@ class Router{
         session_start();
         $this->getCtrlAndAction($ctrl, $act);
         $c = new $ctrl();
-        $c->$act();
+        $c->$act($this->get);
         
         
         echo 'CONTROLLER - '.$ctrl.'<br/>ACTION - '.$act;

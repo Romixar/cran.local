@@ -10,6 +10,7 @@
 <p>Дата регистрации: <?= $date_reg ?></p>
 <p>Регистрационный IP: <?= $ip ?></p>
 <p>Кошелёк: <?= $wal ?></p>
+<p>Реферальная ссылка: <?= $ref_url ?></p>
 <p>E-mail: <span id="email"><?= $email ?></span></p>
 <div class="profile">
   <form id="my_form" enctype="multipart/form-data">          
