@@ -284,13 +284,13 @@ class Controller{
                     $mes = 'Поздравляем!<br/>Вы успешно зарегистрировались.';
 
                     $sysmes = $view->prerender('message',compact('type','mes'));
-                    echo json_encode(['sysmes'=>$sysmes]);
+                    //echo json_encode(['sysmes'=>$sysmes]);
 
 //debug($sysmes);
                     // создать сообщ об успешной регистрации
                     //Session::flash('sysmes',$sysmes);
                     
-                    //$_SESSION['flash']['sysmes'] = $sysmes;
+                    $_SESSION['flash']['sysmes'] = $sysmes;
                     //exit();
                     
                     exit('{"redirect":"profile"}');
@@ -349,7 +349,10 @@ class Controller{
             
             // отформатировать дату
             
-            echo json_encode(['dataRefList'=>$data,'submit'=>'Показать список рефералов']);
+            echo json_encode(['dataRefList'=>$data,'submit'=>[
+                el  => 'a#get_ref_list',
+                txt => 'Показать список рефералов'
+            ]]);
             exit();
         }
         else $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');

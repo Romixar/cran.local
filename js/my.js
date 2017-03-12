@@ -321,6 +321,8 @@
                         if(obj.icon) viewIcon(obj.icon, obj.click);
                         if(obj.err) validMessage($('div.registration input#login'), obj.err);
                         if(obj.dataRefList) getRefList(obj.dataRefList, obj.submit);
+                        
+                        if(obj.submit) setTextSubmit(obj.submit);
                     };
                 },
             });
@@ -395,15 +397,15 @@
     }
     
     
-    function viewMessage(mes, sub=false){
+    function viewMessage(mes, sub=false){ //...  Избавиться от sub
         
         console.log(mes);
         
-        //var sysmes = $('div#sysmes');
         var al = $('div.alert');
-        //if(sysmes) sysmes.remove();
+
         if(al) al.remove();
-        $('div.main div.col-md-12 h4').after(mes);
+        
+        $('div.main div.col-md-12 h4').after(mes);// вывод сист сообщения
         
         console.log(sub);
         
@@ -424,6 +426,14 @@
             $('div.image img').attr('src','/images/'+img);
             fl.val('');// очистка
         }
+    }
+    
+    function setTextSubmit(submit){
+        
+        var el = $(submit.el); // кнопка на которой поменять текст
+        var txt = submit.txt; // текст кнопки
+        
+        el.text('').append(txt);
     }
     
     function getTplMes(mes, type){
