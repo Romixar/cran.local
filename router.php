@@ -16,7 +16,7 @@ class Router{
         '/registration' => 'main/registration',
     ];
     
-    public $get; // GET параметры буду передавать
+    public $get; // псевдо GET параметры буду передавать
     
     public function getURL(){
         return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);// без GET

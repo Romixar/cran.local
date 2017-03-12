@@ -107,22 +107,34 @@ class DB{
 
     }
     
-    public function save($data){
+    public function insert($data){
+        $keys = [];
+        $vals = [];
+        foreach($data as $k => $v){
+            $keys[] = '`'.$k.'`';
+            if(is_numeric($v)) $vals[] = $v;
+            else $vals[] = "'".$v."'";
+        }
         
-        //debug($data);die;
-        
-        
-        $sql = "INSERT INTO `users` VALUES ('','".$data['login']."','".$data['password']."', '".$data['salt']."', '".$data['n']."','".$data['ip']."',".$data['balance'].",'".$data['date_reg']."','".$data['date_act']."')";
+        $sql = 'INSERT INTO `users` ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
         
         $sth = $this->dbh->query($sql);
         
-        // кол-во модифицир-х строк
-        if($sth->rowCount()){
-            $_SESSION['user']['login'] = $data['login']; // обновление сессии
+        return $this->dbh->lastInsertId();
+    }
+    
+    public function save($data){
+        
+        $id = $this->insert($data);
+
+        if($id){
+            $_SESSION['user']['login'] = $data['login']; // обновление сессии либо создание новой
             $_SESSION['user']['balance'] = $data['balance'];
             $_SESSION['user']['date_reg'] = $data['date_reg'];
             $_SESSION['user']['date_act'] = $data['date_act'];
+            $_SESSION['user']['wallet'] = $data['wallet'];
             $_SESSION['user']['ip'] = $data['ip'];
+            $_SESSION['user']['id'] = $id;
             
             
             

@@ -36,7 +36,6 @@ class Controller{
     
     public function xss($data){
 
-
 		$req = '/script|http|www\.|\'|\`|SELECT|UNION|UPDATE|exe|exec|CREATE|DELETE|INSERT|tmp/i';
 			
 		foreach($data as  $key => $val){
@@ -53,7 +52,8 @@ class Controller{
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
-        if(isset($data['email'])) $this->validateEmailAuth();// email авторизованного
+        if(isset($data['email'])) $this->validateEmailAuth();// email авторизованного (JSON пришел)
+        if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
 
         
     }
@@ -246,10 +246,22 @@ class Controller{
             
             //debug($this->data);die;
             
+            // запись в базу реферала
+            
+            
+            $this->unsetEl('do_regist_f');
+            
+            
+            
+            
+            
             // проверка рекапча
             $secret = '6LfvuRcUAAAAAOnEtZTBkEbVtKeqmU6vgcqIJx3a';
             //$response = $this->data['g-recaptcha-response'];// отправить POST запрос в гугл
             $response = $this->data['g-recaptcha-response'];// отправить POST запрос в гугл
+            
+            $this->unsetEl('g-recaptcha-response');// удалю чтобы в БД не вставлять
+            
             $remoteip = $_SERVER['REMOTE_ADDR'];
             
             $obj = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response.'&remoteip='.$remoteip);// обработка гугл капчи
@@ -279,7 +291,7 @@ class Controller{
                     //Session::flash('sysmes',$sysmes);
                     
                     //$_SESSION['flash']['sysmes'] = $sysmes;
-                    exit();
+                    //exit();
                     
                     exit('{"redirect":"profile"}');
                 }
@@ -321,6 +333,18 @@ class Controller{
         mail($email,$title,$body,$head);
         
         exit();
+    }
+    
+    public function getRefList(){
+        
+        
+        debug($this->data);exit();
+        
+        
+        
+        
+        
+        
     }
     
     

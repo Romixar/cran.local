@@ -32,3 +32,39 @@
 
 </form>
 </div>
+<a href="###" id="get_ref_list" class="btn btn-success">Показать список рефералов (28)</a>
+<table class="table table-hover">
+    <tr>
+        <th>№</th>
+        <th>Логин</th>
+        <th>Баланс</th>
+    </tr>
+    
+    <tr>
+       
+       <?= $ref_list ?>
+        <td>1.</td>
+        <td>Admin</td>
+        <td>100.00 руб.</td>
+        
+        
+    </tr>
+    
+    
+    
+    <tr>
+        <td>1.</td>
+        <td>Admin</td>
+        <td>100.00 руб.</td>
+    </tr>
+    <tr>
+        <td>2.</td>
+        <td>Admin_2</td>
+        <td>100.00 руб.</td>
+    </tr>
+    <tr>
+        <td>3.</td>
+        <td>Admin_3</td>
+        <td>100.00 руб.</td>
+    </tr>
+</table>

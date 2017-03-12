@@ -73,7 +73,7 @@ class MainController extends Controller{
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
             
-            $img = $_SESSION['user']['img'];
+            $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $login = $_SESSION['user']['login'];
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             $date_reg = $_SESSION['user']['date_reg'];

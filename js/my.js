@@ -161,6 +161,17 @@
 //        
 //        if(e.keyCode == 13) validEmailAndSubmit();
 //    });
+    $('a#get_ref_list').click(function(e){
+        
+        e.preventDefault;
+        
+        var name = 'get_ref_list';
+        
+        post_query(name, str='');
+        
+        //console.log('есть клик!');
+        
+    })
     
     
     function validEmailAndSubmit(){// отправка на странице PROFILE
