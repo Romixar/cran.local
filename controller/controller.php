@@ -337,11 +337,24 @@ class Controller{
     
     public function getRefList(){
         
+        $user = new User();
         
-        debug($this->data);exit();
+        $wh = '`ref_id`='.$_SESSION['user']['id'];
         
+        $asc = '`id` DESC';
         
+        $data = $user->find('`id`,`login`,`balance`', $wh, $asc);
         
+        if($data){
+            
+            //debug($data);exit();
+            
+            echo json_encode(['data'=>$data]);
+            exit();
+            
+            
+        }
+        else exit('нет рефералов');
         
         
         

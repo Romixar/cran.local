@@ -17,6 +17,7 @@ class DB{
         
         $sth = $this->dbh->query($sql);
         return $sth->fetchAll(PDO::FETCH_CLASS, 'user');// возвр объект указанного класса
+        //return $sth->fetchAll();// возвр объект указанного класса
         
         
         
@@ -66,6 +67,22 @@ class DB{
         
         if(!empty($res) && count($res) == 1) return $res;
         return false;
+    }
+    
+    public function find($fields, $where='', $asc=''){
+        
+        $sql = "SELECT ".$fields." FROM `users`";
+        
+        if(!empty($where)) $sql .= ' WHERE '.$where;
+        if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
+        
+        $res = $this->select($sql);
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+        
+        
     }
     
     public function update($fields, $where=''){
