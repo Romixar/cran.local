@@ -165,6 +165,8 @@
         
         e.preventDefault;
         
+        viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+        
         var name = 'get_ref_list';
         
         post_query(name, str='');
@@ -318,7 +320,7 @@
                         if(obj.btn) viewButtons();
                         if(obj.icon) viewIcon(obj.icon, obj.click);
                         if(obj.err) validMessage($('div.registration input#login'), obj.err);
-                        if(obj.data) getRefList(obj.data);
+                        if(obj.dataRefList) getRefList(obj.dataRefList, obj.submit);
                     };
                 },
             });
@@ -433,16 +435,18 @@
         if(sysmes) $('div.alert').append('<a href="#" onclick="rem()" class="btn btn-sm btn-default" style="margin-left: 25px">Да</a><a href="registration" class="btn btn-sm btn-default">Нет</a>');
     }
     
-    function getRefList(data){
+    function getRefList(data, sub){
         
         var str = '';
-        
-        for(i=0; i<(data.length); i++){
+        for(var i=0; i<(data.length); i++){
 
-            str += '<tr><td>'+(i+1)+'.</td><td>'+data[i].login+'</td><td>'+data[i].balance+'</td></tr>';
-            
+            str += '<tr><td>'+(i+1)+'.</td><td>'+data[i].login+'</td><td>'+data[i].balance+'</td><td>'+data[i].date_reg+'</td></tr>';   
         }
         
+        var strRes = '<tr class="success"><th colspan="3">Всего:</th><th><span id="cnt">'+i+' чел.</span></th></tr>';
+        
+        $('table.ref_list thead').append(strRes);
+        $('a#get_ref_list').text('').append(sub);
         $('table.ref_list tbody').text('').append(str);
         
         

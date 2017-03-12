@@ -341,23 +341,19 @@ class Controller{
         
         $wh = '`ref_id`='.$_SESSION['user']['id'];
         
-        $asc = '`id` DESC';
+        $asc = '`date_reg` DESC';
         
-        $data = $user->find('`id`,`login`,`balance`', $wh, $asc);
+        $data = $user->find('`id`,`login`,`balance`,`date_reg`', $wh, $asc);
         
         if($data){
             
-            //debug($data);exit();
+            // отформатировать дату
             
-            echo json_encode(['data'=>$data]);
+            echo json_encode(['dataRefList'=>$data,'submit'=>'Показать список рефералов']);
             exit();
-            
-            
         }
-        else exit('нет рефералов');
-        
-        
-        
+        else $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');
+
     }
     
     
