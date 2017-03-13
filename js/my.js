@@ -9,7 +9,8 @@
     var patLogPas = /^[a-z0-9\._-]+$/i; // проверка логина/пароля
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
     
-    
+    var elem; // объект кнопка
+    var textButton = ''; // текст нажатой кнопки
     
     
     
@@ -157,21 +158,17 @@
         e.preventDefault;
         validEmailAndSubmit();
     });
-//    $('div.profile').keyup(function(e){  ПОКА НЕ ДЕЛАТЬ
-//        
-//        if(e.keyCode == 13) validEmailAndSubmit();
-//    });
+
     $('a#get_ref_list').click(function(e){
         
         e.preventDefault;
         
+        elem = $(this);
+        textButton = $(this).text();
+        
         viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
         
-        var name = 'get_ref_list';
-        
-        post_query(name, str='');
-        
-        //console.log('есть клик!');
+        post_query('get_ref_list', '');
         
     })
     
@@ -204,6 +201,7 @@
         
         if(submit){
             formData = new FormData($('#my_form').get(0)); // в экземпляр объекта передаем форму
+            textButton = $('a#submit').text();
             viewIcon3($('a#submit'), 'refresh gly-spin');// запуск крутилки в кнопке
             send_json(formData);
         }
@@ -315,14 +313,28 @@
                         obj = JSON.parse(res);
                         
                         if(obj.redirect) location.href = obj.redirect;
-                        if(obj.alert) alert(obj.alert);
-                        if(obj.sysmes) viewMessage(obj.sysmes, obj.submit);
-                        if(obj.btn) viewButtons();
-                        if(obj.icon) viewIcon(obj.icon, obj.click);
-                        if(obj.err) validMessage($('div.registration input#login'), obj.err);
-                        if(obj.dataRefList) getRefList(obj.dataRefList, obj.submit);
                         
-                        if(obj.submit) setTextSubmit(obj.submit);
+                        if(obj.alert) alert(obj.alert);
+                        
+                        if(obj.sysmes){
+                            
+                            viewMessage(obj.sysmes);
+                            setTextSubmit();
+                        }
+                            
+                        
+                        if(obj.btn) viewButtons();
+                        
+                        if(obj.icon) viewIcon(obj.icon, obj.click);
+                        
+                        if(obj.err) validMessage($('div.registration input#login'), obj.err);
+                        if(obj.dataRefList){
+                            
+                            getRefList(obj.dataRefList);
+                            setTextSubmit();
+                        }
+                            
+                        
                     };
                 },
             });
@@ -358,7 +370,7 @@
     
     
     
-    function validMessage(el, k){
+    function validMessage(inp, k){
         var err = {
             'ERR_EMP': 'Заполните пожалуйста это поле!',
             'ERR_LEN': 'Превышена длина текстового поля!',
@@ -371,7 +383,7 @@
             'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
             
         };            
-        el.css('border','1px solid red').prev().text('').append(err[k]);
+        inp.css('border','1px solid red').prev().text('').append(err[k]);
         submit = false;
         
         
@@ -397,7 +409,7 @@
     }
     
     
-    function viewMessage(mes, sub=false){ //...  Избавиться от sub
+    function viewMessage(mes){
         
         console.log(mes);
         
@@ -405,12 +417,7 @@
 
         if(al) al.remove();
         
-        $('div.main div.col-md-12 h4').after(mes);// вывод сист сообщения
-        
-        console.log(sub);
-        
-        if(sub !== false) $('a#submit').text(sub);
-            
+        $('div.main div.col-md-12 h4').after(mes);// вывод сист сообщения    
     }
     
     function clearAndRepl(img){// подстановка в DOM e-mail и img
@@ -428,12 +435,12 @@
         }
     }
     
-    function setTextSubmit(submit){
+    function setTextSubmit(){
         
-        var el = $(submit.el); // кнопка на которой поменять текст
-        var txt = submit.txt; // текст кнопки
+//        var el = $(submit.el); // кнопка на которой поменять текст
+//        var txt = submit.txt; // текст кнопки
         
-        el.text('').append(txt);
+        elem.text('').append(textButton);
     }
     
     function getTplMes(mes, type){
@@ -445,7 +452,7 @@
         if(sysmes) $('div.alert').append('<a href="#" onclick="rem()" class="btn btn-sm btn-default" style="margin-left: 25px">Да</a><a href="registration" class="btn btn-sm btn-default">Нет</a>');
     }
     
-    function getRefList(data, sub){
+    function getRefList(data){
         
         var str = '';
         for(var i=0; i<(data.length); i++){
@@ -456,7 +463,8 @@
         var strRes = '<tr class="success"><th colspan="3">Всего:</th><th><span id="cnt">'+i+' чел.</span></th></tr>';
         
         $('table.ref_list thead').append(strRes);
-        $('a#get_ref_list').text('').append(sub);
+        
+        
         $('table.ref_list tbody').text('').append(str);
         
         

@@ -349,10 +349,7 @@ class Controller{
             
             // отформатировать дату
             
-            echo json_encode(['dataRefList'=>$data,'submit'=>[
-                el  => 'a#get_ref_list',
-                txt => 'Показать список рефералов'
-            ]]);
+            echo json_encode(['dataRefList'=>$data]);
             exit();
         }
         else $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');
@@ -396,7 +393,7 @@ class Controller{
 
         $sysmes = $view->prerender('message',compact('type','mes'));
 
-        echo json_encode(['sysmes'=>$sysmes, 'submit'=>'Сохранить','clear'=>$clear,'fl'=>$fl]);
+        echo json_encode(['sysmes'=>$sysmes, 'clear'=>$clear, 'fl'=>$fl]);
         exit();        
     }
     
