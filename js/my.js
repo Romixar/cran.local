@@ -145,15 +145,26 @@
         
         if(e.keyCode == 13) validRegAndSubmit();
     });
-    $('div.login a#submit').click(function(e){
+    
+    $('div.login a#submit').click(function(e){// авторизация
         
         e.preventDefault;
-        validLogAndSubmit();
-    });
-    $('div.login').keyup(function(e){
         
-        if(e.keyCode == 13) validLogAndSubmit();
+        var lg = $('div.form input#login');
+        var pwd = $('div.form input#password');
+        elem = $(this);
+        
+        if(validLogAndSubmit(lg, pwd)) submitLogPass(lg,pwd);
     });
+    $('div.login').keyup(function(e){// авторизация
+        
+        var lg = $('div.form input#login');
+        var pwd = $('div.form input#password');
+        elem = $('div.login a#submit');
+        
+        if(e.keyCode == 13) if(validLogAndSubmit(lg, pwd)) submitLogPass(lg,pwd);
+    });
+    
     $('div.profile a#submit').click(function(e){
         
         e.preventDefault;
@@ -219,13 +230,10 @@
     }
     
     
-    function validLogAndSubmit(){
+    function validLogAndSubmit(lg,pwd){
         
         submit = true;// запрет второй отправки (по ENTER например)
 
-        var lg = $('div.form input#login');
-        var pwd = $('div.form input#password');
-        
         if(lg.val() === '') validMessage(lg, 'ERR_EMP');
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
         if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
@@ -234,19 +242,20 @@
         if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
         if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
         
-        submitLogPass(lg,pwd);
+        if(submit) return true;
+        return false;
+        
+        
     }
     
     function submitLogPass(lg,pwd){
-        if(submit){
             
-            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
 
-            var str = '&login='+lg.val()+'&password='+pwd.val();
-            var name = 'do_login';
+        var str = '&login='+lg.val()+'&password='+pwd.val();
+        var name = 'do_login';
 
-            post_query(name, str);
-        }
+        post_query(name, str);
     }
     
 

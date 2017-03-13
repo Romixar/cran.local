@@ -152,7 +152,7 @@ class Controller{
         
         $file = "images/".strtolower($name);
         
-        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return $name;
+        if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) return strtolower($name);
         return false;
         
     }
@@ -247,17 +247,8 @@ class Controller{
             $this->data['date_reg'] = date('d-m-Y',time());
             $this->data['date_act'] = date('d-m-Y',time());
             
-            //debug($this->data);die;
-            
-            // запись в базу реферала
-            
-            
             $this->unsetEl('do_regist_f');
-            
-            
-            
-            
-            
+
             // проверка рекапча
             $secret = '6LfvuRcUAAAAAOnEtZTBkEbVtKeqmU6vgcqIJx3a';
             //$response = $this->data['g-recaptcha-response'];// отправить POST запрос в гугл
@@ -355,7 +346,12 @@ class Controller{
             echo json_encode(['dataRefList'=>$data]);
             exit();
         }
-        else $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');
+        else{
+            $sysmes = $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');
+            $this->respJson($sysmes);
+        }
+            
+            
 
     }
     
