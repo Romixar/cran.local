@@ -52,7 +52,7 @@ class Controller{
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
-        if(isset($data['email'])) $this->validateEmailAuth();// email авторизованного (JSON пришел)
+        if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
 
         
@@ -61,30 +61,29 @@ class Controller{
 
 
     
-    public function validateEmailAuth(){
+    public function validateAuthData(){
         
         if(empty($_FILES['avatar']['name']) && empty($this->data['email'])) exit();
         
         $user = new User();
         
-        //$uplfile = '';
-        
         if(!empty($_FILES['avatar']['name'])){
             
-            if($res = $user->findImg($_FILES['avatar']['name'])) $this->sysMessage('danger','Файл с таким названием уже существует!');
+            if($res = $user->findImg($_FILES['avatar']['name'])){
+                $sysmes = $this->sysMessage('danger','Файл с таким названием уже существует!');
+                $this->respJson($sysmes);
+            }
+                
             
             if(!$uplfile = $this->validateFiles()){// валидация и сохр-е файла
                 
-                $this->sysMessage('danger','Неизвестная ошибка сохранения файла!');
+                $sysmes = $this->sysMessage('danger','Неизвестная ошибка сохранения файла!');
+                $this->respJson($sysmes);
             }
             $this->data['img'] = $uplfile;
             $_SESSION['user']['img'] = $uplfile;
         }
-        
-//                ob_start();
-//        debug($this->data);
-//        $res = ob_get_clean();
-//        echo json_encode($res);exit;
+
         
         if(!empty($this->data['email'])){
             
@@ -94,9 +93,15 @@ class Controller{
 
                 if($res[0]->id == $_SESSION['user']['id']){
 
-                    if(!isset($this->data['img'])) $this->sysMessage('success','Ваш E-mail подтверждён!');
+                    if(!isset($this->data['img'])){
+                        $sysmes = $this->sysMessage('success','Ваш E-mail подтверждён!');
+                        $this->respJson($sysmes);
+                    }
+                        
+                        
                 }else{
-                    $this->sysMessage('danger','Пользователь с таким E-mail уже существует!');
+                    $sysmes = $this->sysMessage('danger','Пользователь с таким E-mail уже существует!');
+                    $this->respJson($sysmes, false, false);
                 }
             }
             // добавлен новый t-mail
@@ -107,21 +112,16 @@ class Controller{
 
         if(!empty($this->data['email']) || isset($this->data['img'])){
             $user->update($this->data, "`login` = '".$_SESSION['user']['login']."'");
-            $this->sysMessage('success','Изменения сохранены!',true,$uplfile);
+            
+            $sysmes = $this->sysMessage('success','Изменения сохранены!');
+            $this->respJson($sysmes, $uplfile);
         }
-        $this->sysMessage('danger','Ошибка сохранения настроек пользователя!');
-          
+        $sysmes = $this->sysMessage('danger','Ошибка сохранения настроек пользователя!');
+        $this->respJson($sysmes);
            
     }
     
     public function validateFiles(){
-        
-//        ob_start();
-//        debug($_FILES);
-//        $res = ob_get_clean();
-//        echo json_encode($res);exit;
-        
-        //$view = new ViewController();
 
         $type = $_FILES['avatar']['type'];
         $size = $_FILES['avatar']['size'];
@@ -129,16 +129,19 @@ class Controller{
 
         if(!preg_match("/\.png|jpg|jpeg|gif\$/i",$name)){
             
-            $this->sysMessage('danger','Недопустимое расширение файла!');
+            $sysmes = $this->sysMessage('danger','Недопустимое расширение файла!');
+            $this->respJson($sysmes);
         }
         
         if($type !== 'image/png' && $type !== 'image/jpg' && $type !== 'image/jpeg' && $type !== 'image/gif'){
             
-            $this->sysMessage('danger','Недопустимый тип файла!');
+            $sysmes = $this->sysMessage('danger','Недопустимый тип файла!');
+            $this->respJson($sysmes);
         }
         if($size > Config::$size){
             
-            $this->sysMessage('danger','Превышен допустимый размер файла!');
+            $sysmes = $this->sysMessage('danger','Превышен допустимый размер файла!');
+            $this->respJson($sysmes);
         }
         
         $extn = strrchr($name,'.');// строка с послед вхождения (расширение)
@@ -388,13 +391,15 @@ class Controller{
         header('Location: '.$uri);
     }
     
-    public function sysMessage($type,$mes,$clear=false,$fl=false){
+    public function sysMessage($type,$mes){
         $view = new ViewController();
 
-        $sysmes = $view->prerender('message',compact('type','mes'));
-
-        echo json_encode(['sysmes'=>$sysmes, 'clear'=>$clear, 'fl'=>$fl]);
-        exit();        
+        return $view->prerender('message',compact('type','mes')); 
+    }
+    
+    public function respJson($sysmes=false, $flname=false, $changeEm=true){
+        echo json_encode(['sysmes'=>$sysmes, 'flname'=>$flname, 'changeEm'=>$changeEm]);
+        exit();
     }
     
     

@@ -23,58 +23,23 @@
         <input type="email" id="email" name="email" placeholder="Ваш email" />    
     </p>
     
+
     <p>Аватар:</p>
    <p>
       <span></span>
-       <input type="file" name="avatar" id="file" accept="image/*,image/jpeg" />
+       <input type="file" name="avatar" id="file" class="form-control" accept="image/*,image/jpeg" />
    </p>
-   
-   
-   
-   <div class="panel panel-info">
- <div class="panel-heading">
- <a data-toggle="collapse" data-parent="#collapse-group" href="#el3"><?= $text ?> E-mail</a>
- </div>
- <div id="el3" class="panel-collapse collapse">
- <div class="panel-body">
-     
-     <p>
-       <span></span>
-        <input type="email" id="email" name="email" placeholder="Ваш email" />    
+    <p>
+        <a href="###" id="submit" tabindex="-1" class="btn btn-success profile">Сохранить настройки</a>
     </p>
-     
-     
- </div>
- </div>
- </div>
-   
-   <div class="panel panel-info">
- <div class="panel-heading">
- <a data-toggle="collapse" data-parent="#collapse-group" href="#el2">Загрузить аватар</a>
- </div>
- <div id="el2" class="panel-collapse collapse">
- <div class="panel-body">
-     
-     <p>Аватар:</p>
-   <p>
-      <span></span>
-       <input type="file" name="avatar" id="file" accept="image/*,image/jpeg" />
-   </p>
-     
-     
- </div>
- </div>
- </div>
 
-   
-   <div class="panel panel-info">
- <div class="panel-heading">
- <a data-toggle="collapse" data-parent="#collapse-group" href="#el1">Изменить пароль</a>
- </div>
- <div id="el1" class="panel-collapse collapse in">
- <div class="panel-body">
-     
-     <p>Ваш старый пароль:</p>
+</form>
+
+
+
+<h4>Смена пароля</h4>
+
+<p>Ваш старый пароль:</p>
             <p>
                <span></span>
                 <input type="password" id="pass1" name="pass1" placeholder="Старый пароль" />    
@@ -84,20 +49,19 @@
                <span></span>
                 <input type="password" id="pass2" name="pass2" placeholder="Новый пароль" />    
             </p>
-     
-     
- </div>
- </div>
- </div>
-   
-
-
-    <p>
-        <a href="###" id="submit" tabindex="-1" class="btn btn-success profile">Сохранить настройки</a>
+            <p>
+        <a href="###" id="change" class="btn btn-success">Изменить</a>
     </p>
+<h4></h4>
 
-</form>
 </div>
+    
+    
+    
+    
+    
+    
+    
     
     
 
@@ -118,3 +82,16 @@
 
     
     
+<!--
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-parent="#collapse-group" href="#el1">Изменить пароль</a>
+    </div>
+    <div id="el1" class="panel-collapse collapse in">
+        <div class="panel-body">
+
+            <p>Текст в блоке</p>
+
+        </div>
+    </div>
+</div>-->

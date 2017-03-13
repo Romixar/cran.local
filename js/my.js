@@ -6,7 +6,8 @@
     inpFocus();// проверка фокуса полей
 
     var act = 'controller/controller';
-    var patLogPas = /^[a-z0-9\._-]+$/i; // проверка логина/пароля
+    var patLogPas = /^[a-z0-9-\._]+$/i; // проверка логина/пароля
+                    ///^[a-z0-9-\._]+$/i
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
     
     var elem; // объект кнопка
@@ -156,7 +157,11 @@
     $('div.profile a#submit').click(function(e){
         
         e.preventDefault;
-        validEmailAndSubmit();
+        
+        elem = $(this);
+        
+        if(validEmailAndFile()) submitJson($('#my_form'));// отправить все из my_form
+        
     });
 
     $('a#get_ref_list').click(function(e){
@@ -173,7 +178,7 @@
     })
     
     
-    function validEmailAndSubmit(){// отправка на странице PROFILE
+    function validEmailAndFile(){// отправка на странице PROFILE
         
         submit = true;
         
@@ -186,7 +191,9 @@
         
         if(fl.val() !== ''){
             
-            if(!patLogPas.test(fl.val())) validMessage(fl, 'ERR_NME');
+            var name = fl.val().substr(fl.val().lastIndexOf('\\') + 1);
+            
+            if(!patLogPas.test(name)) validMessage(fl, 'ERR_NME');
             
             submit = false;
             var ext = Array('jpg','jpeg','png','gif');
@@ -199,18 +206,17 @@
             if(!submit) validMessage(fl, 'ERR_EXT');
         }
         
-        if(submit){
-            formData = new FormData($('#my_form').get(0)); // в экземпляр объекта передаем форму
-            textButton = $('a#submit').text();
-            viewIcon3($('a#submit'), 'refresh gly-spin');// запуск крутилки в кнопке
-            send_json(formData);
-        }
-        
-        
-        
-        
+        if(submit) return true;
+        return false;
     };
 
+    function submitJson(frm){
+
+        formData = new FormData(frm.get(0)); // в экземпляр объекта передаем форму
+        textButton = elem.text();
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        send_json(formData);
+    }
     
     
     function validLogAndSubmit(){
@@ -228,17 +234,19 @@
         if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
         if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
         
+        submitLogPass(lg,pwd);
+    }
+    
+    function submitLogPass(lg,pwd){
         if(submit){
             
-            viewIcon3($('div.login a.login'), 'refresh gly-spin');// запуск крутилки в кнопке
+            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
 
             var str = '&login='+lg.val()+'&password='+pwd.val();
             var name = 'do_login';
 
             post_query(name, str);
         }
-        
-        
     }
     
 
@@ -321,7 +329,6 @@
                             viewMessage(obj.sysmes);
                             setTextSubmit();
                         }
-                            
                         
                         if(obj.btn) viewButtons();
                         
@@ -343,26 +350,28 @@
     function send_json(formData){
 
         $.ajax({
-      url: act,
-      type: 'POST',
-      contentType: false, // важно - убираем форматирование данных по умолчанию
-      processData: false, // важно - убираем преобразование строк по умолчанию
-      data: formData,
-      dataType: 'json',
-      success: function(json){
-          
-          //console.log(json);
-          
-          console.log(json);
-          
-          if(json.sysmes) viewMessage(json.sysmes, json.submit);
-          if(json.clear != false) clearAndRepl(json.fl);
-          
-          
-//        if(json){
-//          $('#my_form').replaceWith(json);
-//        }
-      }
+          url: act,
+          type: 'POST',
+          contentType: false, // важно - убираем форматирование данных по умолчанию
+          processData: false, // важно - убираем преобразование строк по умолчанию
+          data: formData,
+          dataType: 'json',
+          success: function(json){
+
+              console.log(json);
+
+              if(json.sysmes){
+
+                  viewMessage(json.sysmes);
+                  setTextSubmit();
+                  clearAndRepl(json.flname, json.changeEm);
+              }
+
+
+    //        if(json){
+    //          $('#my_form').replaceWith(json);
+    //        }
+          }
     });
         
         
@@ -417,15 +426,15 @@
 
         if(al) al.remove();
         
-        $('div.main div.col-md-12 h4').after(mes);// вывод сист сообщения    
+        $('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения    
     }
     
-    function clearAndRepl(img){// подстановка в DOM e-mail и img
+    function clearAndRepl(img, change){// подстановка в DOM e-mail и img
         
         var el = $('div.profile input#email');
         var fl = $('div.profile input#file');
         
-        if(el.val() != ''){
+        if(el.val() != '' && change != false){ // по умолчанию заменять
             $('span#email').text('').append(el.val());
             el.val('');// очистка
         }
@@ -436,10 +445,6 @@
     }
     
     function setTextSubmit(){
-        
-//        var el = $(submit.el); // кнопка на которой поменять текст
-//        var txt = submit.txt; // текст кнопки
-        
         elem.text('').append(textButton);
     }
     
