@@ -77,7 +77,7 @@ class DB{
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
         
         
-        
+
         $res = $this->select($sql);
         
         if(!empty($res)) return $res;

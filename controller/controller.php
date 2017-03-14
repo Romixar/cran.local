@@ -359,21 +359,58 @@ class Controller{
     public function getBonus(){
         
         $mod = new Bonus();
-        $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."'");
-        
-        $lim = strtotime('+30 seconds');
         
         $ts = time();
+        $lim = strtotime('+30 seconds');// лимит времени на не получение бонуса
+        $time_lim = $_SESSION['user']['time_lim'];
+        
+        if(!empty($time_lim)){
+            
+            if($ts < $time_lim){
+                echo 'До получения___0 бонуса осталось '.($time_lim - $ts).' сек.';
+                exit;
+            }else{
+                
+                $mod->update([
+                    'time_lim'=>$lim
+                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+                
+                $_SESSION['user']['time_lim'] = $lim;
+                
+                $bonus = rand(1, 100) / 100;
+                
+                echo 'Ваш бонус_0 '.$bonus.' руб.';
+                exit;
+                
+                
+            }
+            
+        }
+            
+        
+        
+        $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+        
         
         if(!$data){
             
             $mod->insert([
                 'ip'=>$_SESSION['user']['ip'],
+                'login'=>$_SESSION['user']['login'],
                 'time_lim'=>$lim
             ]);
             
-        }else{
+            $_SESSION['user']['time_lim'] = $lim;
             
+            $bonus = rand(1, 100) / 100;
+                
+            echo 'Ваш бонус '.$bonus.' руб.';
+            exit;
+            
+            
+            
+        }else{
+
             
             if($ts < $data[0]->time_lim){
                 
@@ -384,15 +421,15 @@ class Controller{
                 
                 $mod->update([
                     'time_lim'=>$lim
-                ]);
+                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+                
+                $_SESSION['user']['time_lim'] = $lim;
                 
                 $bonus = rand(1, 100) / 100;
                 
                 echo 'Ваш бонус '.$bonus.' руб.';
                 exit;
-            }
-            
-            
+            }   
         }
             
             
@@ -400,7 +437,7 @@ class Controller{
 
         
         
-        debug($data);exit;
+        //debug($data);exit;
         
     }
     
