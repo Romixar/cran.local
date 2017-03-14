@@ -7,11 +7,11 @@ class NewsController extends Controller{
         $this->meta_desc = 'Страница Новости мета описание';
         $this->meta_key = 'Страница Новосим мета кей';
         
-        $comm = new Comments();
-        
-        $data = $comm->find('*');
-        
-        $data = $this->getTreeComments($data);
+//        $comm = new Comments();
+//        
+//        $data = $comm->find('*');
+//        
+//        $data = $this->getTreeComments($data);
         
         //debug($data);
         

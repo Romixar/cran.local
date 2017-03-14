@@ -76,6 +76,8 @@ class DB{
         if(!empty($where)) $sql .= ' WHERE '.$where;
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
         
+        
+        
         $res = $this->select($sql);
         
         if(!empty($res)) return $res;
@@ -95,7 +97,7 @@ class DB{
             
         }else return false;
         
-        $sql = 'UPDATE `users` SET '.implode(',',$data);
+        $sql = 'UPDATE `'.static::$table.'` SET '.implode(',',$data);
         
         //$sql = 'INSERT INTO tbl_name ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
         
@@ -133,7 +135,10 @@ class DB{
             else $vals[] = "'".$v."'";
         }
         
-        $sql = 'INSERT INTO `users` ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
+        $sql = 'INSERT INTO `'.static::$table.'` ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
+        
+        
+        //echo $sql;exit;
         
         $sth = $this->dbh->query($sql);
         

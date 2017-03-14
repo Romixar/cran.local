@@ -4,7 +4,7 @@
             
     <?= $bonus ?>
     <p>
-        <a href="###" id="submit" tabindex="-1" class="btn btn-success bonus">Получить</a>
+        <a href="###" id="get_bonus" class="btn btn-success bonus">Получить</a>
     </p>
             
 </div>

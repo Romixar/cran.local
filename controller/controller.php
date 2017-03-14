@@ -54,6 +54,7 @@ class Controller{
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
+        if(isset($data['get_bonus_f'])) $this->getBonus();// запрос бонуса
 
         
     }
@@ -353,6 +354,54 @@ class Controller{
             
             
 
+    }
+    
+    public function getBonus(){
+        
+        $mod = new Bonus();
+        $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."'");
+        
+        $lim = strtotime('+30 seconds');
+        
+        $ts = time();
+        
+        if(!$data){
+            
+            $mod->insert([
+                'ip'=>$_SESSION['user']['ip'],
+                'time_lim'=>$lim
+            ]);
+            
+        }else{
+            
+            
+            if($ts < $data[0]->time_lim){
+                
+                echo 'До получения бонуса осталось '.($data[0]->time_lim - $ts).' сек.';
+                exit;
+                
+            }else{
+                
+                $mod->update([
+                    'time_lim'=>$lim
+                ]);
+                
+                $bonus = rand(1, 100) / 100;
+                
+                echo 'Ваш бонус '.$bonus.' руб.';
+                exit;
+            }
+            
+            
+        }
+            
+            
+            
+
+        
+        
+        debug($data);exit;
+        
     }
     
     

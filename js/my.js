@@ -190,7 +190,21 @@
         
         post_query('get_ref_list', '');
         
-    })
+    });
+    
+    $('a#get_bonus').click(function(e){
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+        
+        post_query('get_bonus', '');
+        
+    });
+    
     
     
     function validEmailAndFile(){// отправка на странице PROFILE
