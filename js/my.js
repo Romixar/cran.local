@@ -146,6 +146,8 @@
         if(e.keyCode == 13) validRegAndSubmit();
     });
     
+    
+    
     $('div.login a#submit').click(function(e){// авторизация
         
         e.preventDefault;
@@ -154,7 +156,7 @@
         var pwd = $('div.form input#password');
         elem = $(this);
         
-        if(validLogAndSubmit(lg, pwd)) submitLogPass(lg,pwd);
+        if(validLogAndPass(lg, pwd)) submitLogPass(lg,pwd);
     });
     $('div.login').keyup(function(e){// авторизация
         
@@ -162,8 +164,10 @@
         var pwd = $('div.form input#password');
         elem = $('div.login a#submit');
         
-        if(e.keyCode == 13) if(validLogAndSubmit(lg, pwd)) submitLogPass(lg,pwd);
+        if(e.keyCode == 13) if(validLogAndPass(lg, pwd)) submitLogPass(lg,pwd);
     });
+    
+    
     
     $('div.profile a#submit').click(function(e){
         
@@ -230,7 +234,7 @@
     }
     
     
-    function validLogAndSubmit(lg,pwd){
+    function validLogAndPass(lg,pwd){
         
         submit = true;// запрет второй отправки (по ENTER например)
 
@@ -244,8 +248,6 @@
         
         if(submit) return true;
         return false;
-        
-        
     }
     
     function submitLogPass(lg,pwd){
@@ -253,9 +255,8 @@
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
 
         var str = '&login='+lg.val()+'&password='+pwd.val();
-        var name = 'do_login';
-
-        post_query(name, str);
+        
+        post_query('do_login', str);
     }
     
 

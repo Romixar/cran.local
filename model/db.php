@@ -4,22 +4,22 @@ class DB{
     
     public $dbh; // соединение с БД
     
+    
     public function __construct(){
         
         $dbh = new PDO('mysql:dbname='.Config::$dbname.';host='.Config::$dbhost, Config::$dbuser, Config::$dbpass);
         
         if(!isset($dbh)) echo 'Ошибка соединения с базой даннных';
         else $this->dbh = $dbh;
-        
+
     }
     
     public function select($sql){
         
         $sth = $this->dbh->query($sql);
-        return $sth->fetchAll(PDO::FETCH_CLASS, 'user');// возвр объект указанного класса
-        //return $sth->fetchAll();// возвр объект указанного класса
+        return $sth->fetchAll(PDO::FETCH_CLASS, get_called_class());// возвр объект указанного класса
         
-        
+        //return $sth->fetchAll();// возвр массив
         
     }
     
@@ -71,7 +71,7 @@ class DB{
     
     public function find($fields, $where='', $asc=''){
         
-        $sql = "SELECT ".$fields." FROM `users`";
+        $sql = "SELECT ".$fields." FROM `".static::$table."`";
         
         if(!empty($where)) $sql .= ' WHERE '.$where;
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
