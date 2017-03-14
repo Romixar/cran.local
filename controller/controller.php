@@ -393,9 +393,9 @@ class Controller{
         
         if($ts < $time_lim){
                 
-            echo 'До получения___0 бонуса осталось '.($time_lim - $ts).' сек.';
-            exit;
-                
+            $sysmes = $this->sysMessage('danger','До получения бонуса осталось '.($time_lim - $ts).' сек.!');
+            $this->respJson($sysmes);
+    
         }else{
                 
             $mod->update([
@@ -405,9 +405,15 @@ class Controller{
             $_SESSION['user']['time_lim'] = $lim;
                 
             $bonus = rand(1, 100) / 100;
-                
-            echo 'Ваш бонус_0 '.$bonus.' руб.';
-            exit;
+            
+            $total = $_SESSION['user']['balance'] + $bonus;
+            $_SESSION['user']['balance'] = $total;
+            
+            $user = new User();
+            $user->update(['balance'=>$total],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+
+            $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
+            $this->respJson($sysmes);
             
         }
             
