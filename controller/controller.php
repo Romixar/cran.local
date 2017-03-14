@@ -360,10 +360,8 @@ class Controller{
         
         if(isset($_SESSION['user'])) $this->getBonus();
         else{
-            
             $sysmes = $this->sysMessage('danger','Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!');
             $this->respJson($sysmes);
-            
         }
         
     }
@@ -406,15 +404,15 @@ class Controller{
                 
             $bonus = rand(1, 100) / 100;
             
-            $total = $_SESSION['user']['balance'] + $bonus;
-            $_SESSION['user']['balance'] = $total;
+            $_SESSION['user']['balance'] += $bonus;
             
             $user = new User();
-            $user->update(['balance'=>$total],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+            $user->update([
+                'balance'=>$_SESSION['user']['balance']
+            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
 
             $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
             $this->respJson($sysmes);
-            
         }
             
         
