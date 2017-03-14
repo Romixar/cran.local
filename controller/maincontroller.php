@@ -9,9 +9,7 @@ class MainController extends Controller{
         $this->title = 'Главная страница';
         $this->meta_desc = 'Главная страница мета описание';
         $this->meta_key = 'Главная страница мета кей';
-        
-        
-        //$bonus = rand(1, 100) / 100;
+
         
         $b_tpl = $this->view->prerender('bonus',compact('bonus'));
         
