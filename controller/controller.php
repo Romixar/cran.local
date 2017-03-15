@@ -169,7 +169,6 @@ class Controller{
                 $mycookie = [
                     'login'=>$_SESSION['user']['login'],
                     'ip'=>$_SESSION['user']['ip'],
-                    'time_lim'=>'пока не существует',
                 ];
                 
                 $this->respJson(false, false, false, $mycookie);
@@ -406,7 +405,12 @@ class Controller{
         if($ts < $time_lim){
                 
             $sysmes = $this->sysMessage('danger','До получения бонуса осталось '.($time_lim - $ts).' сек.!');
-            $this->respJson($sysmes);
+            
+            $mycookie = [
+                'time_lim'=>$time_lim,
+            ];
+            
+            $this->respJson($sysmes, false, false, $mycookie);
     
         }else{
                 
@@ -426,7 +430,12 @@ class Controller{
             ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
 
             $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
-            $this->respJson($sysmes);
+            
+            $mycookie = [
+                'time_lim'=>$lim,
+            ];
+            
+            $this->respJson($sysmes, false, false, $mycookie);
         }
             
         

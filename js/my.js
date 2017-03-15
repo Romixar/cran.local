@@ -1,7 +1,5 @@
 (function(){
     
-
-    
     var submit;// разрешение на отправку формы
     
     activeMenu();// определение активного пункта меню
@@ -366,7 +364,7 @@
                             getRefList(obj.dataRefList);
                             setTextSubmit();
                         }
-                        if(obj.mycookie) checkMyCookie(obj.mycookie);
+                        if(obj.mycookie) saveMyCookie(obj.mycookie);
                             
                         
                     };
@@ -535,24 +533,44 @@
             $(this).prev().text('');
         });
     }
+    
+//    $.cookie('user', null);// удаление
+//    
+//    console.log($.cookie('user'));
 
-    function checkMyCookie(mycookie){
+    function saveMyCookie(mycookie){
         
-//        console.log(mycookie.login+'\n'+
-//                    mycookie.ip+'\n'+
-//                    mycookie.time_lim+'\n');
+        //console.log('пришло - '+mycookie);
         
-        var test = JSON.stringify(mycookie);
+if(mycookie.time_lim){
+    
+    if($.cookie('user') !== null){
 
-        console.log(test);
+        var user = JSON.parse($.cookie('user'));
         
-//        $.cookie('user', mycookie, {
-//            expires: 5,// продолжит-ть 5 дней
-//            path: '/',
-//        });
+        user.time_lim = mycookie.time_lim;
+
+        console.log(user);
+        console.log(mycookie.time_lim);
+
+    }
+    
+//    console.log(JSON.parse($.cookie('user')));
+//        console.log('time_lim - '+mycookie.time_lim);
+    return;
+    
+}
         
         
-        //var test = $.cookie('user');
+        var user = JSON.stringify(mycookie);// перевод в строку
+
+        $.cookie('user', user, {
+            expires: 5,// продолжит-ть 5 дней
+            path: '/',
+        });
+
+
+        
     }
 
 
