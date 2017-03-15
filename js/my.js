@@ -201,6 +201,31 @@
         
         viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
         
+        if($.cookie('user')){
+            
+            var user = JSON.parse($.cookie('user'));// превр в объект
+            
+            if(user.time_lim){
+                
+                var date = new Date();
+                var ts = Math.ceil(date.getTime() / 1000);// TS в сек.
+                
+                if(ts < user.time_lim){
+                    
+                    console.log('До получения бонуса осталось '+(user.time_lim - ts)+' сек.');
+                    return;
+                }
+                
+                
+                //console.log('текущ - '+ts+' лимит - '+user.time_lim);
+                
+            }
+            
+        }
+            
+        //console.log(JSON.parse($.cookie('user')));
+        
+        
         post_query('get_bonus', '');
         
     });
@@ -549,9 +574,17 @@ if(mycookie.time_lim){
         var user = JSON.parse($.cookie('user'));
         
         user.time_lim = mycookie.time_lim;
+        
+        user = JSON.stringify(user);
+        
+        $.cookie('user', user, {
+            expires: 5,// продолжит-ть 5 дней
+            path: '/',
+        });
+        
 
-        console.log(user);
-        console.log(mycookie.time_lim);
+        //console.log(user);
+        //console.log(mycookie.time_lim);
 
     }
     
