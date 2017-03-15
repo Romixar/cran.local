@@ -119,10 +119,9 @@
     </div>
 </div>
  
-
- 
- 
+  <script src="/js/jquery.cookie.js"></script>
   <script src="/js/my.js"></script>
+  
   
 </body>
 </html>

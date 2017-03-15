@@ -1,5 +1,7 @@
 (function(){
     
+
+    
     var submit;// разрешение на отправку формы
     
     activeMenu();// определение активного пункта меню
@@ -364,6 +366,7 @@
                             getRefList(obj.dataRefList);
                             setTextSubmit();
                         }
+                        if(obj.mycookie) checkMyCookie(obj.mycookie);
                             
                         
                     };
@@ -533,8 +536,27 @@
         });
     }
 
+    function checkMyCookie(mycookie){
+        
+//        console.log(mycookie.login+'\n'+
+//                    mycookie.ip+'\n'+
+//                    mycookie.time_lim+'\n');
+        
+        var test = JSON.stringify(mycookie);
+
+        console.log(test);
+        
+//        $.cookie('user', mycookie, {
+//            expires: 5,// продолжит-ть 5 дней
+//            path: '/',
+//        });
+        
+        
+        //var test = $.cookie('user');
+    }
 
 
+    
     
     
     

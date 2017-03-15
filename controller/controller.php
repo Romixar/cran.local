@@ -54,7 +54,7 @@ class Controller{
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
-        if(isset($data['get_bonus_f'])) $this->checkBonus();// запрос бонуса
+        if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
 
         
     }
@@ -164,7 +164,20 @@ class Controller{
         $user = new User();
         
         if($data = $user->findLogin($this->data['login']))
-            if($this->verifyUserPass($data)) exit('{"redirect":"profile"}');// авторизация пройдена
+            if($this->verifyUserPass($data)){
+                
+                $mycookie = [
+                    'login'=>$_SESSION['user']['login'],
+                    'ip'=>$_SESSION['user']['ip'],
+                    'time_lim'=>'пока не существует',
+                ];
+                
+                $this->respJson(false, false, false, $mycookie);
+                
+            }
+                
+                
+                //exit('{"redirect":"profile"}');// авторизация пройдена
         
         // авторизация не пройдена 
         $type = 'danger';
@@ -280,7 +293,8 @@ class Controller{
 
                     $sysmes = $view->prerender('message',compact('type','mes'));
                     //echo json_encode(['sysmes'=>$sysmes]);
-
+                    
+//  ... ПРОБЛЕМА не выводится flash сообщение
 //debug($sysmes);
                     // создать сообщ об успешной регистрации
                     //Session::flash('sysmes',$sysmes);
@@ -356,7 +370,7 @@ class Controller{
 
     }
     
-    public function checkBonus(){
+    public function checkResponseBonus(){
         
         if(isset($_SESSION['user'])) $this->getBonus();
         else{
@@ -456,8 +470,13 @@ class Controller{
         return $view->prerender('message',compact('type','mes')); 
     }
     
-    public function respJson($sysmes=false, $flname=false, $changeEm=true){
-        echo json_encode(['sysmes'=>$sysmes, 'flname'=>$flname, 'changeEm'=>$changeEm]);
+    public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false){
+        echo json_encode([
+            'sysmes'=>$sysmes,
+            'flname'=>$flname,
+            'changeEm'=>$changeEm,
+            'mycookie'=>$mycookie
+        ]);
         exit();
     }
     
