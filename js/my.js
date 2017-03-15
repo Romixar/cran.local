@@ -12,8 +12,7 @@
     
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
-    
-    
+
     
 
     
@@ -209,28 +208,9 @@
         
         if($.cookie('user')){
             
-            var user = JSON.parse($.cookie('user'));// превр в объект
-            
-            if(user.time_lim){
-                
-                var date = new Date();
-                var ts = Math.ceil(date.getTime() / 1000);// TS в сек.
-                
-                if(ts < user.time_lim){
-                    
-                    $('div.bonus').before('<span id="wait_bonus">До получения бонуса осталось <span id="bon"></span> секунд.</span>');
-                    
-                    whenTheBonus();// счётчик сколько осталось до получения
-
-                    return;
-                }
-                
-            }
+            if(checkUserLim()) return;
             
         }
-            
-        //console.log(JSON.parse($.cookie('user')));
-        
         
         post_query('get_bonus', '');
         
@@ -241,6 +221,26 @@
         $('span#wait_bonus').remove();
         $('a#get_bonus').text('').removeClass('disabled').text('Получить');
         return;
+    }
+    
+    function checkUserLim(){
+        var user = JSON.parse($.cookie('user'));// превр в объект
+            
+        if(user.time_lim){
+                
+            var now = new Date();
+            var ts = Math.ceil(now.getTime() / 1000);// TS в сек.
+                
+            if(ts < user.time_lim){
+                    
+                $('div.bonus').before('<span id="wait_bonus">До получения бонуса осталось <span id="bon_day"></span> <span id="bon_hour"></span> <span id="bon_min"></span> <span id="bon_sec"></span> секунд.</span>');
+                    
+                timerToBonus();// счётчик сколько осталось до получения
+
+                return true;
+            }
+            return false;
+        }
     }
     
     
@@ -620,7 +620,7 @@ if(mycookie.time_lim){
     }
 
 
-    function whenTheBonus(){
+    function timerToBonus(){
         
         var user = JSON.parse($.cookie('user'));
         var lim = user.time_lim;// лимит на не получение бонуса в сек.
@@ -628,7 +628,7 @@ if(mycookie.time_lim){
         //$('#howDays').style.display = 'block';
 		var now = new Date();
         
-		var miliSec = Math.ceil(now.getTime() / 1000); //TS в сек.
+		var ts = Math.ceil(now.getTime() / 1000); //TS в сек.
         
 		//var NewYearDig = now.getFullYear()+1;//Получение числа Нового Года
         
@@ -665,15 +665,48 @@ if(mycookie.time_lim){
 		//var str = colDay+ ' дней ' +HourOst+ ' часов ' +MinOst+ ' минут ' +SecOst+ ' секунд';//Вывод в строку
         
 		//$('#howDays').text('До '+NewYearDig+ '-го года:\n'+str);//Вставка в HTML
-        var secOst = lim - miliSec;
         
-        $('span#bon').text('').append(secOst);
         
-        if(secOst == 0){
+        var fullSec = lim - ts;
+        
+        var dayOst = parseInt((fullSec/(60*60*24)));// сколько дней до бонуса
+        
+        var hourOst = parseInt((lim/(60*60)) - (ts/(60*60)));// Кол-во часов от сегодня до бонуса
+        
+        var hour = parseInt(hourOst/24);//Получаем (целое число) сколько чаов до бонуса по 60
+        
+        var hourXX = hourOst - (hour*24);//Сколько часов осталось в формате ХХ
+    
+        var minOst = parseInt((lim/60) - (ts/60)); // Кол-во минут от сегодня до бонуса
+        
+        var min = parseInt(minOst/60);//Получаем (целое число) сколько мин до бонуса по 60
+        
+        var minXX = minOst - (min*60);//Сколько мин осталось в формате ХХ
+        
+        var secOst = parseInt(lim - ts); // Кол-во секунд от сегодня до бонуса
+        
+        var sec = parseInt(secOst/60);// целое число сек до бонуса по 60
+        
+        var secXX = secOst - (sec * 60);//Сколько сек осталось в формате ХХ
+        
+        
+        
+        if(dayOst == 0) $('span#bon_day').remove();
+        if(hourXX == 0 && fullSec < 60*60 && dayOst == 0) $('span#bon_hour').remove();
+        if(minXX == 0 && fullSec == 60) $('span#bon_min').remove();
+        
+        
+        
+        $('span#bon_day').text('').append(dayOst + " дней");
+        $('span#bon_hour').text('').append(hourXX + " часов");
+        $('span#bon_min').text('').append(minXX + " минут");
+        $('span#bon_sec').text('').append(secXX);
+        
+        if(fullSec == 0){
             prepareToBonus();
             return;
         }
-        setTimeout(function(){whenTheBonus()},1000);//Рекурсия каждую секунду
+        setTimeout(function(){timerToBonus()},1000);//Рекурсия каждую секунду
         
         
     }
