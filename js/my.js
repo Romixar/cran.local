@@ -218,17 +218,12 @@
                 
                 if(ts < user.time_lim){
                     
-                    
-                    //setTimeout(function(){myCount()},1000);
+                    $('div.bonus').before('<span id="wait_bonus">До получения бонуса осталось <span id="bon"></span> секунд.</span>');
                     
                     whenTheBonus();// счётчик сколько осталось до получения
-                    
-                    
+
                     return;
                 }
-                
-                
-                //console.log('текущ - '+ts+' лимит - '+user.time_lim);
                 
             }
             
@@ -240,6 +235,13 @@
         post_query('get_bonus', '');
         
     });
+    
+    function prepareToBonus(){
+        
+        $('span#wait_bonus').remove();
+        $('a#get_bonus').text('').removeClass('disabled').text('Получить');
+        return;
+    }
     
     
     
@@ -665,13 +667,13 @@ if(mycookie.time_lim){
 		//$('#howDays').text('До '+NewYearDig+ '-го года:\n'+str);//Вставка в HTML
         var secOst = lim - miliSec;
         
-        console.log('До получения бонуса осталось '+(lim - miliSec)+' сек.');
+        $('span#bon').text('').append(secOst);
         
         if(secOst == 0){
+            prepareToBonus();
             return;
-        }else{
-            setTimeout(function(){whenTheBonus()},1000);//Рекурсия каждую секунду
         }
+        setTimeout(function(){whenTheBonus()},1000);//Рекурсия каждую секунду
         
         
     }
