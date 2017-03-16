@@ -40,7 +40,8 @@
           
           $('input#password').val('');
           $('input#password').next().html('');// очистить весь HTML внутри span.icon
-      }
+      };
+
       
 
 

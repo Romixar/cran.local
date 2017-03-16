@@ -69,8 +69,10 @@ class MainController extends Controller{
     
     public function actionLogout(){
         
-        session_destroy();
+        session_destroy();// перенаправление в JS
         //unset($_SESSION['flash']);
+
+        
         $this->redirect('/');
     }
     

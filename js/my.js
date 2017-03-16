@@ -18,15 +18,20 @@
         
         if($.cookie('user')){
             
-            var u = JSON.parse($.cookie('user'));
+            //var u = JSON.parse($.cookie('user'));
             
-            console.log(u);
+            console.log($.cookie('user'));
             
             checkUserLim();
             
         }
         
-        //timerToBonus();
+        if($.cookie('user_out')){
+            
+            console.log('вышедший');
+            console.log($.cookie('user_out'));
+            
+        }
         
     }
 
@@ -349,10 +354,7 @@
         if(wt.val() === '') validMessage(wt, 'ERR_EMP');
         if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
         if((wt.val()).length > 20) validMessage(wt, 'ERR_LEN');
-        
-        
-        
-        
+
         // перв символ или пусто после первого или только цифры с перв символа
         if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
         
@@ -418,6 +420,7 @@
                             setTextSubmit();
                         }
                         if(obj.mycookie) saveMyCookie(obj.mycookie);
+
                             
                         
                     };
@@ -587,15 +590,29 @@
         });
     }
     
-//    $.cookie('user', null);// удаление
-//    
-//    console.log($.cookie('user'));
+    
+    $('a#logout').click(function(e){
+        console.log('клик');
+        
+        
+        $.cookie('user_out', 'u_out', {
+                expires: 5,// продолжит-ть 5 дней
+                path: '/',
+            });
+        
+        $.cookie('user','');
+        
+    });
+    
+        
+        
+      
 
     function saveMyCookie(mycookie){
         
-        if(mycookie.time_lim){
+        if(mycookie.time_lim){// если впервые получает бонусы
 
-            if($.cookie('user') !== null){
+            if($.cookie('user') !== null){// дописываю time_lim в JS cookie
 
                 var user = JSON.parse($.cookie('user'));
 
@@ -613,13 +630,34 @@
 
         }
         
-        
-        var user = JSON.stringify(mycookie);// перевод в строку
+//        if($.cookie('user') !== ''){
+//            
+//            var u = JSON.parse($.cookie('user'));
+//            
+//            //console.log(u);
+//            
+//            if(u.login == mycookie.login && u.ip == mycookie.ip){
+//                
+//                console.log('jscookie - '+u.login+' '+u.ip);
+//                console.log('пришли cookie - '+mycookie.login+' '+mycookie.ip);
+//                                
+//                mycookie.time_lim = u.time_lim; // дописываю time_lim в JS cookie
+//            
+//                var user = JSON.stringify(mycookie);// перевод в строку
+//
+//                $.cookie('user', user, {
+//                    expires: 5,// продолжит-ть 5 дней
+//                    path: '/',
+//                });   
+//            }
+//        }
 
-        $.cookie('user', user, {
-            expires: 5,// продолжит-ть 5 дней
+        var u = JSON.stringify(mycookie);
+        $.cookie('user', u,{
+            expires: 5,
             path: '/',
         });
+        $.cookie('user_out','');
 
 
         

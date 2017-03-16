@@ -24,11 +24,13 @@ class Controller{
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
             $uri = 'login';
+            $id = 'login';
         }else{
             $text = 'ВЫЙТИ';
             $uri = 'logout';
+            $id = 'logout';
         }
-        $this->btn = compact('text','uri');
+        $this->btn = compact('text','uri','id');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -485,6 +487,7 @@ class Controller{
             'flname'=>$flname,
             'changeEm'=>$changeEm,
             'mycookie'=>$mycookie
+            
         ]);
         exit();
     }
