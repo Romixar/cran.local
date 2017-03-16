@@ -386,7 +386,7 @@ class Controller{
         $mod = new Bonus();
         
         $ts = time();
-        $lim = strtotime('+3 minutes');// лимит времени на не получение бонуса
+        $lim = strtotime('+5 minutes');// лимит времени на не получение бонуса
         $time_lim = $_SESSION['user']['time_lim'];
         
         if(empty($time_lim)) $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");

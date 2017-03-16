@@ -23,6 +23,9 @@
             console.log('существует user');
             console.log($.cookie('user'));
             
+            console.log('существует users');
+            console.log($.cookie('users'));
+            
             checkUserLim();
             
         }
@@ -626,7 +629,6 @@
                     expires: 5,// продолжит-ть 5 дней
                     path: '/',
                 });
-
             }
             return;
 
@@ -646,10 +648,38 @@
                         expires: 5,
                         path: '/',
                     });
+                $.cookie('user_out','');   
+            }else{// значит вошел другой польз-ль, запишу его в объект users
+                
+                var users = {
+                    user_1_out:user_out
+                };
+                
+                // если в истории уже есть тот кто входил раньше
+                if(users.user_1_out.login == mycookie.login){
+                    
+                    mycookie.time_lim = users.user_1_out.time_lim;
+                    console.log(mycookie);
+                }
+                
+                
+                
+                users = JSON.stringify(users);
+                $.cookie('users', users,{
+                        expires: 5,
+                        path: '/',
+                    });
+                
+                
+                var user_in = JSON.stringify(mycookie);
+                
+                $.cookie('user', user_in,{
+                        expires: 5,
+                        path: '/',
+                    });
                 $.cookie('user_out','');
                 
             }
-            
         }
 
         
