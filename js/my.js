@@ -13,7 +13,22 @@
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
 
-    
+    var uri = location.href;
+    if(uri.split('/')[3] == '' || uri.split('/')[3] == '###'){
+        
+        if($.cookie('user')){
+            
+            var u = JSON.parse($.cookie('user'));
+            
+            console.log(u);
+            
+            checkUserLim();
+            
+        }
+        
+        //timerToBonus();
+        
+    }
 
     
     
@@ -578,34 +593,25 @@
 
     function saveMyCookie(mycookie){
         
-        //console.log('пришло - '+mycookie);
-        
-if(mycookie.time_lim){
-    
-    if($.cookie('user') !== null){
+        if(mycookie.time_lim){
 
-        var user = JSON.parse($.cookie('user'));
-        
-        user.time_lim = mycookie.time_lim;
-        
-        user = JSON.stringify(user);
-        
-        $.cookie('user', user, {
-            expires: 5,// продолжит-ть 5 дней
-            path: '/',
-        });
-        
+            if($.cookie('user') !== null){
 
-        //console.log(user);
-        //console.log(mycookie.time_lim);
+                var user = JSON.parse($.cookie('user'));
 
-    }
-    
-//    console.log(JSON.parse($.cookie('user')));
-//        console.log('time_lim - '+mycookie.time_lim);
-    return;
-    
-}
+                user.time_lim = mycookie.time_lim;
+
+                user = JSON.stringify(user);
+
+                $.cookie('user', user, {
+                    expires: 5,// продолжит-ть 5 дней
+                    path: '/',
+                });
+
+            }
+            return;
+
+        }
         
         
         var user = JSON.stringify(mycookie);// перевод в строку
@@ -625,46 +631,8 @@ if(mycookie.time_lim){
         var user = JSON.parse($.cookie('user'));
         var lim = user.time_lim;// лимит на не получение бонуса в сек.
         
-        //$('#howDays').style.display = 'block';
 		var now = new Date();
-        
 		var ts = Math.ceil(now.getTime() / 1000); //TS в сек.
-        
-		//var NewYearDig = now.getFullYear()+1;//Получение числа Нового Года
-        
-		//var newYear = new Date(NewYearDig,0,1,0,0,0); //Получение полной даты на Новый Год		
-        
-		//var newYear_miliSec = newYear.getTime()/1000; //кол-во сек с 1970-го до нового года
-        
-		//var colDay = parseInt((newYear_miliSec/(60*60*24)) - (miliSec/(60*60*24)));// Кол-во дней отсегодня до НГ
-        
-		//var colHour = parseInt((newYear_miliSec/(60*60)) - (miliSec/(60*60)));// Кол-во часов от сегодня до НГ
-        
-		//var colMin = parseInt((newYear_miliSec/60) - (miliSec/60)); // Кол-во минут от сегодня до НГ
-        
-		//var colSec = parseInt(newYear_miliSec - miliSec); // Кол-во секунд от сегодня до НГ
-	
-		//var fullSec = parseInt(colSec/60);//Получаем (целое число) сколько сек до НГ по 60
-        
-		//var SecOst = colSec - (fullSec*60);//Сколько сек осталось в формате ХХ
-        
-		//(SecOst<10)?(SecOst='0'+SecOst):SecOst;//Приписать 0 впереди, если ХХ сек < 10
-        
-		//var fullMin = parseInt(colMin/60);//Получаем (целое число) сколько мин до НГ по 60
-        
-		//var MinOst = colMin - (fullMin*60);//Сколько мин осталось в формате ХХ
-        
-		//(MinOst<10)?(MinOst='0'+MinOst):MinOst;//Приписать 0 впереди, если ХХ мин < 10
-        
-		//var rullHour = parseInt(colHour/24);//Получаем (целое число) сколько чаов до НГ по 60
-        
-		//var HourOst = colHour - (rullHour*24);//Сколько часов осталось в формате ХХ
-        
-		//(HourOst<10)?(HourOst='0'+HourOst):HourOst;//Приписать 0 впереди, если ХХ часов < 10
-		
-		//var str = colDay+ ' дней ' +HourOst+ ' часов ' +MinOst+ ' минут ' +SecOst+ ' секунд';//Вывод в строку
-        
-		//$('#howDays').text('До '+NewYearDig+ '-го года:\n'+str);//Вставка в HTML
         
         
         var fullSec = lim - ts;
@@ -689,13 +657,9 @@ if(mycookie.time_lim){
         
         var secXX = secOst - (sec * 60);//Сколько сек осталось в формате ХХ
         
-        
-        
         if(dayOst == 0) $('span#bon_day').remove();
         if(hourXX == 0 && fullSec < 60*60 && dayOst == 0) $('span#bon_hour').remove();
         if(minXX == 0 && fullSec == 60) $('span#bon_min').remove();
-        
-        
         
         $('span#bon_day').text('').append(dayOst + " дней");
         $('span#bon_hour').text('').append(hourXX + " часов");
