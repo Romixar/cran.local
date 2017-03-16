@@ -24,11 +24,11 @@ class Controller{
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
             $uri = 'login';
-            $id = 'login';
+            $id = 'u_in';
         }else{
             $text = 'ВЫЙТИ';
             $uri = 'logout';
-            $id = 'logout';
+            $id = 'u_out';
         }
         $this->btn = compact('text','uri','id');
         
