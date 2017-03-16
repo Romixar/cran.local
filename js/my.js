@@ -16,15 +16,15 @@
     var uri = location.href;
     if(uri.split('/')[3] == '' || uri.split('/')[3] == '###'){
         
+        
         if($.cookie('user') !== ''){
-            
-            //var u = JSON.parse($.cookie('user'));
-            
+                        
             console.log('существует user');
             console.log($.cookie('user'));
             
-            console.log('существует users');
-            console.log($.cookie('users'));
+            console.log('История'+$.cookie('userHistory'));
+            
+            
             
             checkUserLim();
             
@@ -634,55 +634,38 @@
 
         }
         
-        if($.cookie('user_out') !== ''){
-            
-            var user_out = JSON.parse($.cookie('user_out'));
-            
-            if(user_out.login == mycookie.login && user_out.ip == mycookie.ip){// вошел тот же
-                
-                var user_in = $.cookie('user_out');// старую куку пересохраню в новую
-                
-                console.log(user_in);
+        if(mycookie.login && mycookie.ip){// только что вошел
         
-                $.cookie('user', user_in,{
-                        expires: 5,
-                        path: '/',
-                    });
-                $.cookie('user_out','');   
-            }else{// значит вошел другой польз-ль, запишу его в объект users
-                
-                var users = {
-                    user_1_out:user_out
-                };
-                
-                // если в истории уже есть тот кто входил раньше
-                if(users.user_1_out.login == mycookie.login){
-                    
-                    mycookie.time_lim = users.user_1_out.time_lim;
-                    console.log(mycookie);
-                }
-                
-                
-                
-                users = JSON.stringify(users);
-                $.cookie('users', users,{
-                        expires: 5,
-                        path: '/',
-                    });
-                
-                
-                var user_in = JSON.stringify(mycookie);
-                
-                $.cookie('user', user_in,{
-                        expires: 5,
-                        path: '/',
-                    });
-                $.cookie('user_out','');
-                
-            }
-        }
+            if($.cookie('user_out') !== undefined){
 
+                var user_out = JSON.parse($.cookie('user_out'));
+
+                if(user_out.login == mycookie.login && user_out.ip == mycookie.ip){// вошел тот же
+
+                    var user_in = $.cookie('user_out');// старую куку пересохраню в новую
+
+                    console.log(user_in);
+
+                    $.cookie('user', user_in,{
+                            expires: 5,
+                            path: '/',
+                        });
+                    $.cookie('user_out','');   
+                }
+
+            }
         
+        
+        }
+        location.href = '/profile';
+//        var user_in = JSON.stringify(mycookie);
+//
+//        $.cookie('user', user_in,{
+//                        expires: 5,
+//                        path: '/',
+//                    });
+//                $.cookie('user_out',''); 
+//        
 
 
         
