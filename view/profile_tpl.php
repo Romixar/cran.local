@@ -62,7 +62,20 @@
     
     
     
-    
+    <a href="###" id="get_b_list" class="btn btn-success">Список полученных бонусов</a>
+
+    <table class="table table-hover b_list">
+       <thead>
+            <tr>
+                <th>№</th>
+                <th>Дата получения</th>
+                <th>Сумма, руб.</th>
+            </tr>
+       </thead>
+
+        <tbody>
+        </tbody>
+    </table>
     
     
     
@@ -83,17 +96,3 @@
     </table>
 
     
-    
-<!--
-<div class="panel panel-info">
-    <div class="panel-heading">
-        <a data-toggle="collapse" data-parent="#collapse-group" href="#el1">Изменить пароль</a>
-    </div>
-    <div id="el1" class="panel-collapse collapse in">
-        <div class="panel-body">
-
-            <p>Текст в блоке</p>
-
-        </div>
-    </div>
-</div>-->

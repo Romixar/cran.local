@@ -56,6 +56,7 @@ class Controller{
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
+        if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
         if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
 
         
@@ -205,6 +206,7 @@ class Controller{
             $_SESSION['user']['img'] = $data[0]->img;
             $_SESSION['user']['login'] = $data[0]->login;
             $_SESSION['user']['balance'] = $data[0]->balance;
+            $_SESSION['user']['b'] = $data[0]->b;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
             $_SESSION['user']['date_act'] = $data[0]->date_act;
             $_SESSION['user']['ip'] = $data[0]->ip;
@@ -361,14 +363,49 @@ class Controller{
             
             echo json_encode(['dataRefList'=>$data]);
             exit();
-        }
-        else{
+        }else{
             $sysmes = $this->sysMessage('danger','Нет пользователей зарегистрированых по вашей реферальной ссылке!');
             $this->respJson($sysmes);
         }
             
             
 
+    }
+    
+    public function getBList(){
+        
+        $his_b = new History_b();
+        
+        $wh = '`user_id`='.$_SESSION['user']['id'];
+        
+        $asc = '`date_add` DESC';
+        
+        $data = $his_b->find('`date_add`,`sum`', $wh, $asc);
+        
+        if($data){
+            
+            // отформатировать дату
+            
+            for($i=0; $i<count($data); $i++){
+                
+                foreach($data[$i] as $k => $v){
+                    if($k == 'date_add') $data[$i]->date_add = strftime('%d.%m.%Yг. %H:%M:%S',$data[$i]->date_add);
+                }
+                
+            }
+            
+            
+            
+            
+            echo json_encode(['dataBList'=>$data]);
+            exit();
+        }else{
+            $sysmes = $this->sysMessage('danger','У вас ещё нет полученных бонусов!');
+            $this->respJson($sysmes);
+        }
+        
+        
+        
     }
     
     public function checkResponseBonus(){
@@ -425,19 +462,34 @@ class Controller{
             $bonus = rand(1, 100) / 100;
             
             $_SESSION['user']['balance'] += $bonus;
+            $_SESSION['user']['b'] += 1;// количество бонусов
             
-            $user = new User();
+            $user = new User(); // обновление баланса
             $user->update([
-                'balance'=>$_SESSION['user']['balance']
+                'balance' => $_SESSION['user']['balance'],
+                'b' => $_SESSION['user']['b']
             ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+            
+            $his_b = new History_b();// сохранение в историю
+            if($his_b->insert([
+                'user_id'=>$_SESSION['user']['id'],
+                'date_add'=>time(),
+                'sum'=>$bonus
+            ])){
+                
+                $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
+            
+                $mycookie = [
+                    'time_lim'=>$lim,
+                ];
 
-            $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
+                $this->respJson($sysmes, false, false, $mycookie);
+                
+            }
+            $this->respJson($this->sysMessage('danger','Ошибка сохранения в БД!'), false, false, false);
             
-            $mycookie = [
-                'time_lim'=>$lim,
-            ];
+
             
-            $this->respJson($sysmes, false, false, $mycookie);
         }
             
         

@@ -218,6 +218,18 @@
         post_query('get_ref_list', '');
         
     });
+    $('a#get_b_list').click(function(e){
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+        
+        post_query('get_b_list', '');
+        
+    });
     
     $('a#get_bonus').click(function(e){
         
@@ -431,6 +443,11 @@
                             getRefList(obj.dataRefList);
                             setTextSubmit();
                         }
+                        if(obj.dataBList){
+                            
+                            getBList(obj.dataBList);
+                            setTextSubmit();
+                        }
                         if(obj.mycookie) saveMyCookie(obj.mycookie);
 
                             
@@ -561,10 +578,23 @@
         var strRes = '<tr class="success"><th colspan="3">Всего:</th><th><span id="cnt">'+i+' чел.</span></th></tr>';
         
         $('table.ref_list thead').append(strRes);
-        
-        
         $('table.ref_list tbody').text('').append(str);
         
+    }
+    
+    function getBList(data){
+        
+        var str = '';
+        var res = 0;
+        for(var i=0; i<(data.length); i++){
+
+            str += '<tr><td>'+(i+1)+'.</td><td>'+data[i].date_add+'</td><td>'+data[i].sum+'</td></tr>'; res += Number(data[i].sum);
+        }
+        
+        var strRes = '<tr class="success"><th>Всего:</th><th><span>'+i+' бон. на сумму</span></th><th><span>'+res+'</span></th></tr>';
+        
+        $('table.b_list thead').append(strRes);
+        $('table.b_list tbody').text('').append(str);
         
     }
     
