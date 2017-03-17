@@ -166,6 +166,23 @@ class DB{
         
     }
     
+    public function getBonusRating(){
+        
+        $sql = 'SELECT `login`,`user_id`,max(`date_add`),`sum`,count(`sum`),sum(`sum`) FROM `'.static::$table.'` JOIN `users` WHERE `users`.`id` = `history_b`.`user_id` GROUP BY `user_id` ORDER BY sum(`sum`) DESC';
+        
+        //$res = $this->select($sql);
+        
+        $sth = $this->dbh->query($sql);
+        $res = $sth->fetchAll();
+        
+        
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+        
+    }
+    
     
     
     

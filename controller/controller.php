@@ -385,17 +385,7 @@ class Controller{
         if($data){
             
             // отформатировать дату
-            
-            for($i=0; $i<count($data); $i++){
-                
-                foreach($data[$i] as $k => $v){
-                    if($k == 'date_add') $data[$i]->date_add = strftime('%d.%m.%Yг. %H:%M:%S',$data[$i]->date_add);
-                }
-                
-            }
-            
-            
-            
+            $data = $this->formDate($data);
             
             echo json_encode(['dataBList'=>$data]);
             exit();
@@ -542,6 +532,19 @@ class Controller{
             
         ]);
         exit();
+    }
+    
+    public function formDate($data){
+        if(is_array($data)){
+            for($i=0; $i<count($data); $i++){        
+                foreach($data[$i] as $k => $v){
+                    if($k == 'date_add') $data[$i]->date_add = strftime('%d.%m.%Yг. %H:%M:%S',$data[$i]->date_add);
+                }   
+            }
+        }else{
+            $data = strftime('%d.%m.%Yг. %H:%M:%S',$data);
+        }
+        return $data;
     }
     
     
