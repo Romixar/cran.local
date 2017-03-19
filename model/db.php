@@ -60,8 +60,8 @@ class DB{
         
     }
     
-    public function findLogin($lg){
-        $sql = "SELECT * FROM `users` WHERE `login` = '".$lg."'";
+    public function findOnLogin($lg){
+        $sql = "SELECT * FROM `".static::$table."` WHERE `login` = '".$lg."'";
         
         $res = $this->select($sql);
         

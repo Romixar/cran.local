@@ -53,7 +53,7 @@ class Controller{
         if(isset($data['do_login_f'])) $this->validateLogin(); // логин / пароль при авторизации
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные при регистрации
-        if(isset($data['do_pass_f'])) $this->validatePass(); // смена пароля
+        if(isset($data['do_pass_f'])) $this->changePass(); // смена пароля
         
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
@@ -168,7 +168,7 @@ class Controller{
         $view = new ViewController();
         $user = new User();
         
-        if($data = $user->findLogin($this->data['login']))
+        if($data = $user->findOnLogin($this->data['login']))
             if($this->verifyUserPass($data)){
                 
                 $mycookie = [
@@ -320,33 +320,53 @@ class Controller{
     public function validateRegLogin(){
         $user = new User();
         
-        if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
+        if(!$user->findOnLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
         else{
             // иконку для очистки поля и выделение ошибки
             exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\'rem2()\'"}');
         }
     }
     
-    public function validatePass(){
+    public function changePass(){
         
         // сравнить пароль существующий с введённым
         
-        if($this->verifyPassword()){
+        if($data = $this->verifyPassword()){
             
-            // замена пароля
+            $login = new LoginController();
+            $newpass = $login->generatePass($this->data['pass2'], $salt);
+                
+            $res = $user->update([
+                'password'=>$newpass,
+                'salt'=>$salt,
+            ],"`login` = '".$_SESSION['user']['login']."'");
+                
+            if($res) $this->respJson($this->sysMessage('success','Пароль изменён!'));
             
-            
-            
-            
-            
-        }else $this->respJson($this->sysMessage('danger','Ошибка смены пароля!'));
-        
+        }else $this->respJson($this->sysMessage('danger','Неверно введён старый пароль!'));
         
     }
     
     public function verifyPassword(){
         
+        $user = new User();
+        if($data = $user->findOnLogin($_SESSION['user']['login'])){
+            
+            $p = $data[0]->password;
+            $s = $data[0]->salt;
+            $l_s = Config::$loc_salt;
+            
+            // захешировать
+            
+            
+            if($this->data['pass1'].$l_s.$s === $p) return true;
+            return false;
+            
+        }else $this->respJson($this->sysMessage('danger','Ошибка смены пароля!'));
+        
     }
+    
+
 
     public function sendEmail(){
         $view = new Viewcontroller();

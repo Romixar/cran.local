@@ -41,12 +41,12 @@
 
 <h4>Смена пароля</h4>
 
-<p>Ваш старый пароль:</p>
+    <p>Ваш старый пароль:</p>
             <p>
                <span></span>
                 <input type="password" id="pass1" name="pass1" placeholder="Старый пароль" />    
             </p>
-            <p>Ваш новый пароль:</p>
+    <p>Ваш новый пароль:</p>
             <p>
                <span></span>
                 <input type="password" id="pass2" name="pass2" placeholder="Новый пароль" />    
