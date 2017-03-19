@@ -15,63 +15,54 @@ class NewsController extends Controller{
         
         //debug($data);
         
-        foreach($data as $id => $comment){
+        $str = $this->preComments($data);
+        
+
+        $this->render('news',['comments'=>$str]);
+    }
+
+    
+    public function getHTMLComments($comments){
+
             
-            $str .= $this->getHTMLComments($comment);
+        foreach($comments as $comment){
+            $str .= $this->view->prerender('comments',compact('comment'));
+            
+            if($comment['childs']) $str .= $this->preComments($comment['childs']);
+            
+        }
+        return $str;    
+    }
+    
+    public function preComments($data){
+        
+        foreach($data as $comment){
+            
+            $str .= '<li id="comm_'.$comment['id'].'">';
+            
+            $str .= $this->view->prerender('comments',compact('comment'));
                 
             if($comment['childs']){
                 
-                foreach($comment['childs'] as $id1 => $comment1){
-                    
-                    $str .= $this->getHTMLComments($comment1);
-                    
-                }
-                
-                
-    
-            }
-            
-            
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        debug($str);
-        
-        $this->render('news');
-    }
-    
-    public function getHTMLComments($comment){
-        
-            
-        $str .= '<li id="comm_'.$comment['id'].'">';
-            
-        $str .= $this->view->prerender('comments', compact('comment'));
-                
-        if($comment['childs']){
-                
-            foreach($comment['childs'] as $id1 => $comment1){
-                    
                 $str .= '<ul class="childs chldcomm_'.$comment['id'].'">';
 
-                $str .= $this->view->prerender('comments', ['comment'=>$comment1]);
-        
-                $str .= '</ul>';
-                    
-            }   
-        }
-            
-        $str .= '</li>';
+                $str .= '<li>';
+                $str .= $this->getHTMLComments($comment['childs']);
+                $str .= '</li>';
                 
-        
+                $str .= '</ul>';
+            }
+            
+            $str .= '</li>';
+        }
         return $str;
         
     }
+    
+    
+    
+    
+    
     
     
     public function getTreeComments($data){

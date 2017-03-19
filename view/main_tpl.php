@@ -84,16 +84,15 @@
 <div class="container">
     <div class="row">
         
-        <div class="col-md-3 sidebar">
+        <div class="col-md-3 col-lg-3 sidebar">
             
             <?= $left ?>
             
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-lg-6">
            
            <div class="main">
-             
-              <div class="col-md-12">
+              <div class="col-md-12 col-lg-12">
                    <?= $sysmes ?>
 
                    <?= $content ?>
@@ -103,7 +102,7 @@
            
             
         </div>
-        <div class="col-md-3 sidebar">
+        <div class="col-md-3 col-lg-3 sidebar">
            
            <?= $right ?>
             

@@ -1,7 +1,10 @@
 <h4>Новости</h4>
 
+<ul id="comments">
+    <?= $comments ?>
+</ul>
 
-
+<div style="height:10px;width:100%;background-color:red;margin:50px 0; "></div>
 
 <ul id="comments">
     <li>
