@@ -15,7 +15,7 @@ class LoginController{
     public function generatePass($pass, &$salt){
 
         
-        $salt = $this->randStr();
+        $salt = $this->randStr(33,126);
         
         // сделать  хэш
 
@@ -23,13 +23,9 @@ class LoginController{
 
     }
     
-    public function randStr(){
+    public function randStr($min,$max){
         
-        for($i=0; $i<Config::$len; $i++){
-            
-            $rstr .= chr(rand(33, 126));// возвращ по одному символу
-            
-        }
+        for($i=0; $i<Config::$len; $i++) $rstr .= chr(rand($min,$max));// возвращ по одному символу
         return $rstr;
     }
     

@@ -340,7 +340,7 @@
         
         if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
         if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
-        if(pwd.val().length > 100) validMessage(pwd, 'ERR_LEN');
+        if(pwd.val().length > 11 || pwd.val().length < 6) validMessage(pwd, 'ERR_PSW');
         
         if(submit) return true;
         return false;
@@ -500,6 +500,7 @@
             'ERR_CHR': 'Только латинский алфавит и цифры!',
             'ERR_EXT': 'Допустимые расширения jpg, jpeg, png, gif!',
             'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
+            'ERR_PSW': 'Пароль должен быть от 5 до 10 символов!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);

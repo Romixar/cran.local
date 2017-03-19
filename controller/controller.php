@@ -51,9 +51,11 @@ class Controller{
         }
         $this->data = $data;
         if(isset($data['do_login_f'])) $this->validateLogin(); // логин / пароль при авторизации
-        if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные польз-ля
-        if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
+        if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные при регистрации
+        if(isset($data['do_pass_f'])) $this->validatePass(); // смена пароля
+        
+        if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
@@ -282,9 +284,7 @@ class Controller{
                 
                 $ctrl = new LoginController();// генерирую пароль
                 
-                $pass = $ctrl->generatePass($this->data['password'], $salt);
-                
-                $this->data['password'] = $pass;
+                $this->data['password'] = $ctrl->generatePass($this->data['password'], $salt);
                 $this->data['salt'] = $salt;
                 $this->data['n'] = 0; // первое посещение
                 
@@ -318,7 +318,6 @@ class Controller{
     }
     
     public function validateRegLogin(){
-        //$view = new Viewcontroller();
         $user = new User();
         
         if(!$user->findLogin($this->data['login'])) exit('{"icon":"ok"}');// такой логин свободен
@@ -326,6 +325,27 @@ class Controller{
             // иконку для очистки поля и выделение ошибки
             exit('{"icon":"remove","err":"ERR_DBL","click":"onclick=\'rem2()\'"}');
         }
+    }
+    
+    public function validatePass(){
+        
+        // сравнить пароль существующий с введённым
+        
+        if($this->verifyPassword()){
+            
+            // замена пароля
+            
+            
+            
+            
+            
+        }else $this->respJson($this->sysMessage('danger','Ошибка смены пароля!'));
+        
+        
+    }
+    
+    public function verifyPassword(){
+        
     }
 
     public function sendEmail(){
