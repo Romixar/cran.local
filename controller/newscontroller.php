@@ -13,10 +13,28 @@ class NewsController extends Controller{
 
         $data = $this->getTreeComments($data);
         
+        //debug($data);
+        
         foreach($data as $id => $comment){
-            if($comment['parent_id'] == 0)
-                $str .= $this->view->prerender('comments',compact('comment'));
+            
+            $str .= $this->getHTMLComments($comment);
+                
+            if($comment['childs']){
+                
+                foreach($comment['childs'] as $id1 => $comment1){
+                    
+                    $str .= $this->getHTMLComments($comment1);
+                    
+                }
+                
+                
+    
+            }
+            
+            
         }
+        
+        
         
         
         
@@ -26,6 +44,33 @@ class NewsController extends Controller{
         debug($str);
         
         $this->render('news');
+    }
+    
+    public function getHTMLComments($comment){
+        
+            
+        $str .= '<li id="comm_'.$comment['id'].'">';
+            
+        $str .= $this->view->prerender('comments', compact('comment'));
+                
+        if($comment['childs']){
+                
+            foreach($comment['childs'] as $id1 => $comment1){
+                    
+                $str .= '<ul class="childs chldcomm_'.$comment['id'].'">';
+
+                $str .= $this->view->prerender('comments', ['comment'=>$comment1]);
+        
+                $str .= '</ul>';
+                    
+            }   
+        }
+            
+        $str .= '</li>';
+                
+        
+        return $str;
+        
     }
     
     
