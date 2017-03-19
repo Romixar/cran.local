@@ -2,7 +2,8 @@
 
 class MainController extends Controller{
     
-    
+
+        
     
     
     public function actionIndex(){
@@ -34,6 +35,7 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница FAQ мета описание';
         $this->meta_key = 'Страница FAQ мета кей';
         
+
         
         $this->render('faq');
     }
@@ -43,6 +45,8 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница рекламодателям мета описание';
         $this->meta_key = 'Страница рекламодателям мета кей';
         
+
+        
         
         $this->render('reklams');
     }
@@ -51,6 +55,8 @@ class MainController extends Controller{
         $this->title = 'Страница контакты';
         $this->meta_desc = 'Страница контакты мета описание';
         $this->meta_key = 'Страница контакты мета кей';
+        
+
         
         
         $this->render('contacts');
@@ -68,8 +74,8 @@ class MainController extends Controller{
     }
     
     public function actionLogout(){
-        
-        session_destroy();// перенаправление в JS
+
+        session_destroy();
         //unset($_SESSION['flash']);
 
         

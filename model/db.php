@@ -87,6 +87,16 @@ class DB{
         
     }
     
+    public function findComments($fields){
+        $sql = "SELECT ".$fields." FROM `".static::$table."`";
+        $sth = $this->dbh->query($sql);
+        $res = $sth->fetchAll();
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+    }
+    
     public function update($fields, $where=''){
         
         if(is_array($fields)){
@@ -150,6 +160,8 @@ class DB{
         $id = $this->insert($data);
 
         if($id){
+            session_start();
+            
             $_SESSION['user']['login'] = $data['login']; // обновление сессии либо создание новой
             $_SESSION['user']['balance'] = $data['balance'];
             $_SESSION['user']['date_reg'] = $data['date_reg'];
@@ -168,18 +180,13 @@ class DB{
     
     public function getBonusRating(){
         
-        $sql = 'SELECT `login`,`user_id`,max(`date_add`),`sum`,count(`sum`),sum(`sum`) FROM `'.static::$table.'` JOIN `users` WHERE `users`.`id` = `history_b`.`user_id` GROUP BY `user_id` ORDER BY sum(`sum`) DESC';
-        
-        //$res = $this->select($sql);
+        $sql = 'SELECT `login`,`user_id`,max(`date_add`),`b`,count(`sum`),sum(`sum`) FROM `'.static::$table.'` JOIN `users` WHERE `users`.`id` = `history_b`.`user_id` GROUP BY `user_id` ORDER BY sum(`sum`) DESC';
         
         $sth = $this->dbh->query($sql);
         $res = $sth->fetchAll();
         
-        
-        
         if(!empty($res)) return $res;
         return false;
-        
         
     }
     

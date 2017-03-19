@@ -11,6 +11,7 @@ class Controller{
     public $title;
     public $meta_desc;
     public $meta_key;
+
     
     public function __construct(){
         
@@ -19,7 +20,6 @@ class Controller{
         
         
         $this->view = new ViewController();
-        
         
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
@@ -163,7 +163,7 @@ class Controller{
     
     
     public function validateLogin(){// поиск пользов-ля в БД
-        //$view = new Viewcontroller();
+        $view = new ViewController();
         $user = new User();
         
         if($data = $user->findLogin($this->data['login']))
@@ -174,12 +174,10 @@ class Controller{
                     'ip'=>$_SESSION['user']['ip'],
                 ];
                 
-                $this->respJson(false, false, false, $mycookie);
+                $this->respJson(false, false, false, $mycookie);// авторизация пройдена
                 
             }
-                
-                
-                //exit('{"redirect":"profile"}');// авторизация пройдена
+             //exit('{"redirect":"profile"}');
         
         // авторизация не пройдена 
         $type = 'danger';
@@ -200,7 +198,7 @@ class Controller{
         // предварительно захешировать
         
         if($this->data['password'].$data[0]->salt === $data[0]->password){
-            
+
             // авторизация пройдена
             $_SESSION['user']['id'] = $data[0]->id;
             $_SESSION['user']['img'] = $data[0]->img;

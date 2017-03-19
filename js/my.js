@@ -677,35 +677,35 @@
         
         if(mycookie.login && mycookie.ip){// только что вошел
         
-            if($.cookie('user_out') !== '' || $.cookie('user_out') !== undefined){
-
-                var user_out = JSON.parse($.cookie('user_out'));
-
-                if(user_out.login == mycookie.login && user_out.ip == mycookie.ip){// вошел тот же
-
-                    var user_in1 = $.cookie('user_out');// старую куку пересохраню в новую
-
-                    console.log(user_in1);
-
-                    $.cookie('user', user_in1,{
-                            expires: 5,
-                            path: '/',
-                        });
-                    $.cookie('user_out','');   
-                }else{
-                    
-                    var user_in2 = JSON.stringify(mycookie);
-
-                    $.cookie('user', user_in2,{
-                                    expires: 5,
-                                    path: '/',
-                                });
-                    $.cookie('user_out','');
-                    
-                    
-                }
-
-            }else{
+//            if($.cookie('user_out') !== '' || $.cookie('user_out') !== undefined){
+//
+//                var user_out = JSON.parse($.cookie('user_out'));
+//
+//                if(user_out.login == mycookie.login && user_out.ip == mycookie.ip){// вошел тот же
+//
+//                    var user_in1 = $.cookie('user_out');// старую куку пересохраню в новую
+//
+//                    console.log(user_in1);
+//
+//                    $.cookie('user', user_in1,{
+//                            expires: 5,
+//                            path: '/',
+//                        });
+//                    $.cookie('user_out','');   
+//                }else{
+//                    
+//                    var user_in2 = JSON.stringify(mycookie);
+//
+//                    $.cookie('user', user_in2,{
+//                                    expires: 5,
+//                                    path: '/',
+//                                });
+//                    $.cookie('user_out','');
+//                    
+//                    
+//                }
+//
+//            }else{
                 
                 var user_in3 = JSON.stringify(mycookie);
 
@@ -718,8 +718,8 @@
             }
         
         
-        }
-
+        //}
+console.log('попал');
         location.href = '/profile';
 
         

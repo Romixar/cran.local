@@ -24,8 +24,15 @@ class StatisticController extends Controller{
     
     public function getHTMLTabRating($data){
         
+        $str = '';
+        for($i=0; $i<count($data); $i++){
+            
+            
+            $str .= '<tr><td>'.($i+1).'.</td><td>'.$data[$i]['login'].'</td><td>'.$data[$i]['max(`date_add`)'].'</td><td>'.$data[$i]['b'].'</td><td>'.$data[$i]['sum(`sum`)'].'</td></tr>';
+            
+        }
         
-        return 'скоро будет рейтинг пользователей';
+        return $str;
         
         
     }
