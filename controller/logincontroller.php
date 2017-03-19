@@ -19,20 +19,16 @@ class LoginController{
         
         // сделать  хэш
 
-        return $pass.$salt;
+        return $pass.Config::$loc_salt.$salt;
 
     }
     
     public function randStr(){
         
-        $str = Config::$secret_str;
-        $max = strlen($str);
-
-        $rstr = '';
         for($i=0; $i<Config::$len; $i++){
             
-            $pos = rand(1, $max);
-            $rstr .= substr($str,$pos,1);// выбираю по одному символу            
+            $rstr .= chr(rand(33, 126));// возвращ по одному символу
+            
         }
         return $rstr;
     }

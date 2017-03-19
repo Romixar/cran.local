@@ -15,5 +15,10 @@
     <p>
         <a href="###" id="submit" tabindex="-1" class="btn btn-success login">Войти</a>
     </p>
+    <p>
+        <a href="###" id="changepass">
+            Забыл пароль
+        </a>
+    </p>
             
 </div>

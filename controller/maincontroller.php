@@ -11,6 +11,7 @@ class MainController extends Controller{
         $this->meta_desc = 'Главная страница мета описание';
         $this->meta_key = 'Главная страница мета кей';
 
+
         
         $b_tpl = $this->view->prerender('bonus',compact('bonus'));
         

@@ -196,8 +196,9 @@ class Controller{
         
         // сравнить введенное пользователем и найденное в БД
         // предварительно захешировать
+        $s = Config::$loc_salt;
         
-        if($this->data['password'].$data[0]->salt === $data[0]->password){
+        if($this->data['password'].$s.$data[0]->salt === $data[0]->password || $this->data['password'].$data[0]->salt === $data[0]->password){
 
             // авторизация пройдена
             $_SESSION['user']['id'] = $data[0]->id;
