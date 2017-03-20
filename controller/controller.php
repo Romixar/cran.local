@@ -54,6 +54,7 @@ class Controller{
         if(isset($data['reg_login_f'])) $this->validateRegLogin();// логин при регистрации
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные при регистрации
         if(isset($data['do_pass_f'])) $this->changePass(); // смена пароля
+        if(isset($data['do_recov_f'])) $this->recoveryLogPass(); // восстан-е логина / пароля
         
         if(isset($data['do_message_f'])) $this->sendEmail();
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
@@ -335,9 +336,11 @@ class Controller{
             
             $login = new LoginController();
             $user = new User();
+            
+            $newpass = $login->generatePass($this->data['pass2'], $salt);
                 
             $res = $user->update([
-                'password'=>$login->generatePass($this->data['pass2'], $salt),
+                'password'=>$newpass,
                 'salt'=>$salt,
             ],"`login` = '".$_SESSION['user']['login']."'");
                 
@@ -363,6 +366,15 @@ class Controller{
             return false;
             
         }else $this->respJson($this->sysMessage('danger','Ошибка смены пароля!'));
+        
+    }
+    
+    public function recoveryLogPass(){
+        
+        
+        debug($this->data);die;
+        
+        // найти в базе и отправить на e-mail
         
     }
     

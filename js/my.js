@@ -4,6 +4,8 @@
     
     activeMenu();// определение активного пункта меню
     inpFocus();// проверка фокуса полей
+    
+    clearBorder();// аналог inpFocus() НО с делегированием
 
     var act = 'controller/controller';
     var patLogPas = /^[a-z0-9-\._]+$/i; // проверка логина/пароля
@@ -12,7 +14,8 @@
     
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
-
+    
+    
     var uri = location.href;
     if(uri.split('/')[3] == '' || uri.split('/')[3] == '###'){
         
@@ -193,8 +196,37 @@
         
         if(e.keyCode == 13) if(validLogAndPass(lg, pwd)) submitLogPass(lg,pwd);
     });
-    
-    
+    $('div.login a#recoverypass').click(function(e){// восстановление пароля
+       
+        e.preventDefault;
+        
+        $('div.main div h4').remove();
+        $('title').text('').text('Страница восстановления пароля');
+        $('div.login').replaceWith(getRecoveryTpl());
+        return;
+        
+    });
+    $(document).on('click', 'a#recovery', function(e){
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        var em = $('input#email');
+        var wt = $('input#wallet');
+        
+        if(validRecovery(em,wt)){
+            
+            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+
+            var str = '&email='+em.val()+'&wallet='+wt.val();
+
+            post_query('do_recov', str);
+        }else return false;
+    });
+
+
     
     $('div.profile a#submit').click(function(e){
         
@@ -267,8 +299,6 @@
         }else{
             
             var mes = 'Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!_000';
-            
-            //var tpl = getTplMes(mes, 'danger');
             
             $('div.main div.col-md-12 h4:first').after(getTplMes(mes, 'danger'));// вывод сист сообщения
             return;
@@ -403,6 +433,24 @@
          
         if(submit) return true;
         return false;
+    }
+    
+    function validRecovery(em,wt){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
+        
+        if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
+        
+        if(wt.val() !== ''){
+            if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
+            if((wt.val()).length > 20) validMessage(wt, 'ERR_LEN');
+
+            // перв символ или пусто после первого или только цифры с перв символа
+            if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
+        }
+
+        if(submit) return true;
+        return false;        
     }
     
 
@@ -680,9 +728,22 @@
         txt.focusin(function(){
             $(this).css('border','none');
             $(this).prev().text('');
+        });   
+    }
+    
+    function clearBorder(){
+    
+        $(document).on('focus', 'div.recovery input', function(e){
+        
+            $(this).css('border','none');
+            $(this).prev().text('');
+
         });
         
+        
     }
+    
+    
     
     function removeDisabled(){
         if(elem && elem.hasClass("disabled")) elem.text('').removeClass('disabled').text(textButton);
@@ -832,8 +893,11 @@ console.log('попал');
         
     }
     
+    function getRecoveryTpl(){
+        return "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
+    }
     
-    
+//    var contant = "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
     
     
 })();
