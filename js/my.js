@@ -201,6 +201,7 @@
         e.preventDefault;
         
         $('div.main div h4').remove();
+        if($('div.alert')) $('div.alert').remove();
         $('title').text('').text('Страница восстановления пароля');
         $('div.login').replaceWith(getRecoveryTpl());
         return;
@@ -515,6 +516,9 @@
                 type: 'POST',
                 data: name + '_f=' + str,
                 cache: false,
+                beforeSend: function(data){ // сoбытиe дo oтпрaвки
+                    //form.find('input[type="submit"]').attr('disabled', 'disabled');
+		        },
                 success: function(res){
 
                     console.log(res);
@@ -529,6 +533,7 @@
                             
                             viewMessage(obj.sysmes);
                             setTextSubmit();
+                            if(obj.auto) clearAndReplRecovery();
                         }
                         
                         if(obj.btn) viewButtons();
@@ -552,6 +557,15 @@
                         
                     };
                 },
+                error: function(xhr, ajaxOptions, thrownError){
+                    
+		            console.log(xhr.status); // пoкaжeм oтвeт сeрвeрa
+		            console.log(thrownError); // и тeкст oшибки
+		        },
+		       complete: function(data) { // сoбытиe пoслe любoгo исхoдa
+                   
+		            //form.find('input[type="submit"]').prop('disabled', false);
+		         },
             });
     };
     
@@ -652,6 +666,13 @@
             $('div.image img').attr('src','/images/'+img);
             fl.val('');// очистка
         }
+    }
+    
+    function clearAndReplRecovery(){
+        
+        $(document).find('div.form').remove();
+        post_query('auto_recov','');// повторный запрос для отправки письма пользов-лю
+        return;
     }
     
     function setTextSubmit(){

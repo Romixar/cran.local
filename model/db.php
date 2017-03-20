@@ -100,11 +100,7 @@ class DB{
     public function update($fields, $where=''){
         
         if(is_array($fields)){
-            foreach($fields as $k => $v){
-                
-                for($i=0; $i<count($fields); $i++) $data[$i] = "`".$k."` = '".$v."'";
-            }
-            
+            foreach($fields as $k => $v) $data[] = "`".$k."` = '".$v."'";
         }else return false;
         
         $sql = 'UPDATE `'.static::$table.'` SET '.implode(',',$data);
@@ -113,9 +109,13 @@ class DB{
         
         if(!empty($where)) $sql .= ' WHERE '.$where;
         
-        $sth = $this->dbh->query($sql);
-        return $sth->rowCount();
         
+        
+        $sth = $this->dbh->query($sql);
+        
+        //debug($sth->rowCount());die;
+        
+        return $sth->rowCount();
     }
 
     

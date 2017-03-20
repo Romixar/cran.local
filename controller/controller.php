@@ -55,6 +55,7 @@ class Controller{
         if(isset($data['do_regist_f'])) $this->validateRegData(); // все данные при регистрации
         if(isset($data['do_pass_f'])) $this->changePass(); // смена пароля
         if(isset($data['do_recov_f'])) $this->recoveryLogPass(); // восстан-е логина / пароля
+        if(isset($data['auto_recov_f'])) $this->generateRecoveryEmail(); // автом-кая отправка e-mail
         
         if(isset($data['do_message_f'])) $this->generateAdminEmail();// сообщение с сайта
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
@@ -381,22 +382,61 @@ class Controller{
             
             if($data = $user->find('`login`',"`email`='".$this->data['email']."'")){
 
-                $l = $data[0]->login;
-                $newpass = $login->randStr(64,126);
+                $_SESSION['u_recov']['login'] = $data[0]->login;
+                $_SESSION['u_recov']['email'] = $this->data['email'];
+                //$userpass = $login->randStr(64,126);
                 
-                $tit = 'Восстановление логина / пароля для cran.local';
-                $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$newpass.'</p>';
-                $uemail = $this->data['email'];
+//                $tit = 'Восстановление логина / пароля для cran.local';
+//                $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$userpass.'</p>';
+//                $uemail = $this->data['email'];
+//                
+//                $this->sendEmail($tit,$text,$uemail,'',$uemail);
                 
-                $res = $this->sendEmail($tit,$text,$uemail,'',$uemail);
-                echo $res;die;
-                
-                if($this->sendEmail($tit,$text,$uemail,'',$uemail))
-                    $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'));
+//                $newpass = $login->generatePass($userpass, $salt);
+//                
+//                if($user->update([
+//                    'password'=>$newpass,
+//                    'salt'=>$salt,
+//                ],"`login`='".$_SESSION['u_recov']['login']."'")){
+                    
+                    // отправляю команду на автозапрос отправки письма
+                    $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'),false,false,false,true);
+                //}
             }
         }
         
         $this->respJson($this->sysMessage('danger','Пользователь не найден!'));
+    }
+    
+    public function generateRecoveryEmail(){
+        
+        //debug($_SESSION);die;
+        
+        
+        $user = new User();
+        $login = new LoginController();
+        
+        $l = $_SESSION['u_recov']['login'];
+        $userpass = $login->randStr(64,126);
+        
+        $tit = 'Восстановление логина / пароля для cran.local';
+        $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$userpass.'</p>';
+        $uemail = $_SESSION['u_recov']['email'];
+        
+        $newpass = $login->generatePass($userpass, $salt);
+                
+        if($user->update([
+            'password'=>$newpass,
+            'salt'=>$salt,
+        ],"`login`='".$l."'")){
+            
+            unset($_SESSION['u_recov']);
+            $this->sendEmail($tit,$text,$uemail,'',$uemail);
+                    
+        }
+                    
+                    
+                    
     }
     
     public function generateAdminEmail(){
@@ -407,7 +447,7 @@ class Controller{
         $name = $this->data['name'];
         
         $this->sendEmail($tit,$text,$uemail,$name);
-        exit();
+        //exit();
     }
 
     public function sendEmail($title,$text,$uemail,$name='',$email=''){
@@ -426,8 +466,8 @@ class Controller{
         $head = 'From: admin@zolushka18.ru'."\r\n".'MIME-Version 1.0'."\r\n".'Content-type: text/html; charset=UTF-8';
         
         mail($email,$title,$body,$head);
-        return true;
-        //exit();
+        //return true;
+        exit();
     }
     
     public function getRefList(){
@@ -606,12 +646,13 @@ class Controller{
         return $view->prerender('message',compact('type','mes')); 
     }
     
-    public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false){
+    public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false, $auto=false){
         echo json_encode([
             'sysmes'=>$sysmes,
             'flname'=>$flname,
             'changeEm'=>$changeEm,
-            'mycookie'=>$mycookie
+            'mycookie'=>$mycookie,
+            'auto'=>$auto
             
         ]);
         exit();
