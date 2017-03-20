@@ -211,22 +211,20 @@
         e.preventDefault;
         
         elem = $(this);
+        textButton = $(this).text();
         var pwd1 = $('input#pass1');
         var pwd2 = $('input#pass2');
         
         if(validPassws(pwd1,pwd2)){
-            console.log('успешно');
-//            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
-//
-//            var str = '&pass1='+pwd1.val()+'&pass2='+pwd2.val();
-//
-//            post_query('do_pass', str);
+
+            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+
+            var str = '&pass1='+pwd1.val()+'&pass2='+pwd2.val();
+
+            post_query('do_pass', str);
             
         }
-            
-            
-        console.log('не успешно');
-        
+        return;
     });
     
 
@@ -383,40 +381,24 @@
         
         submit = true;// запрет второй отправки (по ENTER например)
         
-        if(pwd1.val() === ''){
-            validMessage(pwd1, 'ERR_EMP');
-            return;
-        }   
-        if(pwd1.val().indexOf(' ') !== -1){
-            validMessage(pwd1, 'ERR_NBS');
-            return;
-        }   
-        if(!patLogPas.test(pwd1.val())){
-            validMessage(pwd1, 'ERR_CHR');
-            return;
-        }
-        if(pwd1.val().length > 15 || pwd1.val().length < 5){
-            validMessage(pwd1, 'ERR_PSW');
-            return;
-        }
-            
-            
+        if(pwd1.val() === '') validMessage(pwd1, 'ERR_EMP');
         
-        if(pwd2.val() === ''){
-            validMessage(pwd2, 'ERR_EMP');
-            return;
+        if(pwd1.val().indexOf(' ') !== -1) validMessage(pwd1, 'ERR_NBS');
+        
+        if(pwd1.val() !== '' && pwd1.val().indexOf(' ') === -1){
+            
+            if(!patLogPas.test(pwd1.val())) validMessage(pwd1, 'ERR_CHR');
+            if(pwd1.val().length > 15 || pwd1.val().length < 5) validMessage(pwd1, 'ERR_PSW');
         }
-        if(pwd2.val().indexOf(' ') !== -1){
-            validMessage(pwd2, 'ERR_NBS');
-            return;
-        }   
-        if(!patLogPas.test(pwd2.val())){
-            validMessage(pwd2, 'ERR_CHR');
-            return;
-        }   
-        if(pwd2.val().length > 15 || pwd2.val().length < 5){
-            validMessage(pwd2, 'ERR_PSW');
-            return;
+        
+        if(pwd2.val() === '') validMessage(pwd2, 'ERR_EMP');
+        
+        if(pwd2.val().indexOf(' ') !== -1) validMessage(pwd2, 'ERR_NBS');
+        
+        if(pwd2.val() !== '' && pwd2.val().indexOf(' ') === -1){
+            
+            if(!patLogPas.test(pwd2.val())) validMessage(pwd2, 'ERR_CHR');
+            if(pwd2.val().length > 15 || pwd2.val().length < 5) validMessage(pwd2, 'ERR_PSW');
         }
          
         if(submit) return true;
@@ -693,11 +675,18 @@
             $(this).css('border','none');
             $(this).prev().text('');// очистка текста перед полем
             $(this).next().text('');// очистка глификонки
+            removeDisabled();
         });
         txt.focusin(function(){
             $(this).css('border','none');
             $(this).prev().text('');
         });
+        
+    }
+    
+    function removeDisabled(){
+        if(elem && elem.hasClass("disabled")) elem.text('').removeClass('disabled').text(textButton);
+        return;
     }
     
     

@@ -334,10 +334,10 @@ class Controller{
         if($data = $this->verifyPassword()){
             
             $login = new LoginController();
-            $newpass = $login->generatePass($this->data['pass2'], $salt);
+            $user = new User();
                 
             $res = $user->update([
-                'password'=>$newpass,
+                'password'=>$login->generatePass($this->data['pass2'], $salt),
                 'salt'=>$salt,
             ],"`login` = '".$_SESSION['user']['login']."'");
                 
@@ -350,14 +350,14 @@ class Controller{
     public function verifyPassword(){
         
         $user = new User();
-        if($data = $user->findOnLogin($_SESSION['user']['login'])){
+        if($data = $user->find('`password`,`salt`',"`login`='".$_SESSION['user']['login']."'")){
             
             $p = $data[0]->password;
             $s = $data[0]->salt;
             $l_s = Config::$loc_salt;
             
             // захешировать
-            
+            //debug($data);die;
             
             if($this->data['pass1'].$l_s.$s === $p) return true;
             return false;
