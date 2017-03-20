@@ -205,6 +205,30 @@
         if(validEmailAndFile()) submitJson($('#my_form'));// отправить все из my_form
         
     });
+    
+    $('div.profile a#change').click(function(e){// смена пароля
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        var pwd1 = $('input#pass1');
+        var pwd2 = $('input#pass2');
+        
+        if(validPassws(pwd1,pwd2)){
+            console.log('успешно');
+//            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+//
+//            var str = '&pass1='+pwd1.val()+'&pass2='+pwd2.val();
+//
+//            post_query('do_pass', str);
+            
+        }
+            
+            
+        console.log('не успешно');
+        
+    });
+    
 
     $('a#get_ref_list').click(function(e){
         
@@ -355,6 +379,50 @@
         post_query('do_login', str);
     }
     
+    function validPassws(pwd1,pwd2){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
+        
+        if(pwd1.val() === ''){
+            validMessage(pwd1, 'ERR_EMP');
+            return;
+        }   
+        if(pwd1.val().indexOf(' ') !== -1){
+            validMessage(pwd1, 'ERR_NBS');
+            return;
+        }   
+        if(!patLogPas.test(pwd1.val())){
+            validMessage(pwd1, 'ERR_CHR');
+            return;
+        }
+        if(pwd1.val().length > 15 || pwd1.val().length < 5){
+            validMessage(pwd1, 'ERR_PSW');
+            return;
+        }
+            
+            
+        
+        if(pwd2.val() === ''){
+            validMessage(pwd2, 'ERR_EMP');
+            return;
+        }
+        if(pwd2.val().indexOf(' ') !== -1){
+            validMessage(pwd2, 'ERR_NBS');
+            return;
+        }   
+        if(!patLogPas.test(pwd2.val())){
+            validMessage(pwd2, 'ERR_CHR');
+            return;
+        }   
+        if(pwd2.val().length > 15 || pwd2.val().length < 5){
+            validMessage(pwd2, 'ERR_PSW');
+            return;
+        }
+         
+        if(submit) return true;
+        return false;
+    }
+    
 
     function validRegAndSubmit(){
         
@@ -500,12 +568,11 @@
             'ERR_CHR': 'Только латинский алфавит и цифры!',
             'ERR_EXT': 'Допустимые расширения jpg, jpeg, png, gif!',
             'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
-            'ERR_PSW': 'Пароль должен быть от 5 до 10 символов!',
+            'ERR_PSW': 'Пароль должен быть от 5 до 15 символов!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
         submit = false;
-        
         
     }
     
