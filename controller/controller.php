@@ -56,7 +56,7 @@ class Controller{
         if(isset($data['do_pass_f'])) $this->changePass(); // смена пароля
         if(isset($data['do_recov_f'])) $this->recoveryLogPass(); // восстан-е логина / пароля
         
-        if(isset($data['do_message_f'])) $this->sendEmail();
+        if(isset($data['do_message_f'])) $this->generateAdminEmail();// сообщение с сайта
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
@@ -370,26 +370,53 @@ class Controller{
     }
     
     public function recoveryLogPass(){
+        $user = new User();
+        $login = new LoginController();
         
-        
-        debug($this->data);die;
+        //debug($this->data);die;
         
         // найти в базе и отправить на e-mail
         
+        if($this->data['email'] !== ''){
+            
+            if($data = $user->find('`login`',"`email`='".$this->data['email']."'")){
+
+                $l = $data[0]->login;
+                $newpass = $login->randStr(64,126);
+                
+                $tit = 'Восстановление логина / пароля для cran.local';
+                $text = '<p>Ваш логин: <b>'.$l.'</b></p><p>Ваш новый пароль: <b>'.$newpass.'</b></p>';
+                $uemail = $this->data['email'];
+                
+                $this->sendEmail($tit,$text,$uemail,'',$uemail);
+                
+                $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'));
+            }
+        }
+        
+        $this->respJson($this->sysMessage('danger','Пользователь не найден!'));
     }
     
+    public function generateAdminEmail(){
+        
+        $tit = 'Сообщение с сайта cran.local';// тема письма
+        $text = nl2br($this->data['message']);
+        $uemail = $this->data['email'];
+        $name = $this->data['name'];
+        
+        $this->sendEmail($tit,$text,$uemail,$name);
+    }
 
-
-    public function sendEmail(){
+    public function sendEmail($title,$text,$uemail,$name='',$email=''){
         $view = new Viewcontroller();
         
-        $title = 'Сообщение с сайта cran.local';// тема письма
-        $name = $this->data['name'];
-        $uemail = $this->data['email'];
-        $text = nl2br($this->data['message']);
+        //$title = 'Сообщение с сайта cran.local';// тема письма
+        //$name = $this->data['name'];
+        //$uemail = $this->data['email'];
+        //$text = nl2br($this->data['message']);
         
         $body = $view->prerender('mail',compact('title','name','uemail','text'));
-        $email = Config::$admEmail;
+        $email = ($email) ? $email : Config::$admEmail;
         
         $head = 'From: admin@zolushka18.ru'."\r\n".'MIME-Version 1.0'."\r\n".'Content-type: text/html; charset=UTF-8';
         
