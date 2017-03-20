@@ -634,7 +634,9 @@
 
         if(al) al.remove();
         
-        $('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения    
+        $(document).find('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения
+        
+        //$('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения
     }
     
     function clearAndRepl(img, change){// подстановка в DOM e-mail и img

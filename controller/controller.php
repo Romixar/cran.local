@@ -385,12 +385,14 @@ class Controller{
                 $newpass = $login->randStr(64,126);
                 
                 $tit = 'Восстановление логина / пароля для cran.local';
-                $text = '<p>Ваш логин: <b>'.$l.'</b></p><p>Ваш новый пароль: <b>'.$newpass.'</b></p>';
+                $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$newpass.'</p>';
                 $uemail = $this->data['email'];
                 
-                $this->sendEmail($tit,$text,$uemail,'',$uemail);
+                $res = $this->sendEmail($tit,$text,$uemail,'',$uemail);
+                echo $res;die;
                 
-                $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'));
+                if($this->sendEmail($tit,$text,$uemail,'',$uemail))
+                    $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'));
             }
         }
         
@@ -405,6 +407,7 @@ class Controller{
         $name = $this->data['name'];
         
         $this->sendEmail($tit,$text,$uemail,$name);
+        exit();
     }
 
     public function sendEmail($title,$text,$uemail,$name='',$email=''){
@@ -414,15 +417,17 @@ class Controller{
         //$name = $this->data['name'];
         //$uemail = $this->data['email'];
         //$text = nl2br($this->data['message']);
+        $name = ($name) ? $name : 'не указано';
         
         $body = $view->prerender('mail',compact('title','name','uemail','text'));
         $email = ($email) ? $email : Config::$admEmail;
         
+        
         $head = 'From: admin@zolushka18.ru'."\r\n".'MIME-Version 1.0'."\r\n".'Content-type: text/html; charset=UTF-8';
         
         mail($email,$title,$body,$head);
-        
-        exit();
+        return true;
+        //exit();
     }
     
     public function getRefList(){
