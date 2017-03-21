@@ -73,10 +73,11 @@ class DB{
         
         $sql = "SELECT ".$fields." FROM `".static::$table."`";
         
-        
-        
         if(!empty($where)) $sql .= ' WHERE '.$where;
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
+        
+        
+        //debug($sql);die;
 
         $res = $this->select($sql);
         

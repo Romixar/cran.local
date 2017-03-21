@@ -371,25 +371,54 @@ class Controller{
     
     public function recoveryLogPass(){
         $user = new User();
-        // Добавить восстановление по кошельку и логину
-        
-        
-        
 
-        if($this->data['email'] !== ''){
+        $fields = '`email`,`login`';// будут поля которые искать
+        $wh = '';   // будет предикат
+        
+        $em = $this->data['email'];
+        $lg = $this->data['login'];
+        $wt = $this->data['wallet'];
+        
+        if(!empty($em) && !empty($lg)){// поиск попарно
+
+            $wh = "`email`='".$em."' AND `login`='".$lg."'";
+        }
+        if(!empty($wt) && !empty($lg)){
             
-            if($data = $user->find('`login`',"`email`='".$this->data['email']."'")){
-
-                $_SESSION['u_recov']['login'] = $data[0]->login;
-                $_SESSION['u_recov']['email'] = $this->data['email'];
-
-                    
-                // отправляю команду на автозапрос отправки письма
-                $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'),false,false,false,true);
-            }
+            $wh = "`wallet`='".$wt."' AND `login`='".$lg."'";
+        }
+        if(!empty($wt) && !empty($em)){
+            
+            $wh = "`wallet`='".$wt."' AND `email`='".$em."'";
         }
         
+        if(!empty($em) && empty($wt) && empty($lg)){// поиск по одному полю
+
+            $wh = "`email`='".$em."'";
+        }
+        if(!empty($wt) && empty($em) && empty($lg)){
+            
+            $wh = "`wallet`='".$wt."'";
+        }
+        if(!empty($lg) && empty($wt) && empty($em)){
+            
+            $wh = "`login`='".$lg."'";
+        }
+        
+        if(($data = $user->find($fields,$wh)) && count($data) == 1){
+            
+            if(!empty($data[0]->email)){
+                
+                $_SESSION['u_recov']['login'] = $data[0]->login;
+                $_SESSION['u_recov']['email'] = $data[0]->email;
+                
+                // отправляю команду на автозапрос отправки письма
+                $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'),false,false,false,true);
+                
+            }else $this->respJson($this->sysMessage('danger','Восстановление невозможно!<br/>Пользователь <b>'.$this->data['login'].'</b> не указал e-mail, для отправки ему нового пароля!'));
+        }
         $this->respJson($this->sysMessage('danger','Пользователь не найден!'));
+        
     }
     
     public function generateRecoveryEmail(){

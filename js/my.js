@@ -207,7 +207,7 @@
         return;
         
     });
-    $(document).on('click', 'a#recovery', function(e){
+    $(document).on('click', 'a#recovery', function(e){// восстановление пароля
         
         e.preventDefault;
         
@@ -215,21 +215,20 @@
         textButton = $(this).text();
         
         var em = $('input#email');
+        var lg = $('input#login');
         var wt = $('input#wallet');
         
-        if(validRecovery(em,wt)){
+        if(validRecovery(em,lg,wt)){
             
             viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
-
-            var str = '&email='+em.val()+'&wallet='+wt.val();
-
+            var str = '&email='+em.val()+'&login='+lg.val()+'&wallet='+wt.val();
             post_query('do_recov', str);
         }else return false;
     });
 
 
     
-    $('div.profile a#submit').click(function(e){
+    $('div.profile a#submit').click(function(e){// отправка img аватарки и e-mail
         
         e.preventDefault;
         
@@ -389,7 +388,7 @@
 
         if(lg.val() === '') validMessage(lg, 'ERR_EMP');
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
-        if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
+        if(lg.val().length > 30) validMessage(lg, 'ERR_LEN');
         
         if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
         if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
@@ -436,15 +435,21 @@
         return false;
     }
     
-    function validRecovery(em,wt){
+    function validRecovery(em,lg,wt){
         
         submit = true;// запрет второй отправки (по ENTER например)
         
         if(em.val() !== '') if(!patEmail.test(em.val())) validMessage(em, 'ERR_EML');
         
+        if(lg.val() !== ''){
+            if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
+            if(lg.val().length > 30) validMessage(lg, 'ERR_LEN');
+            if(!patLogPas.test(lg.val())) validMessage(lg, 'ERR_CHR');
+        }
+        
         if(wt.val() !== ''){
             if(wt.val().indexOf(' ') !== -1) validMessage(wt, 'ERR_NBS');
-            if((wt.val()).length > 20) validMessage(wt, 'ERR_LEN');
+            if((wt.val()).length > 30) validMessage(wt, 'ERR_LEN');
 
             // перв символ или пусто после первого или только цифры с перв символа
             if((wt.val())[0] !== 'P' || (wt.val()).substring(1) === '' || isNaN(+(wt.val()).substring(1))) validMessage(wt, 'ERR_WAL');
@@ -917,10 +922,10 @@ console.log('попал');
     }
     
     function getRecoveryTpl(){
-        return "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
+        return "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Логин, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"login\" name=\"login\" placeholder=\"Ваш логин\" /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
     }
     
-//    var contant = "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
+
     
     
 })();
