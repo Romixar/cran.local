@@ -393,7 +393,7 @@
         
         if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
         if(pwd.val().indexOf(' ') !== -1) validMessage(pwd, 'ERR_NBS');
-        if(pwd.val().length > 11 || pwd.val().length < 6) validMessage(pwd, 'ERR_PSW');
+        if(pwd.val().length > 15 || pwd.val().length < 4) validMessage(pwd, 'ERR_PSW');
         
         if(submit) return true;
         return false;
@@ -418,7 +418,7 @@
         
         if(pwd1.val() !== '' && pwd1.val().indexOf(' ') === -1){
             
-            if(!patLogPas.test(pwd1.val())) validMessage(pwd1, 'ERR_CHR');
+            //if(!patLogPas.test(pwd1.val())) validMessage(pwd1, 'ERR_CHR');
             if(pwd1.val().length > 15 || pwd1.val().length < 5) validMessage(pwd1, 'ERR_PSW');
         }
         

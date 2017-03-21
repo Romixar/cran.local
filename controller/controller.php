@@ -37,7 +37,7 @@ class Controller{
     
     public function xss($data){
 
-		$req = '/script|http|www\.|\'|\`|SELECT|UNION|UPDATE|exe|exec|CREATE|DELETE|INSERT|tmp/i';
+		$req = '/script|http|www\.|\'|\`|\"|SELECT|UNION|UPDATE|exe|exec|CREATE|DELETE|INSERT|tmp/i';
 			
 		foreach($data as  $key => $val){
             
@@ -55,7 +55,6 @@ class Controller{
         if(isset($data['do_pass_f'])) $this->changePass(); // смена пароля
         if(isset($data['do_recov_f'])) $this->recoveryLogPass(); // восстан-е логина / пароля
         if(isset($data['auto_recov_f'])) $this->generateRecoveryEmail(); // автом-кая отправка e-mail
-        
         if(isset($data['do_message_f'])) $this->generateAdminEmail();// сообщение с сайта
         if(isset($data['email'])) $this->validateAuthData();// email/file авториз-го (JSON пришел)
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
@@ -201,11 +200,7 @@ class Controller{
         // предварительно захешировать
         $s = Config::$loc_salt;
         
-        echo $this->data['password'].$s.$data[0]->salt.'<br/>';
-        echo $data[0]->password.'<br/>';
-        
-        die;
-        
+
         if($this->data['password'].$s.$data[0]->salt === $data[0]->password || $this->data['password'].$data[0]->salt === $data[0]->password){
 
             // авторизация пройдена
