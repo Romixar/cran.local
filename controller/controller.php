@@ -18,8 +18,6 @@ class Controller{
         if(isset($_POST)) $this->xss($_POST);
         if(isset($_GET)) $this->xss($_GET);
         
-        debug($_SESSION);
-        
         $this->view = new ViewController();
         
         if(!isset($_SESSION['user'])){
@@ -377,7 +375,7 @@ class Controller{
     }
     
     public function recoveryLogPass(){
-        
+        $user = new User();
         // Добавить восстановление по кошельку и логину
         
         
@@ -418,7 +416,7 @@ class Controller{
             'salt'=>$salt,
         ],"`login`='".$l."'")){
             
-            //unset($_SESSION['u_recov']);
+            unset($_SESSION['u_recov']);
             $this->sendEmail($tit,$text,$uemail,'',$uemail);           
         }else $this->respJson($this->sysMessage('danger','Ошибка обновления базы данных!'));
     }

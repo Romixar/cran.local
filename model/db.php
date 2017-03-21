@@ -108,8 +108,7 @@ class DB{
         //$sql = 'INSERT INTO tbl_name ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
         
         if(!empty($where)) $sql .= ' WHERE '.$where;
-        
-        
+
         
         $sth = $this->dbh->query($sql);
         

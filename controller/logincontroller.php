@@ -25,32 +25,18 @@ class LoginController{
 
     }
     
-    public function randStr($min,$max,$length=''){
+    public function randStr($min,$max){
         
-        for($i=0; $i<Config::$len; $i++) $rstr .= chr(rand($min,$max));// возвращ по одному символу
-        
-        $this->deleteChr($rstr);
-        
-        //if(!$length) return $rstr;
+        // возвращ по одному символу
+        for($i=0; $i<Config::$len; $i++) $rstr .= chr($this->randWithout($min,$max));
+        return $rstr;
     }
     
-    public function deleteChr($str){
-        
-        $chr = ['`','"',"'"];// удаляю ненужные символы
-        $str = str_replace($chr, '', $str);
-        
-        $len = strlen($str);
-        
-        if($len !== 8) $this->randStr(33,126,$len);
-        else return $str;
-        
-        
-//        while($len === 8){
-//            
-//            $this->randStr(33,126,$len);
-//        }do return $str;
-            
-        
+    public function randWithout($min,$max){
+        $n = 100;
+        do $n = rand($min,$max);
+        while($n === 96 || $n === 34 || $n === 39);// если кавычки, то снова рандом
+        return $n;
     }
     
     
