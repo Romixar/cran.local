@@ -18,6 +18,7 @@ class Controller{
         if(isset($_POST)) $this->xss($_POST);
         if(isset($_GET)) $this->xss($_GET);
         
+        debug($_SESSION);
         
         $this->view = new ViewController();
         
@@ -202,6 +203,11 @@ class Controller{
         // предварительно захешировать
         $s = Config::$loc_salt;
         
+        echo $this->data['password'].$s.$data[0]->salt.'<br/>';
+        echo $data[0]->password.'<br/>';
+        
+        die;
+        
         if($this->data['password'].$s.$data[0]->salt === $data[0]->password || $this->data['password'].$data[0]->salt === $data[0]->password){
 
             // авторизация пройдена
@@ -371,37 +377,22 @@ class Controller{
     }
     
     public function recoveryLogPass(){
-        $user = new User();
-        $login = new LoginController();
         
-        //debug($this->data);die;
+        // Добавить восстановление по кошельку и логину
         
-        // найти в базе и отправить на e-mail
         
+        
+
         if($this->data['email'] !== ''){
             
             if($data = $user->find('`login`',"`email`='".$this->data['email']."'")){
 
                 $_SESSION['u_recov']['login'] = $data[0]->login;
                 $_SESSION['u_recov']['email'] = $this->data['email'];
-                //$userpass = $login->randStr(64,126);
-                
-//                $tit = 'Восстановление логина / пароля для cran.local';
-//                $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$userpass.'</p>';
-//                $uemail = $this->data['email'];
-//                
-//                $this->sendEmail($tit,$text,$uemail,'',$uemail);
-                
-//                $newpass = $login->generatePass($userpass, $salt);
-//                
-//                if($user->update([
-//                    'password'=>$newpass,
-//                    'salt'=>$salt,
-//                ],"`login`='".$_SESSION['u_recov']['login']."'")){
+
                     
-                    // отправляю команду на автозапрос отправки письма
-                    $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'),false,false,false,true);
-                //}
+                // отправляю команду на автозапрос отправки письма
+                $this->respJson($this->sysMessage('success','На ваш e-mail отправлен новый пароль!'),false,false,false,true);
             }
         }
         
@@ -409,10 +400,7 @@ class Controller{
     }
     
     public function generateRecoveryEmail(){
-        
-        //debug($_SESSION);die;
-        
-        
+
         $user = new User();
         $login = new LoginController();
         
@@ -425,18 +413,14 @@ class Controller{
         
         $newpass = $login->generatePass($userpass, $salt);
                 
-        if($user->update([
+        if($user->update([// обновление пароля в БД
             'password'=>$newpass,
             'salt'=>$salt,
         ],"`login`='".$l."'")){
             
-            unset($_SESSION['u_recov']);
-            $this->sendEmail($tit,$text,$uemail,'',$uemail);
-                    
-        }
-                    
-                    
-                    
+            //unset($_SESSION['u_recov']);
+            $this->sendEmail($tit,$text,$uemail,'',$uemail);           
+        }else $this->respJson($this->sysMessage('danger','Ошибка обновления базы данных!'));
     }
     
     public function generateAdminEmail(){
@@ -447,7 +431,6 @@ class Controller{
         $name = $this->data['name'];
         
         $this->sendEmail($tit,$text,$uemail,$name);
-        //exit();
     }
 
     public function sendEmail($title,$text,$uemail,$name='',$email=''){
@@ -461,12 +444,10 @@ class Controller{
         
         $body = $view->prerender('mail',compact('title','name','uemail','text'));
         $email = ($email) ? $email : Config::$admEmail;
-        
-        
+
         $head = 'From: admin@zolushka18.ru'."\r\n".'MIME-Version 1.0'."\r\n".'Content-type: text/html; charset=UTF-8';
         
         mail($email,$title,$body,$head);
-        //return true;
         exit();
     }
     
