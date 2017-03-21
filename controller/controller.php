@@ -169,7 +169,7 @@ class Controller{
         $user = new User();
         
         if($data = $user->findOnLogin($this->data['login']))
-            if($this->verifyUserPass($data)){
+            if($this->loadUserData($data)){
                 
                 $mycookie = [
                     'login'=>$_SESSION['user']['login'],
@@ -194,14 +194,9 @@ class Controller{
         
     }
     
-    public function verifyUserPass($data){
+    public function loadUserData($data){// загрузка и обновление польз-х данных
         
-        // сравнить введенное пользователем и найденное в БД
-        // предварительно захешировать
-        $s = Config::$loc_salt;
-        
-
-        if($this->data['password'].$s.$data[0]->salt === $data[0]->password || $this->data['password'].$data[0]->salt === $data[0]->password){
+        if($this->verifyPassword($this->data['password'], $data, $this->data['login'])){
 
             // авторизация пройдена
             $_SESSION['user']['id'] = $data[0]->id;
@@ -216,8 +211,8 @@ class Controller{
             $_SESSION['user']['wallet'] = $data[0]->wallet;
                         
             if($this->updateUserData($data)) return true;
-            
-        } return false; // авторизация не пройдена
+        }
+        return false; // авторизация не пройдена
     }
     
     public function updateUserData($data){
@@ -328,11 +323,9 @@ class Controller{
         }
     }
     
-    public function changePass(){
-        
-        // сравнить пароль существующий с введённым
-        
-        if($data = $this->verifyPassword()){
+    public function changePass(){// смена пароля из профиля
+
+        if($data = $this->verifyPassword($this->data['pass1'])){
             
             $login = new LoginController();
             $user = new User();
@@ -347,25 +340,30 @@ class Controller{
             if($res) $this->respJson($this->sysMessage('success','Пароль изменён!'));
             
         }else $this->respJson($this->sysMessage('danger','Неверно введён старый пароль!'));
-        
     }
     
-    public function verifyPassword(){
+    public function verifyPassword($pwd, $data='', $lg=''){// верификация из профиля
+        
+        $lg = ($lg) ? $lg : $_SESSION['user']['login'];
         
         $user = new User();
-        if($data = $user->find('`password`,`salt`',"`login`='".$_SESSION['user']['login']."'")){
+        
+        if(empty($data)) $data = $user->find('`password`,`salt`',"`login`='".$lg."'");
+        
+        if(isset($data) && count($data) == 1){
             
             $p = $data[0]->password;
             $s = $data[0]->salt;
             $l_s = Config::$loc_salt;
             
             // захешировать
-            //debug($data);die;
             
-            if($this->data['pass1'].$l_s.$s === $p) return true;
+            
+            
+            
+            if($pwd.$l_s.$s === $p || $pwd.$s === $p) return true;
             return false;
-            
-        }else $this->respJson($this->sysMessage('danger','Ошибка смены пароля!'));
+        }else $this->respJson($this->sysMessage('danger','Пользователь не найден!'));
         
     }
     
@@ -374,36 +372,23 @@ class Controller{
 
         $fields = '`email`,`login`';// будут поля которые искать
         $wh = '';   // будет предикат
-        
         $em = $this->data['email'];
         $lg = $this->data['login'];
         $wt = $this->data['wallet'];
         
-        if(!empty($em) && !empty($lg)){// поиск попарно
-
-            $wh = "`email`='".$em."' AND `login`='".$lg."'";
-        }
-        if(!empty($wt) && !empty($lg)){
-            
-            $wh = "`wallet`='".$wt."' AND `login`='".$lg."'";
-        }
-        if(!empty($wt) && !empty($em)){
-            
-            $wh = "`wallet`='".$wt."' AND `email`='".$em."'";
-        }
+        // поиск попарно
+        if(!empty($em) && !empty($lg)) $wh = "`email`='".$em."' AND `login`='".$lg."'";
         
-        if(!empty($em) && empty($wt) && empty($lg)){// поиск по одному полю
-
-            $wh = "`email`='".$em."'";
-        }
-        if(!empty($wt) && empty($em) && empty($lg)){
-            
-            $wh = "`wallet`='".$wt."'";
-        }
-        if(!empty($lg) && empty($wt) && empty($em)){
-            
-            $wh = "`login`='".$lg."'";
-        }
+        if(!empty($wt) && !empty($lg)) $wh = "`wallet`='".$wt."' AND `login`='".$lg."'";
+        
+        if(!empty($wt) && !empty($em)) $wh = "`wallet`='".$wt."' AND `email`='".$em."'";
+        
+        // поиск по одному полю
+        if(!empty($em) && empty($wt) && empty($lg)) $wh = "`email`='".$em."'";
+        
+        if(!empty($wt) && empty($em) && empty($lg)) $wh = "`wallet`='".$wt."'";
+        
+        if(!empty($lg) && empty($wt) && empty($em)) $wh = "`login`='".$lg."'";
         
         if(($data = $user->find($fields,$wh)) && count($data) == 1){
             
@@ -430,7 +415,7 @@ class Controller{
         $userpass = $login->randStr(64,126);
         
         $tit = 'Восстановление логина / пароля для cran.local';
-        $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$userpass.'</p>';
+        $text = '<p>Ваш логин: '.$l.'</p><p>Ваш новый пароль: '.$userpass.'</p><p>Если Вы не забывали свой пароль и не восстанавливали его на сайте cran.local, то настоятельно рекомендуем Вам зайти в свой аккаунт на cran.local и сменить пароль ещё раз.</p>';
         $uemail = $_SESSION['u_recov']['email'];
         
         $newpass = $login->generatePass($userpass, $salt);
@@ -441,7 +426,8 @@ class Controller{
         ],"`login`='".$l."'")){
             
             unset($_SESSION['u_recov']);
-            $this->sendEmail($tit,$text,$uemail,'',$uemail);           
+            $this->sendEmail($tit,$text,$uemail,'',$uemail);
+            
         }else $this->respJson($this->sysMessage('danger','Ошибка обновления базы данных!'));
     }
     
