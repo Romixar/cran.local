@@ -239,15 +239,30 @@
         p_id = (p_id) ? p_id : 0;
         
         if(validComment(mes)){
-
             
             viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
             var str = '&parent_id='+p_id+'&text='+mes.val();
             post_query('do_comment', str);
             
-            mes.val('');
+            
+            
             // установить на место textarea если это ответ
-            if(p_id != 0) $('ul#comments').before(txtarea);
+            if(p_id != 0){
+                
+                $('ul#comments').before(txtarea);
+                
+                var divcomm = $('div#comm_'+p_id).clone();
+                
+                divcomm.find('span#name').text('').text('оппонент');
+                divcomm.find('span#date').text('').text('сейчас');
+                divcomm.find('div.panel-body').text('').text(mes.val());
+                
+                $('div#comm_'+p_id).after(divcomm);
+            }
+            
+            mes.val('');
+            // подставить блок с комментарием
+            
             
             
         }else return false;
@@ -258,12 +273,9 @@
         
         txtarea = $('div.comment').remove();// подстановка textarea
         $(this).parent().parent().after(txtarea);
-
         
         var pos = e.target.href.indexOf('_') + 1;
-        
         p_id = e.target.href.substr(pos);
-        
     });
 
 

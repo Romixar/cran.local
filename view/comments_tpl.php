@@ -2,8 +2,8 @@
   <div class="panel-heading">
   
   <img src="/images/1b.jpg" class="user" alt="">
-  <span><?= $comment['name'] ?></span><br/>
-  <span>Написано: <?= $comment['date_add'] ?></span>
+  <span id="name"><?= $comment['name'] ?></span><br/>
+  <span id="date">Написано: <?= $comment['date_add'] ?></span>
   
   </div>
   <div class="panel-body">
