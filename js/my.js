@@ -233,13 +233,36 @@
         textButton = $(this).text();
         
         var mes = $('textarea#text');
-        //var id = 'rootComment';
         var p_id = 0;
-//        var wt = $('input#wallet');
         
         if(validComment(mes)){
             
             //console.log(mes.val());
+            
+            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+            var str = '&parent_id='+p_id+'&text='+mes.val();
+            post_query('do_comment', str);
+        }else return false;
+    });
+    $(document).on('click','a[href^="#comm"]', function(e){
+        
+        e.preventDefault;
+        
+        var txtarea = $('div.comment').remove();// подстановка textarea
+        $(this).parent().parent().after(txtarea);
+
+        elem = $(this);
+        textButton = $(this).text();
+        
+        var pos = e.target.href.indexOf('_') + 1;
+        
+        var mes = $('textarea#text');
+        var p_id = e.target.href.substr(pos);
+        
+        if(validComment(mes)){
+            
+            // сразу скрыть поле textarea и подставить на место
+            
             
             viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
             var str = '&parent_id='+p_id+'&text='+mes.val();
