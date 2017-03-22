@@ -225,6 +225,27 @@
             post_query('do_recov', str);
         }else return false;
     });
+    $(document).on('click', 'a#comment', function(e){// добавление коммента
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        var mes = $('textarea#text');
+        //var id = 'rootComment';
+        var p_id = 0;
+//        var wt = $('input#wallet');
+        
+        if(validComment(mes)){
+            
+            //console.log(mes.val());
+            
+            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+            var str = '&parent_id='+p_id+'&text='+mes.val();
+            post_query('do_comment', str);
+        }else return false;
+    });
 
 
     
@@ -507,6 +528,16 @@
         }
         
         
+    }
+    
+    function validComment(mes){
+        
+        submit = true;
+        
+        if((mes.val()).length > 10) validMessage(mes, 'ERR_LEN');
+        
+        if(submit) return true;
+        return false;
     }
     
     

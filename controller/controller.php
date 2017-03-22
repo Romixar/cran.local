@@ -60,6 +60,7 @@ class Controller{
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
         if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
+        if(isset($data['do_comment_f'])) $this->addNewComment();
 
         
     }
@@ -350,7 +351,7 @@ class Controller{
         
         if(empty($data)) $data = $user->find('`password`,`salt`',"`login`='".$lg."'");
         
-        if(isset($data) && count($data) == 1){
+        if(!empty($data) && count($data) == 1){
             
             $p = $data[0]->password;
             $s = $data[0]->salt;
@@ -595,6 +596,22 @@ class Controller{
         }
             
         
+    }
+    
+    public function addNewComment(){
+        
+        
+        
+        $this->data['name'] = ($_SESSION['user']['name']) ? $_SESSION['user']['name'] : 'Noname';
+        $this->data['date_add'] = strftime('%d-%m-%Y',time());
+        $this->data['post_id'] = 1;
+        
+        unset($this->data['do_comment_f']);
+        
+        $comm = new Comments();
+        
+        if($comm->insert($this->data)) return true;
+        else return false;
     }
     
     

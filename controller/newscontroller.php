@@ -37,8 +37,8 @@ class NewsController extends Controller{
     public function preComments($data){
         
         foreach($data as $comment){
-            
-            $str .= '<li id="comm_'.$comment['id'].'">';
+            //id="comm_'.$comment['id'].'"
+            $str .= '<li>';
             
             $str .= $this->view->prerender('comments',compact('comment'));
                 

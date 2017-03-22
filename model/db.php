@@ -89,7 +89,7 @@ class DB{
     }
     
     public function findComments($fields){
-        $sql = "SELECT ".$fields." FROM `".static::$table."`";
+        $sql = "SELECT ".$fields." FROM `".static::$table."` ORDER BY `date_add` DESC";
         $sth = $this->dbh->query($sql);
         $res = $sth->fetchAll();
         
@@ -97,6 +97,8 @@ class DB{
         return false;
         
     }
+    
+
     
     public function update($fields, $where=''){
         

@@ -1,4 +1,4 @@
-<div class="panel panel-info">
+<div id="comm_<?= $comment['id'] ?>" class="panel panel-info">
   <div class="panel-heading">
   
   <img src="/images/1b.jpg" class="user" alt="">
