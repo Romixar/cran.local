@@ -15,6 +15,9 @@
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
     
+    var txtarea; // поле ввода комментария
+    var p_id; // ID комментария родителя
+    
     
     var uri = location.href;
     if(uri.split('/')[3] == '' || uri.split('/')[3] == '###'){
@@ -233,41 +236,34 @@
         textButton = $(this).text();
         
         var mes = $('textarea#text');
-        var p_id = 0;
+        p_id = (p_id) ? p_id : 0;
         
         if(validComment(mes)){
-            
-            //console.log(mes.val());
+
             
             viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
             var str = '&parent_id='+p_id+'&text='+mes.val();
             post_query('do_comment', str);
+            
+            mes.val('');
+            // установить на место textarea если это ответ
+            if(p_id != 0) $('ul#comments').before(txtarea);
+            
+            
         }else return false;
     });
-    $(document).on('click','a[href^="#comm"]', function(e){
+    $(document).on('click','a[href^="#comm"]', function(e){// добавление ответа на комментарий
         
         e.preventDefault;
         
-        var txtarea = $('div.comment').remove();// подстановка textarea
+        txtarea = $('div.comment').remove();// подстановка textarea
         $(this).parent().parent().after(txtarea);
 
-        elem = $(this);
-        textButton = $(this).text();
         
         var pos = e.target.href.indexOf('_') + 1;
         
-        var mes = $('textarea#text');
-        var p_id = e.target.href.substr(pos);
+        p_id = e.target.href.substr(pos);
         
-        if(validComment(mes)){
-            
-            // сразу скрыть поле textarea и подставить на место
-            
-            
-            viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
-            var str = '&parent_id='+p_id+'&text='+mes.val();
-            post_query('do_comment', str);
-        }else return false;
     });
 
 
@@ -557,7 +553,7 @@
         
         submit = true;
         
-        if((mes.val()).length > 10) validMessage(mes, 'ERR_LEN');
+        if((mes.val()).length > 300) validMessage(mes, 'ERR_LEN');
         
         if(submit) return true;
         return false;

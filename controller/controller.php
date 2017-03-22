@@ -610,6 +610,8 @@ class Controller{
         
         $comm = new Comments();
         
+        debug($this->data);die;
+        
         if($comm->insert($this->data)) return true;
         else return false;
     }
