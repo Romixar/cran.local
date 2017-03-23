@@ -16,7 +16,9 @@
     var textButton = ''; // текст нажатой кнопки
     
     var txtarea; // поле ввода комментария
+    var lastID = 1000;
     var p_id; // ID комментария родителя
+    var childs = false;// есть ли дети у коммента
     
     
     var uri = location.href;
@@ -242,7 +244,7 @@
             
             viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
             var str = '&parent_id='+p_id+'&text='+mes.val();
-            post_query('do_comment', str);
+            //post_query('do_comment', str);
             
             
             
@@ -253,15 +255,29 @@
                 
                 var divcomm = $('div#comm_'+p_id).clone();
                 
+                //console.log(divcomm.attr('id','255'));
+                
+                
+                
+                divcomm.attr('id','comm_'+lastID);
+                
+                lastID += lastID;
+                
+                // подставить блок с комментарием
                 divcomm.find('span#name').text('').text('оппонент');
                 divcomm.find('span#date').text('').text('сейчас');
                 divcomm.find('div.panel-body').text('').text(mes.val());
                 
-                $('div#comm_'+p_id).after(divcomm);
+                
+                if(!childs){// добавление ребенка или корневого
+                    $('div#comm_'+p_id).after('<ul class="childs chldcomm_'+p_id+'"><li></li></ul>');
+                    $('ul.chldcomm_'+p_id+' li:first').after(divcomm);
+                }
+                else $('div#comm_'+p_id).after(divcomm);
             }
             
             mes.val('');
-            // подставить блок с комментарием
+            
             
             
             
@@ -272,6 +288,14 @@
         e.preventDefault;
         
         txtarea = $('div.comment').remove();// подстановка textarea
+        
+        var ul = $(this).parent().parent().parent().parent();
+        
+        if(ul.hasClass('childs')) childs = true;
+        
+        
+        
+        
         $(this).parent().parent().after(txtarea);
         
         var pos = e.target.href.indexOf('_') + 1;

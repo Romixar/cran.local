@@ -612,8 +612,8 @@ class Controller{
         
         debug($this->data);die;
         
-        if($comm->insert($this->data)) return true;
-        else return false;
+        if($id = $comm->insert($this->data)) $this->respJson(false, false, true, false, false,$id);
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария'));
     }
     
     
@@ -654,13 +654,14 @@ class Controller{
         return $view->prerender('message',compact('type','mes')); 
     }
     
-    public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false, $auto=false){
+    public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false, $auto=false,$id=false){
         echo json_encode([
             'sysmes'=>$sysmes,
             'flname'=>$flname,
             'changeEm'=>$changeEm,
             'mycookie'=>$mycookie,
-            'auto'=>$auto
+            'auto'=>$auto,
+            'lastID'=>$id,
             
         ]);
         exit();
