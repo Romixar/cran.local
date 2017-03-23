@@ -600,9 +600,7 @@ class Controller{
     
     public function addNewComment(){
         
-        
-        
-        $this->data['name'] = ($_SESSION['user']['name']) ? $_SESSION['user']['name'] : 'Noname';
+        $this->data['name'] = ($_SESSION['user']['login']) ? $_SESSION['user']['login'] : 'Noname';
         $this->data['date_add'] = strftime('%d-%m-%Y',time());
         $this->data['post_id'] = 1;
         
@@ -610,9 +608,9 @@ class Controller{
         
         $comm = new Comments();
         
-        debug($this->data);die;
+        //debug($this->data);die;
         
-        if($comm->insert($this->data)) return true;
+        if($comm->insert($this->data)) exit();
         else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария'));
     }
     

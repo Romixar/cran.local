@@ -246,6 +246,8 @@
             var str = '&parent_id='+p_id+'&text='+mes.val();
             post_query('do_comment', str);
             
+            var name = ($.cookie('user')) ? JSON.parse($.cookie('user')).login : 'Аноним';
+            
             // установить на место textarea если это ответ
             if(p_id != 0){
                 
@@ -256,8 +258,8 @@
                 divcomm.attr('id','comm_'+unicID);
                 
                 // подставить блок с комментарием
-                divcomm.find('span#name').text('').text('оппонент');
-                divcomm.find('span#date').text('').text('сейчас');
+                divcomm.find('span#name').text('').text(name);
+                divcomm.find('span#date').text('').text('только что');
                 divcomm.find('div.panel-body').text('').text(mes.val());
                 
                 if(!childs){// добавление ребенка или корневого
@@ -272,16 +274,13 @@
                 divlastcomm.attr('id','comm_'+unicID);
                 
                 // подставить блок с комментарием
-                divlastcomm.find('span#name').text('').text('оппонент_000');
-                divlastcomm.find('span#date').text('').text('сейчас');
+                divlastcomm.find('span#name').text('').text(name);
+                divlastcomm.find('span#date').text('').text('только что');
                 divlastcomm.find('div.panel-body').text('').text(mes.val());
                 
                 $('ul#comments').prepend('<li></li>');
                 $('ul#comments li:first').append(divlastcomm);
-                
-                
-                
-                //console.log(divlastcomm);
+
                 
             }
             
@@ -654,7 +653,7 @@
 
                             
                         
-                    };
+                    }else removeDisabled();// разболир и снять крутилку
                 },
                 error: function(xhr, ajaxOptions, thrownError){
                     

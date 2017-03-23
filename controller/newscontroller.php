@@ -17,8 +17,9 @@ class NewsController extends Controller{
         
         $str = $this->preComments($data);
         
+        $form = ($_SESSION['user']) ? $this->view->prerender('form') : '';
 
-        $this->render('news',['comments'=>$str]);
+        $this->render('news',['comments'=>$str,'form'=>$form]);
     }
 
     

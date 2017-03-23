@@ -3,7 +3,7 @@
   
   <img src="/images/1b.jpg" class="user" alt="">
   <span id="name"><?= $comment['name'] ?></span><br/>
-  <span id="date">Написано: <?= $comment['date_add'] ?></span>
+  Написано: <span id="date"><?= $comment['date_add'] ?></span>
   
   </div>
   <div class="panel-body">
