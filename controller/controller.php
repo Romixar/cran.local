@@ -612,7 +612,7 @@ class Controller{
         
         debug($this->data);die;
         
-        if($id = $comm->insert($this->data)) $this->respJson(false, false, true, false, false,$id);
+        if($comm->insert($this->data)) return true;
         else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария'));
     }
     
