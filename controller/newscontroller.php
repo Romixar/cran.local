@@ -7,6 +7,12 @@ class NewsController extends Controller{
         $this->meta_desc = 'Страница Новости мета описание';
         $this->meta_key = 'Страница Новосим мета кей';
         
+        $mod = new News();
+        
+        $news = $mod->find('*');
+        
+        $news = $this->getHTMLNews($news);
+        
         $comm = new Comments();
         
         $data = $comm->findComments('*');
@@ -19,8 +25,41 @@ class NewsController extends Controller{
         
         $form = ($_SESSION['user']) ? $this->view->prerender('form') : '';
 
-        $this->render('news',['comments'=>$str,'form'=>$form]);
+        $this->render('news',['comments'=>$str,'form'=>$form,'news'=>$news]);
     }
+    
+    
+    
+    
+    
+    
+    public function getHTMLNews($news){
+        
+        for($i=0; $i<count($news); $i++){
+                
+//            if($news[$i]->img){
+                
+                $a = '<a href="news/view/'.$news[$i]->id.'">';
+                    
+                $img = $a.'<img src="/images/4.jpg" class="img-responsive" alt="'.$news[$i]->title.'"></a>';
+                
+                
+                
+//            }else $img = '';
+                
+            $id = $news[$i]->id;
+            $title = $news[$i]->title;
+            $date_add = $news[$i]->date_add;
+            $preview = $news[$i]->preview;
+            
+            $str .= $this->view->prerender('preview',compact('id','title','date_add','img','preview'));
+        }
+        
+        return $str;
+        //debug($news);
+        
+    }
+    
 
     
     public function getHTMLComments($comments){
