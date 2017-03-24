@@ -29,6 +29,21 @@ class DB{
     
     
     
+    public function cntRow($f){
+        
+        $sql = "SELECT COUNT(`".$f."`) FROM `".static::$table."`";
+        
+        $sth = $this->dbh->query($sql);
+        $res = $sth->fetchAll();
+        
+        
+        if(!empty($res) && count($res) == 1) return $res[0][0];
+        return false;
+        
+        
+    }
+    
+    
     public function validateIp($data){
         $sql = "SELECT * FROM `users` WHERE `ip` = '".$data['ip']."'";
         

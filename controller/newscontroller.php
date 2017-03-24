@@ -12,7 +12,7 @@ class NewsController extends Controller{
         
         $mod = new News();
         
-        $lim = $this->pagination($page);
+        $lim = $this->pagination($page, $HTMLpages);
         
         
         $news = $mod->find('*','','',$lim);
@@ -31,13 +31,20 @@ class NewsController extends Controller{
         
         $form = ($_SESSION['user']) ? $this->view->prerender('form') : '';
 
-        $this->render('news',['comments'=>$str,'form'=>$form,'news'=>$news]);
+        $this->render('news',['comments'=>$str,'form'=>$form,'news'=>$news,'pagination'=>$HTMLpages]);
     }
     
     
-    public function pagination($page){
+    public function pagination($page, &$HTMLpages){
         
+        $mod = new News();
+        $totalPages = $mod->cntRow('id');
         
+        $cntPages = round($totalPages / Config::$limit, 0, PHP_ROUND_HALF_UP);
+        
+        $HTMLpages = $this->getHTMLPagination($cntPages, $page);
+        
+        debug($cntPages);
         
         if(!empty($page)) $l = (Config::$limit * $page - Config::$limit).',';
         else $l = '';
@@ -52,7 +59,23 @@ class NewsController extends Controller{
     
     
     
-    
+    public function getHTMLPagination($cntPages, $act){
+        
+        
+        
+        for($i=0; $i<$cntPages; $i++){
+            
+            //echo ($i+1).' = '.$act.'<br/>';
+            
+            $cl = (($i+1) == $act) ? 'class="active"' : '';
+            
+            $str .= '<li '.$cl.'><a href="'.($i+1).'">'.($i+1).'</a></li>';
+            
+        }
+        
+        return $this->view->prerender('pagination',['pages'=>$str]);
+        
+    }
     
     public function getHTMLNews($news){
         
