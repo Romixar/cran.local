@@ -33,6 +33,7 @@ class Router{
         if(isset($arr[2])){
             
             if($arr[1] == 'registration') $this->get = $arr[2];
+            if($arr[1] == 'news') $this->get = $arr[2];
             
             unset($arr[2]);
         }

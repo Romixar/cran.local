@@ -1,23 +1,29 @@
 <h4>Новости</h4>
 
 
-<h5 class="title">Заголовок новости</h5>
-<div class="preview">
-    Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для
-</div>
-
-<h5 class="title">Заголовок новости<br/><small>Дата добавления: <span class="date_add">22-03-2017г.</span></small></h5>
-<div class="preview">
-  <img src="/images/4.jpg" class="img-responsive" alt="">
-   <p>Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для</p>
-    
-</div>
-
-
-
-
-
 <?= $news ?>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li><a href="#">1</a></li>
+    <li class="active"><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li>
+      <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
 
 <div class="block_comm">
     

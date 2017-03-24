@@ -78,7 +78,7 @@ class DB{
         if(!empty($lim)) $sql .= ' LIMIT '.$lim;
         
         
-        //debug($sql);die;
+        debug($sql);//die;
 
         $res = $this->select($sql);
         

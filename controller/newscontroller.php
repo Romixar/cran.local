@@ -2,17 +2,20 @@
 
 class NewsController extends Controller{
     
-    public function actionIndex(){
+    public function actionIndex($id){
+        
+        if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)) $page = (int)$id;
+        
         $this->title = 'Страница Новости';
         $this->meta_desc = 'Страница Новости мета описание';
         $this->meta_key = 'Страница Новосим мета кей';
         
         $mod = new News();
         
-        $lim = $this->pagination();
+        $lim = $this->pagination($page);
         
         
-        $news = $mod->find('*','',$lim);
+        $news = $mod->find('*','','',$lim);
         
         $news = $this->getHTMLNews($news);
         
@@ -32,9 +35,16 @@ class NewsController extends Controller{
     }
     
     
-    public function pagination(){
+    public function pagination($page){
         
         
+        
+        if(!empty($page)) $l = (Config::$limit * $page - Config::$limit).',';
+        else $l = '';
+        
+        return $l.Config::$limit;
+        
+    
         
         
     }

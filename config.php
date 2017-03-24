@@ -13,7 +13,7 @@ class Config{
     public static $len = 8;
     
     public static $size = 1000000; // 1 Мб допустимый размер аватарки
-    
+    public static $limit = 2; // по сколько новостей на странице
     
     public static $adm = 'admin/';// папка админа
     
