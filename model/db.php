@@ -69,12 +69,13 @@ class DB{
         return false;
     }
     
-    public function find($fields, $where='', $asc=''){
+    public function find($fields, $where='', $asc='',$lim=''){
         
         $sql = "SELECT ".$fields." FROM `".static::$table."`";
         
         if(!empty($where)) $sql .= ' WHERE '.$where;
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
+        if(!empty($lim)) $sql .= ' LIMIT '.$lim;
         
         
         //debug($sql);die;

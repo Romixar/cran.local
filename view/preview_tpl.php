@@ -2,7 +2,13 @@
 <div class="preview">
   
       <?= $img ?>
+  <a href="/news/view/<?= $id ?>" class="text">
+      <div>
+          
+          <p><?= $preview ?></p>
+          
+      </div>
+  </a>
    
-   <p><?= $preview ?></p>
     
 </div>

@@ -9,7 +9,10 @@ class NewsController extends Controller{
         
         $mod = new News();
         
-        $news = $mod->find('*');
+        $lim = $this->pagination();
+        
+        
+        $news = $mod->find('*','',$lim);
         
         $news = $this->getHTMLNews($news);
         
@@ -29,6 +32,14 @@ class NewsController extends Controller{
     }
     
     
+    public function pagination(){
+        
+        
+        
+        
+    }
+    
+    
     
     
     
@@ -37,18 +48,19 @@ class NewsController extends Controller{
         
         for($i=0; $i<count($news); $i++){
                 
-//            if($news[$i]->img){
+            if($news[$i]->img){
                 
                 $a = '<a href="news/view/'.$news[$i]->id.'">';
                     
-                $img = $a.'<img src="/images/4.jpg" class="img-responsive" alt="'.$news[$i]->title.'"></a>';
+                $img = $a.'<img src="/images/'.$news[$i]->img.'" class="img-responsive post-img" alt="'.$news[$i]->title.'"></a>';
                 
-                
-                
-//            }else $img = '';
+            }else $img = '';
                 
             $id = $news[$i]->id;
             $title = $news[$i]->title;
+            
+            // форматир дату
+            
             $date_add = $news[$i]->date_add;
             $preview = $news[$i]->preview;
             
