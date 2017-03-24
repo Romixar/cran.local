@@ -44,15 +44,10 @@ class NewsController extends Controller{
         
         $HTMLpages = $this->getHTMLPagination($cntPages, $page);
         
-        debug($cntPages);
-        
         if(!empty($page)) $l = (Config::$limit * $page - Config::$limit).',';
         else $l = '';
         
         return $l.Config::$limit;
-        
-    
-        
         
     }
     
@@ -61,17 +56,39 @@ class NewsController extends Controller{
     
     public function getHTMLPagination($cntPages, $act){
         
+        if(!empty($act) && $act != 1){
+            $u = $act-1;
+            $c = '';
+        }else{
+            $u = '#';
+            $c = 'class="disabled"';
+        }
+        
+        $prev = '<li '.$c.'><a href="'.$u.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
         
         
         for($i=0; $i<$cntPages; $i++){
-            
-            //echo ($i+1).' = '.$act.'<br/>';
+
             
             $cl = (($i+1) == $act) ? 'class="active"' : '';
             
             $str .= '<li '.$cl.'><a href="'.($i+1).'">'.($i+1).'</a></li>';
             
         }
+        
+        if(($act+1) <= $cntPages){
+            $u = $act+1;
+            $c = '';
+        }else{
+            $u = '#';
+            $c = 'class="disabled"';
+        }
+        
+        
+        $next = '<li '.$c.'><a href="'.$u.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+        
+        
+        $str = $prev.$str.$next;
         
         return $this->view->prerender('pagination',['pages'=>$str]);
         
