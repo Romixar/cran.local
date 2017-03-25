@@ -11,6 +11,7 @@
     var patLogPas = /^[a-z0-9-\._]+$/i; // проверка логина/пароля
                     ///^[a-z0-9-\._]+$/i
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
+    var patLogin = /(admin|moderator)/i;
     
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
@@ -54,7 +55,7 @@
     
     
 
-        
+        // РЕГИСТРАЦИЯ //
     $("div.registration input#login").on("change", function(){// набран текст и убран фокус
         
         $('a#submit').removeClass('disabled');
@@ -63,6 +64,7 @@
         
         submit = true;
         
+        if(patLogin.test($(this).val())) validMessage($(this), 'ERR_LOG');
         if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
         if(!patLogPas.test($(this).val())) validMessage($(this), 'ERR_CHR');
         if(($(this).val()).length > 100) validMessage($(this), 'ERR_LEN');
@@ -70,13 +72,10 @@
         if(submit){
             
             viewIcon2($(this), 'refresh gly-spin');// запуск крутилки
-                      
-                      //'<i class="glyphicon glyphicon-refresh gly-spin"></i>'
             
             var str = '&login='+$(this).val();
-            var name = 'reg_login';
-        
-            post_query(name, str);
+            
+            post_query('reg_login', str);
         }
     });
     $("div.registration input#password").on("change", function(){// набран текст и убран фокус
@@ -109,6 +108,19 @@
         else viewIcon2($(this), 'remove', 'onclick="rem3()"');
         
     });
+    $('div.form a.registration').click(function(e){
+        
+        e.preventDefault;
+        validRegAndSubmit();
+    });
+    $("div.registration").keyup(function(e){// запустить валидацию и отправку
+        
+        if(e.keyCode == 13) validRegAndSubmit();
+    });
+    
+    // РЕГИСТРАЦИЯ КОНЕЦ //
+    
+    
     
     $('div.login input#login').on('change', function(){
         
@@ -171,15 +183,7 @@
     
     
     
-    $('div.form a.registration').click(function(e){
-        
-        e.preventDefault;
-        validRegAndSubmit();
-    });
-    $("div.registration").keyup(function(e){// запустить валидацию и отправку
-        
-        if(e.keyCode == 13) validRegAndSubmit();
-    });
+    
     
     
     
@@ -543,7 +547,7 @@
     }
     
 
-    function validRegAndSubmit(){
+    function validRegAndSubmit(){// валидация регистрации
         
         submit = true;
         
@@ -553,9 +557,9 @@
         var ip = $('div.form input#ip');
         var ref_id = $('div.form input#ref_id');
         
-        
         if(lg.val() === '') validMessage(lg, 'ERR_EMP');
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
+        if(patLogin.test(lg.val())) validMessage(lg, 'ERR_LOG');
         if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
         
         if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
@@ -634,8 +638,6 @@
                             if(obj.auto) clearAndReplRecovery();
                         }
                         
-                        if(obj.btn) viewButtons();
-                        
                         if(obj.icon) viewIcon(obj.icon, obj.click);
                         
                         if(obj.err) validMessage($('div.registration input#login'), obj.err);
@@ -711,6 +713,7 @@
             'ERR_EXT': 'Допустимые расширения jpg, jpeg, png, gif!',
             'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
             'ERR_PSW': 'Пароль должен быть от 5 до 15 символов!',
+            'ERR_LOG': 'Недопустимое слово в Вашем логине!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
@@ -780,11 +783,7 @@
     function getTplMes(mes, type){
         return '<div class="alert alert-' +type+ ' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +mes+ '</div>';
     }
-    
-    function viewButtons(){
-        var sysmes = $('div#sysmes');
-        if(sysmes) $('div.alert').append('<a href="#" onclick="rem()" class="btn btn-sm btn-default" style="margin-left: 25px">Да</a><a href="registration" class="btn btn-sm btn-default">Нет</a>');
-    }
+
     
     function getRefList(data){
         

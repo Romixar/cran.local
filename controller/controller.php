@@ -246,17 +246,21 @@ class Controller{
         
         if($user->validateIp($this->data)){
             
-            $type = 'danger';
-            $mes = 'Пользователь с вашим IP уже существует<br/>Хотите зарегистрировать второго?';
-            $sysmes = $view->prerender('message',compact('type','mes'));
-            
-            echo json_encode(['sysmes'=>$sysmes,'btn'=>true]);
+            $this->respJson($this->sysMessage('danger','Регистрация невозможна!<br/>Пользователь с вашим IP уже существует.'));
             
         }else{
-            if($pos = strpos($this->data['ip'],'_0'))
-                $this->data['ip'] = substr($this->data['ip'],0,$pos);
+            // сделать проверку IP
+            $this->data['ip'] = ($ip = ip2long($this->data['ip'])) ? $ip : $this->respJson($this->sysMessage('danger','Неверный IP пользоватьеля!'));
+            
+            
             
             if(empty($this->data['ref_id'])) $this->data['ref_id'] = 0;// значит не реферал
+            
+            // сделать проверку реферала по его личной соли
+            
+            
+            
+            
             
             $this->data['balance'] = 0;
             $this->data['date_reg'] = date('d-m-Y',time());

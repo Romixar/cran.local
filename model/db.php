@@ -45,7 +45,7 @@ class DB{
     
     
     public function validateIp($data){
-        $sql = "SELECT * FROM `users` WHERE `ip` = '".$data['ip']."'";
+        $sql = "SELECT `id` FROM `users` WHERE `ip` = '".ip2long($data['ip'])."'";
         
         $res = $this->select($sql);
         
@@ -93,7 +93,7 @@ class DB{
         if(!empty($lim)) $sql .= ' LIMIT '.$lim;
         
         
-        debug($sql);//die;
+        //debug($sql);//die;
 
         $res = $this->select($sql);
         
