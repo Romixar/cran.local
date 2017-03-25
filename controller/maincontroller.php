@@ -94,7 +94,9 @@ class MainController extends Controller{
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
             $date_act = $_SESSION['user']['date_act'];
-            $ip = $_SESSION['user']['ip'];
+            
+            $ip = (strpos($_SESSION['user']['ip'],'_') !== false) ? $_SESSION['user']['ip'] : long2ip($_SESSION['user']['ip']);
+            
             $ref_url = 'http://'.$_SERVER['HTTP_HOST'].'/registration/'.$_SESSION['user']['id'];
             $email = $_SESSION['user']['email'];
             $wal = $_SESSION['user']['wallet'];
