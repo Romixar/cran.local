@@ -208,6 +208,31 @@ class DB{
         
     }
     
+    public function getRefPageData(){
+        
+        $sql = 'SELECT `login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';
+        
+        $sth = $this->dbh->query($sql);
+        $res = $sth->fetchAll();
+        
+        for($i=0; $i<count($res); $i++){
+            
+            foreach($res[$i] as $k => $v){
+                
+                if(is_numeric($k)) unset($res[$i][$k]);// удаление дублирующих числовых ключей
+                
+            }
+            
+        }
+        
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+        
+        
+    }
+    
     
     
     

@@ -69,25 +69,32 @@ class MainController extends Controller{
         $this->meta_key = 'Страница стена рефереров мета кей';
         
         $user = new User();
-        $data = $user->find('`ref_id`');
         
-        for($i=0; $i<count($data); $i++){
-            
-            foreach($data[$i] as $k => $v){
-                
-                if($data[$i]->ref_id != 0) $tmp[] = $data[$i]->ref_id;
-                
-            }
-            
-        }
+        $data = $user->getRefPageData();
         
-        $data = null;
         
-        $tmp = array_unique($tmp);
+//        $data = $user->find('`ref_id`');
+//        
+//        for($i=0; $i<count($data); $i++){
+//            
+//            foreach($data[$i] as $k => $v){
+//                
+//                if($data[$i]->ref_id != 0) $tmp[] = $data[$i]->ref_id;
+//                
+//            }
+//            
+//        }
+//        
+//        $data = null;
+//        
+//        $tmp = array_unique($tmp);
+//        
+//        sort($tmp);
+//        
+//        $str_ref_ids = implode(',',$tmp);
         
-        sort($tmp);
+        debug($data);die;
         
-        $str_ref_ids = implode(',',$tmp);
         
         
         $data = $user->find('*','`id` IN ('.$str_ref_ids.')');
@@ -125,6 +132,62 @@ class MainController extends Controller{
         return $str;
 
     }
+    
+    public function buyRefOnBoard(){
+        
+        
+        //debug($this->data);die;
+        
+        
+        if($_SESSION['user']['balance'] >= 2){
+            
+            // занести в список реф стены
+            
+            $mod = new Refpage();
+            
+            $data = [
+                'user_id'=>$_SESSION['user']['id'],
+                'date_add'=>time()
+                    ];
+            
+            if($mod->insert($data)){
+                
+                $_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
+                
+                // зачислить на яндекс кошелек плату за услугу сайта
+                
+                
+                
+
+                $user = new User(); // обновление баланса
+                $user->update([
+                    'balance' => $_SESSION['user']['balance'],
+                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+                
+                $this->respJson($this->sysMessage('success','Поздравляем! Ваш аватар размещен на стене рефереров'));
+                
+                
+            }
+            
+            
+            
+        }else $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public function actionLogin(){
         
@@ -202,49 +265,7 @@ class MainController extends Controller{
     
     
     
-    public function buyRefOnBoard(){
-        
-        
-        //debug($this->data);die;
-        
-        
-        if($_SESSION['user']['balance'] >= 2){
-            
-            // занести в список реф стены
-            
-            $mod = new Refpage();
-            
-            $data = [
-                'user_id'=>$_SESSION['user']['id'],
-                'date_add'=>time()
-                    ];
-            
-            if($mod->insert($data)){
-                
-                $_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
-                
-                // зачислить на яндекс кошелек плату за услугу сайта
-                
-                
-                
-
-                $user = new User(); // обновление баланса
-                $user->update([
-                    'balance' => $_SESSION['user']['balance'],
-                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
-                
-                $this->respJson($this->sysMessage('success','Поздравляем! Ваш аватар размещен на стене рефереров'));
-                
-                
-            }
-            
-            
-            
-        }else $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
-        
-        
-        
-    }
+    
     
     
 }
