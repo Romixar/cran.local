@@ -61,6 +61,7 @@ class Controller{
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
         if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
         if(isset($data['do_comment_f'])) $this->addNewComment();
+        if(isset($data['buy_ref_page_f'])) $this->buyRefOnBoard();// покупка места на стене реферов
 
         
     }

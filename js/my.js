@@ -312,6 +312,20 @@
         var pos = e.target.href.indexOf('_') + 1;
         p_id = e.target.href.substr(pos);
     });
+    
+    $(document).on('click', 'a#buy_ref_page', function(e){// стена рефереров
+        
+        e.preventDefault;
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        // сделать проверку баланса перед отправкой запроса
+        
+        post_query('buy_ref_page', '');
+        
+
+    });
 
 
     

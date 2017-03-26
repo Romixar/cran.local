@@ -108,8 +108,6 @@ class MainController extends Controller{
     public function getHtmlRefData($data){
         
         for($i=0; $i<count($data); $i++){
-            
-            //foreach($data[$i]){
                 
                 $str .= '<div class="col-sm-4 col-md-4">
     <div class="thumbnail">
@@ -122,10 +120,7 @@ class MainController extends Controller{
     </div>
   </div>';
                 
-                
-            //}
-            
-            
+
         }
         return $str;
 
@@ -194,6 +189,30 @@ class MainController extends Controller{
         $ip = $_SERVER['REMOTE_ADDR'];
         
         $this->render('regist',compact('ip','ref_id'));
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public function buyRefOnBoard(){
+        
+        
+        //debug($this->data);die;
+        
+        
+        if($_SESSION['user']['balance'] < 2) $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
+        else $this->respJson($this->sysMessage('success','Поздравляем! Теперь вы на стене рефереров.'));
+        
+        
+        
     }
     
     
