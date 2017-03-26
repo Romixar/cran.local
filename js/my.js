@@ -31,7 +31,6 @@
             console.log('существует user');
             console.log($.cookie('user'));
             
-            console.log('История'+$.cookie('userHistory'));
             
             checkUserLim();
             

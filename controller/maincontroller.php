@@ -208,8 +208,39 @@ class MainController extends Controller{
         //debug($this->data);die;
         
         
-        if($_SESSION['user']['balance'] < 2) $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
-        else $this->respJson($this->sysMessage('success','Поздравляем! Теперь вы на стене рефереров.'));
+        if($_SESSION['user']['balance'] >= 2){
+            
+            // занести в список реф стены
+            
+            $mod = new Refpage();
+            
+            $data = [
+                'user_id'=>$_SESSION['user']['id'],
+                'date_add'=>time()
+                    ];
+            
+            if($mod->insert($data)){
+                
+                $_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
+                
+                // зачислить на яндекс кошелек плату за услугу сайта
+                
+                
+                
+
+                $user = new User(); // обновление баланса
+                $user->update([
+                    'balance' => $_SESSION['user']['balance'],
+                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+                
+                $this->respJson($this->sysMessage('success','Поздравляем! Ваш аватар размещен на стене рефереров'));
+                
+                
+            }
+            
+            
+            
+        }else $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
         
         
         
