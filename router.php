@@ -10,6 +10,7 @@ class Router{
         '/works' => 'works/index',
         '/reklams' => 'main/reklams',
         '/contacts' => 'main/contacts',
+        '/refpage' => 'main/refpage',
         '/login' => 'main/login',
         '/profile' => 'main/profile',
         '/logout' => 'main/logout',

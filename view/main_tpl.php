@@ -83,12 +83,12 @@
 <div class="container">
     <div class="row">
         
-        <div class="col-md-3 col-lg-3 sidebar">
+        <div class="col-md-2 col-lg-2 sidebar">
             
             <?= $left ?>
             
         </div>
-        <div class="col-md-6 col-lg-6">
+        <div class="col-md-8 col-lg-8">
            
            <div class="main">
               <div class="col-md-12 col-lg-12">
@@ -101,7 +101,7 @@
            
             
         </div>
-        <div class="col-md-3 col-lg-3 sidebar">
+        <div class="col-md-2 col-lg-2 sidebar">
            
            <?= $right ?>
             

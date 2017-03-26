@@ -3,7 +3,8 @@
 class Config{
     
     public static $dbname = 'cran';
-    public static $dbhost = 'localhost';
+    //public static $dbhost = 'localhost';
+    public static $dbhost = '127.0.0.1';
     public static $dbuser = 'root';
     public static $dbpass = '';
     

@@ -62,6 +62,74 @@ class MainController extends Controller{
         
         $this->render('contacts');
     }
+    
+    public function actionRefpage(){
+        $this->title = 'Стена рефереров';
+        $this->meta_desc = 'Страница стена рефереров мета описание';
+        $this->meta_key = 'Страница стена рефереров мета кей';
+        
+        $user = new User();
+        $data = $user->find('`ref_id`');
+        
+        for($i=0; $i<count($data); $i++){
+            
+            foreach($data[$i] as $k => $v){
+                
+                if($data[$i]->ref_id != 0) $tmp[] = $data[$i]->ref_id;
+                
+            }
+            
+        }
+        
+        $data = null;
+        
+        $tmp = array_unique($tmp);
+        
+        sort($tmp);
+        
+        $str_ref_ids = implode(',',$tmp);
+        
+        
+        $data = $user->find('*','`id` IN ('.$str_ref_ids.')');
+        
+        $refpage = $this->getHtmlRefData($data);
+        
+        
+        
+        
+        
+        
+        //debug($data);
+        
+        
+        $this->render('ref_page',compact('refpage'));
+    }
+    
+    public function getHtmlRefData($data){
+        
+        for($i=0; $i<count($data); $i++){
+            
+            //foreach($data[$i]){
+                
+                $str .= '<div class="col-sm-4 col-md-4">
+    <div class="thumbnail">
+      <img src="/images/no-user-image.gif" alt="проверка">
+      <div class="caption">
+        <h3>'.$data[$i]->login.'</h3>
+        <p class="desc">Проверка пррка про п проверка!</p>
+        <p><a href="#" class="btn btn-primary btn-xs" role="button">Выбрать</a></p>
+      </div>
+    </div>
+  </div>';
+                
+                
+            //}
+            
+            
+        }
+        return $str;
+
+    }
 
     public function actionLogin(){
         
