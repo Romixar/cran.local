@@ -74,11 +74,22 @@ class MainController extends Controller{
         
         // удаление последнего реферера, еслт он уже есть
         
-        if(count($data) > 2) unset($data[count($data)]);
+        $num = count($data);
+        
+        if($num > 3){
+            
+            $mod = new Refpage();
+            
+            $w = '`date_add` = '.$data[$num-1]['date_add'].' AND `user_id` = '.$data[$num-1]['user_id'];
+            
+            if($mod->delete($w)) unset($data[$num-1]);
+            else $this->respJson($this->sysMessage('danger','Ошибка удаления в БД!'));
+            
+        }
         
         
         
-        for($i=0; $i<count($data); $i++){
+        for($i=0; $i<$num; $i++){
             
             $data[$i]['date_add'] = strftime('%d-%m-%Y %H:%M:%S',$data[$i]['date_add']);
             

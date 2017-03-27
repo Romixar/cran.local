@@ -233,6 +233,19 @@ class DB{
         
     }
     
+    public function delete($w){
+        
+        $sql = 'DELETE FROM `'.static::$table.'` WHERE '.$w;
+        
+        $sth = $this->dbh->prepare($sql);
+        $sth->execute();
+        
+        echo $sql;die;
+        
+        if($sth->rowCount() == 1) return true;
+        else return false;
+    }
+    
     
     
     
