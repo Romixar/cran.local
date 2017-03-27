@@ -240,8 +240,6 @@ class DB{
         $sth = $this->dbh->prepare($sql);
         $sth->execute();
         
-        echo $sql;die;
-        
         if($sth->rowCount() == 1) return true;
         else return false;
     }

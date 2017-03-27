@@ -74,28 +74,16 @@ class MainController extends Controller{
         
         // удаление последнего реферера, еслт он уже есть
         
-        $num = count($data);
         
-        if($num > 3){
-            
-            $mod = new Refpage();
-            
-            $w = '`date_add` = '.$data[$num-1]['date_add'].' AND `user_id` = '.$data[$num-1]['user_id'];
-            
-            if($mod->delete($w)) unset($data[$num-1]);
-            else $this->respJson($this->sysMessage('danger','Ошибка удаления в БД!'));
-            
-        }
+        $data = $this->delLastRef($data, count($data));
         
         
-        
-        for($i=0; $i<$num; $i++){
+        for($i=0; $i<count($data); $i++){
             
             $data[$i]['date_add'] = strftime('%d-%m-%Y %H:%M:%S',$data[$i]['date_add']);
             
         }
         
-        debug($data);//die;
         
         
         
@@ -111,6 +99,21 @@ class MainController extends Controller{
         
         
         $this->render('ref_page',compact('refpage'));
+    }
+    
+    public function delLastRef($data,$num){
+        
+        if($num > 3){
+            
+            $mod = new Refpage();
+            
+            $w = '`date_add` = '.$data[$num-1]['date_add'].' AND `user_id` = '.$data[$num-1]['user_id'];
+            
+            if($mod->delete($w)) unset($data[$num-1]);
+            else $this->respJson($this->sysMessage('danger','Ошибка удаления в БД!'));
+            
+        }
+        return $data;
     }
     
     public function getHtmlRefData($data){
