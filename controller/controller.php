@@ -176,6 +176,7 @@ class Controller{
                 $mycookie = [
                     'login'=>$_SESSION['user']['login'],
                     'ip'=>$_SESSION['user']['ip'],
+                    //'img'=>$_SESSION['user']['img'],
                 ];
                 
                 $this->respJson(false, false, false, $mycookie);// авторизация пройдена

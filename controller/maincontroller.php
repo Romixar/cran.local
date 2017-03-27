@@ -122,7 +122,7 @@ class MainController extends Controller{
             
             $img = !empty($data[$i]['img']) ? $data[$i]['img'] : 'no-user-image.gif';
                 
-            $str .= '<div class="col-sm-4 col-md-4">
+            $str .= '<div id=ref_'.($i+1).' class="col-sm-4 col-md-4">
             <div class="thumbnail">
               <img src="/images/'.$img.'" alt="проверка" title="'.$data[$i]['login'].'">
               <div class="caption">
@@ -144,7 +144,7 @@ class MainController extends Controller{
         //debug($this->data);die;
         
         
-        if($_SESSION['user']['balance'] >= 2){
+        if($_SESSION['user']['balance'] >= 0){
             
             // занести в список реф стены
             
@@ -159,7 +159,10 @@ class MainController extends Controller{
             
             if($mod->insert($data)){
                 
-                $_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
+                //$_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
+                
+                $mycookie = ['img'=>$_SESSION['user']['img']];
+                
                 
                 // зачислить на яндекс кошелек плату за услугу сайта
                 
@@ -171,14 +174,14 @@ class MainController extends Controller{
                     'balance' => $_SESSION['user']['balance'],
                 ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
                 
-                $this->respJson($this->sysMessage('success','Поздравляем! Ваш аватар размещен на стене рефереров'));
+                $this->respJson($this->sysMessage('success','Поздравляем! Ваш аватар размещен на стене рефереров'),false,false,$mycookie);
                 
                 
             }
             
             
             
-        }else $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на рекламном счёте!'));
+        }else $this->respJson($this->sysMessage('danger','У Вас недостаточно средств на счёте!'));
         
         
         

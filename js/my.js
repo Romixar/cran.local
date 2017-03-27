@@ -664,7 +664,8 @@
                             getBList(obj.dataBList);
                             setTextSubmit();
                         }
-                        if(obj.mycookie) saveMyCookie(obj.mycookie);
+                        if(obj.mycookie.img != undefined) buildRefPage(obj.mycookie);
+                        if(obj.mycookie && obj.mycookie.img == undefined) saveMyCookie(obj.mycookie);
 
                             
                         
@@ -1023,6 +1024,30 @@ console.log('попал');
         }
         setTimeout(function(){timerToBonus()},1000);//Рекурсия каждую секунду
         
+        
+    }
+    
+    function buildRefPage(mycookie){// вставлю в начало списка рефера
+        
+        //console.log('попал');
+        
+        var clRef = $(document).find('div#ref_1').clone();
+        
+        clRef.attr('id','ref_16');
+        
+        clRef.find('img').attr('src','/images/'+mycookie.img);
+        clRef.find('h3').text('').text(JSON.parse($.cookie('user')).login);
+        
+        //console.log();
+        
+        $('div.ref-page div.row').prepend(clRef);
+
+
+        
+        $(document).find('div#ref_3').remove();// посл удалю
+        
+        
+        return;
         
     }
     
