@@ -321,6 +321,9 @@
         
         // сделать проверку баланса перед отправкой запроса
         
+        
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        
         post_query('buy_ref_page', '');
         return false;
 
@@ -1043,6 +1046,8 @@ console.log('попал');
         var n = $(document).find('div.ref-page div.row').children.length;// номер посл реферера в DOM
         
         $(document).find('div.ref-page div.row').children()[n+1].remove();// удалю его
+        
+        removeDisabled();
 
         return;
         
