@@ -72,46 +72,44 @@ class MainController extends Controller{
         
         $data = $user->getRefPageData();
         
-        // удаление последнего реферера, еслт он уже есть
+        // удаление последних рефереров, еслт они есть
         
         
         $data = $this->delLastRef($data, count($data));
         
         
-        for($i=0; $i<count($data); $i++){
-            
-            $data[$i]['date_add'] = strftime('%d-%m-%Y %H:%M:%S',$data[$i]['date_add']);
-            
-        }
+//        for($i=0; $i<count($data); $i++){
+//            
+//            $data[$i]['date_add'] = strftime('%d-%m-%Y %H:%M:%S',$data[$i]['date_add']);
+//            
+//        }
         
-        
-        
-        
-        
+
         $refpage = $this->getHtmlRefData($data);
         
-        
-        
-        
-        
-        
-        //debug($data);
         
         
         $this->render('ref_page',compact('refpage'));
     }
     
-    public function delLastRef($data,$num){
+    public function delLastRef($data){
         
-        if($num > 3){
+        if(count($data) > 3){
             
             $mod = new Refpage();
+            $newdata = array_slice($data,3);// определю эл-ты кот-е удалить
             
-            $w = '`date_add` = '.$data[$num-1]['date_add'].' AND `user_id` = '.$data[$num-1]['user_id'];
+            for($i=0; $i<count($newdata); $i++){
+                
+                $tmp[] = $newdata[$i]['id'];
+                
+                foreach($data as $k => $v){   
+                    if($data[$k]['id'] === $newdata[$i]['id']) unset($data[$k]);
+                }   
+            }
+            $w = '`id` IN ('.implode(',',$tmp).')';
             
-            if($mod->delete($w)) unset($data[$num-1]);
-            else $this->respJson($this->sysMessage('danger','Ошибка удаления в БД!'));
-            
+            if(!$mod->delete($w)) $this->respJson($this->sysMessage('danger','Ошибка удаления в БД!'));
         }
         return $data;
     }
@@ -161,7 +159,9 @@ class MainController extends Controller{
                 
                 //$_SESSION['user']['balance'] -= 2;// вычесть из баланса и записать  в баланс
                 
-                $mycookie = ['img'=>$_SESSION['user']['img']];
+                $img = !empty($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
+                
+                $mycookie = ['img'=>$img];
                 
                 
                 // зачислить на яндекс кошелек плату за услугу сайта

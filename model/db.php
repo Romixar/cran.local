@@ -210,7 +210,9 @@ class DB{
     
     public function getRefPageData(){
         
-        $sql = 'SELECT `login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';
+//        $sql = 'SELECT `login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';    
+        
+        $sql = 'SELECT `ref_page`.`id`,`login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';
         
         $sth = $this->dbh->query($sql);
         $res = $sth->fetchAll();
@@ -240,7 +242,7 @@ class DB{
         $sth = $this->dbh->prepare($sql);
         $sth->execute();
         
-        if($sth->rowCount() == 1) return true;
+        if($sth->rowCount()) return true;
         else return false;
     }
     

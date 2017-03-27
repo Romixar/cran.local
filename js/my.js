@@ -322,7 +322,7 @@
         // сделать проверку баланса перед отправкой запроса
         
         post_query('buy_ref_page', '');
-        
+        return false;
 
     });
 
@@ -1028,48 +1028,22 @@ console.log('попал');
     }
     
     function buildRefPage(mycookie){// вставлю в начало списка рефера
-        
-        //console.log('попал');
-        
+                
         var clRef = $(document).find('div#ref_1').clone();
         
         clRef.attr('id','ref_16');
         
         clRef.find('img').attr('src','/images/'+mycookie.img);
+          
         clRef.find('h3').text('').text(JSON.parse($.cookie('user')).login);
-        
-        //console.log();
+
         $('div.ref-page div.row').prepend(clRef); /// вставляю первого
         
         
-//        var dRef = $('div.ref-page div.row div.col-sm-6:last');
-//        
-//        console.log(dRef.attr('class'));
+        var n = $(document).find('div.ref-page div.row').children.length;// номер посл реферера в DOM
         
-        //dRef.remove();
-        
-        var n = $('div.ref-page div.row').children.length;// номер посл реферера в DOM
-        
-        $('div.ref-page div.row').children()[n+1].remove();// удалю его
-        
-        
-        //console.log($('div.ref-page div.row').children()[n+1]);
-        
-//        for(var i=15; i>0; i--){
-//            
-//            if($('div#ref_'+i) !== undefined){
-//                
-//                console.log($('div#ref_'+i));
-//                break;
-//                
-//            }
-//            continue;
-//            
-//            
-//        }
-        
-        
-        
+        $(document).find('div.ref-page div.row').children()[n+1].remove();// удалю его
+
         return;
         
     }
