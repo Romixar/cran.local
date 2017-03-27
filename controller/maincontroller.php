@@ -76,16 +76,12 @@ class MainController extends Controller{
         
         
         $data = $this->delLastRef($data, count($data));
-        
-        
-//        for($i=0; $i<count($data); $i++){
-//            
-//            $data[$i]['date_add'] = strftime('%d-%m-%Y %H:%M:%S',$data[$i]['date_add']);
-//            
-//        }
+
         
 
         $refpage = $this->getHtmlRefData($data);
+        
+        //echo json_encode(['dataRefPage'=>$refpage]);// ассинхронный вариант НО НЕБУДЕТ URI
         
         
         

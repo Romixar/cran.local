@@ -3,7 +3,7 @@
 class Controller{
     
     public $view;// объект видов
-    public $btn = []; // кнопка авторизации
+    public $btn = []; // кнопки лев и прав блока
     
     public $sysmes = ''; // системные сообщения
     public $data; // POST массив
@@ -24,12 +24,16 @@ class Controller{
             $text = 'ВОЙТИ';
             $uri = 'login';
             $id = 'u_in';
+            $refPage = '';
+            $reg = '<a href="registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
             $uri = 'logout';
             $id = 'u_out';
+            $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
+            $reg = '';
         }
-        $this->btn = compact('text','uri','id');
+        $this->btn = compact('refPage','text','uri','id','reg');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -61,6 +65,7 @@ class Controller{
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
         if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
         if(isset($data['do_comment_f'])) $this->addNewComment();
+        //if(isset($data['get_refpage_f'])) $this->actionRefpage();// запрос страницы стена реферов
         if(isset($data['buy_ref_page_f'])) $this->buyRefOnBoard();// покупка места на стене реферов
 
         
@@ -693,7 +698,7 @@ class Controller{
         $tit = 'Пользователь '.$_SESSION['user']['login'];
         $prof = ($_SESSION['user']) ? '<li><a href="/profile" title="'.$tit.'"><i class="glyphicon glyphicon-user"></i></a></li>' : '';
         
-        $left = $this->view->prerender('left');
+        $left = $this->view->prerender('left',$this->btn);
         
         $content = $this->view->prerender($tmpl,$data);
         

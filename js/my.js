@@ -328,6 +328,22 @@
         return false;
 
     });
+    
+    //    сделать ассинхронно
+//    $(document).on('click', 'a#refpage', function(e){// открытие стена рефереров
+//        
+//        e.preventDefault;
+//        
+//        elem = $(this);
+//        textButton = $(this).text();
+//        
+//        
+//        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+//        
+//        post_query('get_refpage', '');
+//        return false;
+//
+//    });
 
 
     
@@ -667,8 +683,18 @@
                             getBList(obj.dataBList);
                             setTextSubmit();
                         }
-                        if(obj.mycookie.img != undefined) buildRefPage(obj.mycookie);
-                        if(obj.mycookie && obj.mycookie.img == undefined) saveMyCookie(obj.mycookie);
+                        if(obj.dataRefPage) buildDataRefPage(obj.dataRefPage);
+                        
+                        if(obj.mycookie){
+                            
+                            if(obj.mycookie.img != undefined) buildRefPage(obj.mycookie);
+                            if(obj.mycookie && obj.mycookie.img == undefined) saveMyCookie(obj.mycookie);
+                            
+                            
+                        }
+                        
+                        
+                        
 
                             
                         
@@ -826,7 +852,7 @@
             str += '<tr><td>'+(i+1)+'.</td><td>'+data[i].date_add+'</td><td>'+data[i].sum+'</td></tr>'; res += Number(data[i].sum);
         }
         
-        var strRes = '<tr class="success"><th>Всего:</th><th><span>'+i+' бон. на сумму</span></th><th><span>'+res+'</span></th></tr>';
+        var strRes = '<tr class="success"><th>Всего:</th><th><span>'+i+' бон. на сумму</span></th><th><span>'+res.toFixed(2)+'</span></th></tr>';
         
         $('table.b_list thead').append(strRes);
         $('table.b_list tbody').text('').append(str);
@@ -1053,9 +1079,18 @@ console.log('попал');
         
     }
     
+    function buildDataRefPage(data){
+        
+        $('div.ref-page div.row').replaceWith(data);
+        removeDisabled();
+        return;
+    }
+    
+    
     function getRecoveryTpl(){
         return "<h4>Восстановление логина / пароля</h4><h5>Заполните любое из полей</h5><div class=\"form recovery\"><p>E-mail, указанный в профиле:</p><p><span></span><input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Ваш e-mail\" autofocus /></p><p>Логин, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"login\" name=\"login\" placeholder=\"Ваш логин\" /></p><p>Номер вашего кошелька, указанный при регистрации:</p><p><span></span><input type=\"text\" id=\"wallet\" name=\"wallet\" placeholder=\"P0123456789\" /></p><p><a href=\"###\" id=\"recovery\" tabindex=\"-1\" class=\"btn btn-success\">Восстановить</a></p></div>";
     }
+    
     
 
     

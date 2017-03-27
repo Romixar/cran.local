@@ -3,7 +3,7 @@
      <a href="<?= $uri ?>" id="<?= $id ?>" class="btn btn-success"><?= $text ?></a>  
    </p>
    <p>
-     <a href="registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>  
+      <?= $reg ?>
    </p> 
     
     <div></div>
