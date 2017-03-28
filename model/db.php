@@ -92,16 +92,20 @@ class DB{
         if(!empty($asc)) $sql .= ' ORDER BY '.$asc;
         if(!empty($lim)) $sql .= ' LIMIT '.$lim;
         
-        
         //debug($sql);//die;
 
         $res = $this->select($sql);
-        
         if(!empty($res)) return $res;
         return false;
         
         
         
+    }
+    
+    public function getArr($sql){ // извлечение ввиде массива
+        
+        $sth = $this->dbh->query($sql);
+        return $sth->fetchAll();
     }
     
 
@@ -208,11 +212,13 @@ class DB{
         
     }
     
-    public function getRefPageData(){
+    public function getRefPageData($lim=''){
         
 //        $sql = 'SELECT `login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';    
         
         $sql = 'SELECT `ref_page`.`id`,`login`,`img`,`date_add`,`user_id` FROM `'.static::$table.'` JOIN `ref_page` WHERE `users`.`id` = `ref_page`.`user_id` ORDER BY `date_add` DESC';
+        
+        if($lim) $sql .= ' LIMIT '.$lim;
         
         $sth = $this->dbh->query($sql);
         $res = $sth->fetchAll();

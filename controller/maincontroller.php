@@ -259,7 +259,7 @@ class MainController extends Controller{
         // получать по три реферера из стены рефереров с каждым открытием этой страницы
         
         
-        $mod = new Refpage();
+        $mod = new User();
         
         if(isset($_SESSION['sys']['ref_cnt']) && $_SESSION['sys']['ref_cnt'] != 15){
             
@@ -272,21 +272,24 @@ class MainController extends Controller{
             $offset = '';
         }
         
-        $data = $mod->find('*','','`id` DESC',$offset.'3');
+        $data = $mod->getRefPageData($offset.'3');
+
         
         
         if(!empty($data)){
             
+            $txt = 'Выберите одного реферера и на ваш баланс поступит бонус 2,00 руб.!';
             
+            $refers = '<p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($data).'</div>';
             
         }
         
 
-        debug($data);
+        //debug($htmlRef);
         
         
         
-        $this->render('regist',compact('ip','ref_id'));
+        $this->render('regist',compact('ip','ref_id','refers'));
     }
     
     
