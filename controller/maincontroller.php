@@ -90,10 +90,10 @@ class MainController extends Controller{
     
     public function delLastRef($data){
         
-        if(count($data) > 3){
+        if(count($data) > 15){
             
             $mod = new Refpage();
-            $newdata = array_slice($data,3);// определю эл-ты кот-е удалить
+            $newdata = array_slice($data,15);// определю эл-ты кот-е удалить
             
             for($i=0; $i<count($newdata); $i++){
                 
@@ -285,15 +285,17 @@ class MainController extends Controller{
             
             if($r == 3 && $c != 3) $offset = 3;
         
-            if($r < 3) $offset = 0;
-            else{
+            if($r < 3 && $r >= 0) $offset = 0;
+            
+            if($r > 3){
 
                 if($r == 6 || $r == 7 || $r == 8){
 
-                    if($offset = 12) $offset = 0;
-                    if($offset = 15) $offset = 6;
+                    if($offset == 12) $offset = 0;
+                    if($offset == 15) $offset = 6;
 
-                }elseif($r == 4 || $r == 5 || $r == 9 || $r == 10 || $r == 11) $offset = 3;
+                //}elseif($r == 3 || $r == 4 || $r == 5 || $r == 9 || $r == 10 || $r == 11) $offset = 3;
+                }else $offset = 3;
 
 
             }

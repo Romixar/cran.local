@@ -1056,7 +1056,7 @@ console.log('попал');
         
     }
     
-    function buildRefPage(mycookie){// вставлю в начало списка рефера
+    function buildRefPage(mycookie){// вставлю в начало списка реферера
                 
         var clRef = $(document).find('div#ref_1').clone();
         
@@ -1069,9 +1069,11 @@ console.log('попал');
         $('div.ref-page div.row').prepend(clRef); /// вставляю первого
         
         
-        var n = $(document).find('div.ref-page div.row').children.length;// номер посл реферера в DOM
+        var n = $(document).find('div.ref-page div.row').children().length;// номер посл реферера в DOM
         
-        $(document).find('div.ref-page div.row').children()[n+1].remove();// удалю его
+        //console.log(n);
+        
+        if(n > 15) $(document).find('div.ref-page div.row').children()[n-1].remove();// удалю его
         
         removeDisabled();
 
