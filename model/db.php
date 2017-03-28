@@ -104,6 +104,8 @@ class DB{
         
     }
     
+
+    
     public function findComments($fields){
         $sql = "SELECT ".$fields." FROM `".static::$table."` ORDER BY `date_add` DESC";
         $sth = $this->dbh->query($sql);
@@ -130,8 +132,6 @@ class DB{
 
         
         $sth = $this->dbh->query($sql);
-        
-        //debug($sth->rowCount());die;
         
         return $sth->rowCount();
     }

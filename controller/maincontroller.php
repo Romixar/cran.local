@@ -247,15 +247,44 @@ class MainController extends Controller{
     public function actionRegistration($id){
         
         if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)) $ref_id = (int)$id;
-
-        
         
         $this->title = 'Страница регистрациии';
         $this->meta_desc = 'Страница регистрации мета описание';
         $this->meta_key = 'Страница регистрации мета кей';
         
-        
         $ip = $_SERVER['REMOTE_ADDR'];
+        
+        
+        
+        // получать по три реферера из стены рефереров с каждым открытием этой страницы
+        
+        
+        $mod = new Refpage();
+        
+        if(isset($_SESSION['sys']['ref_cnt']) && $_SESSION['sys']['ref_cnt'] != 15){
+            
+            $_SESSION['sys']['ref_cnt'] = $_SESSION['sys']['ref_cnt'] + 3;
+            
+            $offset = $_SESSION['sys']['ref_cnt'].',';
+            
+        }else{
+            $_SESSION['sys']['ref_cnt'] = 0;
+            $offset = '';
+        }
+        
+        $data = $mod->find('*','','`id` DESC',$offset.'3');
+        
+        
+        if(!empty($data)){
+            
+            
+            
+        }
+        
+
+        debug($data);
+        
+        
         
         $this->render('regist',compact('ip','ref_id'));
     }
