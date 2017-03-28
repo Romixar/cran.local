@@ -265,27 +265,58 @@ class MainController extends Controller{
             
             $_SESSION['sys']['ref_cnt'] = $_SESSION['sys']['ref_cnt'] + 3;
             
-            $offset = $_SESSION['sys']['ref_cnt'].',';
+            $offset = $_SESSION['sys']['ref_cnt'];
             
         }else{
             $_SESSION['sys']['ref_cnt'] = 0;
-            $offset = '';
+            $offset = 0;
         }
         
-        $data = $mod->getRefPageData($offset.'3');
+        echo $offset;
+        
+        $data = $mod->getRefPageData();
+        
+        $c = count($data);
+        
+        if($c <= 3) $offset = 0;
+        else{
+            
+            $r = $offset - $c;
+            
+            if($r == 3 && $c != 3) $offset = 3;
+        
+            if($r < 3) $offset = 0;
+            else{
+
+                if($r == 6 || $r == 7 || $r == 8){
+
+                    if($offset = 12) $offset = 0;
+                    if($offset = 15) $offset = 6;
+
+                }elseif($r == 4 || $r == 5 || $r == 9 || $r == 10 || $r == 11) $offset = 3;
+
+
+            }
+            
+        }
+
+        
+        $newdata = array_slice($data,$offset,3);
+        
+        debug($newdata);
 
         
         
-        if(!empty($data)){
+        if(!empty($newdata)){
             
             $txt = 'Выберите одного реферера и на ваш баланс поступит бонус 2,00 руб.!';
             
-            $refers = '<p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($data).'</div>';
+            //$refers = '<p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($data).'</div>';
             
         }
         
 
-        //debug($htmlRef);
+        
         
         
         
