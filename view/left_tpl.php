@@ -1,5 +1,8 @@
 <p>LEFT BLOCK</p>
-           
+          
+    <p>
+       <?= $uprating ?>
+    </p>   
     <p>
        <?= $refPage ?>
     </p>

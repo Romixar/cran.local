@@ -25,15 +25,17 @@ class Controller{
             $uri = 'login';
             $id = 'u_in';
             $refPage = '';
+            $uprating = '';
             $reg = '<a href="registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
             $uri = 'logout';
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
+            $uprating = $this->getButtonRating();
             $reg = '';
         }
-        $this->btn = compact('refPage','text','uri','id','reg');
+        $this->btn = compact('refPage','uprating','text','uri','id','reg');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -648,7 +650,30 @@ class Controller{
     
     
     
-    
+    public function getButtonRating(){
+        
+//        $m = date('m',time()-(60*60*24));// какой мес вчера
+//        $d = date('d',time()-(60*60*24));// какой день вчера 
+//        $y = date('Y',time()-(60*60*24));// какой год вчера
+        
+        $m = date('m',time());
+        $d = date('d',time()); 
+        $y = date('Y',time());
+        
+        $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи вчераш дня
+        
+        if((time() - $yesterday_ts) >= 60*60*24){
+            
+            $txt = 'прошли сутки<br/>';
+            $btn = $txt.'<a href="refpage" id="refpage" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
+        }else{
+            $txt = 'ещё не сменились сутки';
+            $btn = $txt.'';
+        }
+        
+        return $btn;
+        
+    }
     
     public function unsetEl($el){
         unset($this->data[$el]);
