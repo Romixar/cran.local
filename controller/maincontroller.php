@@ -272,40 +272,32 @@ class MainController extends Controller{
             $offset = 0;
         }
         
-        echo $offset;
+        //echo $offset;
+        
+        
         
         $data = $mod->getRefPageData();
-        
         $c = count($data);
         
         if($c <= 3) $offset = 0;
         else{
-            
             $r = $offset - $c;
-            
             if($r == 3 && $c != 3) $offset = 3;
         
             if($r < 3 && $r >= 0) $offset = 0;
             
             if($r > 3){
-
                 if($r == 6 || $r == 7 || $r == 8){
 
                     if($offset == 12) $offset = 0;
                     if($offset == 15) $offset = 6;
-
-                //}elseif($r == 3 || $r == 4 || $r == 5 || $r == 9 || $r == 10 || $r == 11) $offset = 3;
                 }else $offset = 3;
-
-
             }
-            
         }
-
-        
         $newdata = array_slice($data,$offset,3);
         
-        debug($newdata);
+        
+        //debug($newdata);
 
         
         
@@ -313,14 +305,9 @@ class MainController extends Controller{
             
             $txt = 'Выберите одного реферера и на ваш баланс поступит бонус 2,00 руб.!';
             
-            //$refers = '<p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($data).'</div>';
+            $refers = '<div class="ref-preview"><p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($newdata).'</div></div>';
             
         }
-        
-
-        
-        
-        
         
         $this->render('regist',compact('ip','ref_id','refers'));
     }

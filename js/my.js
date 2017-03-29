@@ -328,6 +328,23 @@
         return false;
 
     });
+    $(document).on('click', 'div.ref-preview a.btn', function(e){// выбор ренферала при регистр-и
+        
+        e.preventDefault;
+        
+        var ref_id = $(e.target).parent().parent().parent().parent().attr('id');
+        
+        $('div.ref-preview div.row div').removeClass('selected');
+        
+        $(e.target).parent().parent().parent().addClass('selected');
+        
+        ref_id = ref_id.substr(4);
+        
+        $('input#ref_id').val(ref_id);
+        
+        return false;
+        
+    });
     
     //    сделать ассинхронно
 //    $(document).on('click', 'a#refpage', function(e){// открытие стена рефереров
