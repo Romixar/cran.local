@@ -1,6 +1,8 @@
 <h4>Страница регистрации</h4>
 
-<?= $refers ?>
+<div class="ref-preview">
+    <?= $refers ?> 
+</div>
 
 <div class="form registration">
             

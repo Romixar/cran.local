@@ -109,7 +109,7 @@
     });
     $('div.form a.registration').click(function(e){
         
-        e.preventDefault;
+        e.preventDefault();
         validRegAndSubmit();
     });
     $("div.registration").keyup(function(e){// запустить валидацию и отправку
@@ -150,7 +150,7 @@
     
     $('div.form a.mes').click(function(e){
         
-        e.preventDefault;
+        e.preventDefault();
         submit = true;
 
         var nm = $('div.form input#name');
@@ -188,7 +188,7 @@
     
     $('div.login a#submit').click(function(e){// авторизация
         
-        e.preventDefault;
+        e.preventDefault();
         
         var lg = $('div.form input#login');
         var pwd = $('div.form input#password');
@@ -206,7 +206,7 @@
     });
     $('div.login a#recoverypass').click(function(e){// восстановление пароля
        
-        e.preventDefault;
+        e.preventDefault();
         
         $('div.main div h4').remove();
         if($('div.alert')) $('div.alert').remove();
@@ -217,7 +217,7 @@
     });
     $(document).on('click', 'a#recovery', function(e){// восстановление пароля
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -235,7 +235,7 @@
     });
     $(document).on('click', 'a#comment', function(e){// добавление коммента
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -298,7 +298,7 @@
     });
     $(document).on('click','a[href^="#comm"]', function(e){// добавление ответа на комментарий
         
-        e.preventDefault;
+        e.preventDefault();
         
         txtarea = $('div.comment').remove();// врем-е удаление textarea
         
@@ -314,7 +314,7 @@
     
     $(document).on('click', 'a#buy_ref_page', function(e){// стена рефереров
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -328,9 +328,9 @@
         return false;
 
     });
-    $(document).on('click', 'div.ref-preview a.btn', function(e){// выбор ренферала при регистр-и
+    $(document).on('click', 'div.ref-preview a.btn', function(e){// выбор реферера при регистр-и
         
-        e.preventDefault;
+        e.preventDefault();
         
         var ref_id = $(e.target).parent().parent().parent().parent().attr('id');
         
@@ -341,8 +341,7 @@
         ref_id = ref_id.substr(4);
         
         $('input#ref_id').val(ref_id);
-        
-        return false;
+
         
     });
     
@@ -366,7 +365,7 @@
     
     $('div.profile a#submit').click(function(e){// отправка img аватарки и e-mail
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         
@@ -376,7 +375,7 @@
     
     $('div.profile a#change').click(function(e){// смена пароля
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -398,7 +397,7 @@
 
     $('a#get_ref_list').click(function(e){
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -410,7 +409,7 @@
     });
     $('a#get_b_list').click(function(e){
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();
@@ -423,7 +422,7 @@
     
     $('a#get_bonus').click(function(e){
         
-        e.preventDefault;
+        e.preventDefault();
         
         elem = $(this);
         textButton = $(this).text();

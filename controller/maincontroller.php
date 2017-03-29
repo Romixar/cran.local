@@ -254,60 +254,47 @@ class MainController extends Controller{
         
         $ip = $_SERVER['REMOTE_ADDR'];
         
-        
-        
         // получать по три реферера из стены рефереров с каждым открытием этой страницы
-        
-        
-        $mod = new User();
-        
-        if(isset($_SESSION['sys']['ref_cnt']) && $_SESSION['sys']['ref_cnt'] != 15){
+        if(!isset($ref_id)){
             
-            $_SESSION['sys']['ref_cnt'] = $_SESSION['sys']['ref_cnt'] + 3;
-            
-            $offset = $_SESSION['sys']['ref_cnt'];
-            
-        }else{
-            $_SESSION['sys']['ref_cnt'] = 0;
-            $offset = 0;
-        }
+            $mod = new User();
         
-        //echo $offset;
-        
-        
-        
-        $data = $mod->getRefPageData();
-        $c = count($data);
-        
-        if($c <= 3) $offset = 0;
-        else{
-            $r = $offset - $c;
-            if($r == 3 && $c != 3) $offset = 3;
-        
-            if($r < 3 && $r >= 0) $offset = 0;
-            
-            if($r > 3){
-                if($r == 6 || $r == 7 || $r == 8){
+            if(isset($_SESSION['sys']['ref_cnt']) && $_SESSION['sys']['ref_cnt'] != 15){
+                
+                $_SESSION['sys']['ref_cnt'] = $_SESSION['sys']['ref_cnt'] + 3;
+                $offset = $_SESSION['sys']['ref_cnt'];
+            }else{
+                $_SESSION['sys']['ref_cnt'] = 0;
+                $offset = 0;
+            }
 
-                    if($offset == 12) $offset = 0;
-                    if($offset == 15) $offset = 6;
-                }else $offset = 3;
+            $data = $mod->getRefPageData();
+            $c = count($data);
+
+            if($c <= 3) $offset = 0;
+            else{
+                $r = $offset - $c;
+                if($r == 3 && $c != 3) $offset = 3;
+
+                if($r < 3 && $r >= 0) $offset = 0;
+
+                if($r > 3){
+                    if($r == 6 || $r == 7 || $r == 8){
+
+                        if($offset == 12) $offset = 0;
+                        if($offset == 15) $offset = 6;
+                    }else $offset = 3;
+                }
+            }
+            $newdata = array_slice($data,$offset,3);
+
+            if(!empty($newdata)){
+
+                $txt = 'Выберите одного реферера и на ваш баланс поступит бонус 2,00 руб.!';
+                $refers = '<p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($newdata).'</div>';
             }
         }
-        $newdata = array_slice($data,$offset,3);
         
-        
-        //debug($newdata);
-
-        
-        
-        if(!empty($newdata)){
-            
-            $txt = 'Выберите одного реферера и на ваш баланс поступит бонус 2,00 руб.!';
-            
-            $refers = '<div class="ref-preview"><p>'.$txt.'</p><div class="row">'.$this->getHtmlRefData($newdata).'</div></div>';
-            
-        }
         
         $this->render('regist',compact('ip','ref_id','refers'));
     }
