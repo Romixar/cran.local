@@ -222,6 +222,9 @@ class MainController extends Controller{
             
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $login = $_SESSION['user']['login'];
+            
+            $rating = number_format($_SESSION['user']['rating'],1,',',''); ///   текущий рейтинг
+            
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
@@ -240,7 +243,7 @@ class MainController extends Controller{
             $this->meta_desc = 'Страница профиля мета описание';
             $this->meta_key = 'Страница профиля мета кей';
             
-            $this->render('profile',compact('img','login','balance','b','date_reg','date_act','ip','ref_url','email','wal','text')); 
+            $this->render('profile',compact('img','login','rating','balance','b','date_reg','date_act','ip','ref_url','email','wal','text')); 
         }
     }
     

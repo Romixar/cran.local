@@ -210,6 +210,7 @@ class Controller{
             $_SESSION['user']['id'] = $data[0]->id;
             $_SESSION['user']['img'] = $data[0]->img;
             $_SESSION['user']['login'] = $data[0]->login;
+            $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['b'] = $data[0]->b;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
