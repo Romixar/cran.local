@@ -216,6 +216,8 @@ class MainController extends Controller{
     }
     
     public function actionProfile(){
+        
+        debug($_SESSION);
 
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{

@@ -19,10 +19,7 @@ class Controller{
         if(isset($_GET)) $this->xss($_GET);
         
         $this->view = new ViewController();
-        
-//        debug($_SESSION);
-//        unset($_SESSION['user']['ts']);
-        
+                
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
             $uri = 'login';
@@ -35,7 +32,7 @@ class Controller{
             $uri = 'logout';
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
-            $uprating = $this->checkButtonRating() ? $this->getButtonRating() : '';
+            $uprating = $this->getButtonRating();
             $reg = '';
         }
         $this->btn = compact('refPage','uprating','text','uri','id','reg');
@@ -219,6 +216,7 @@ class Controller{
             $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['b'] = $data[0]->b;
+            $_SESSION['user']['date_rat'] = $data[0]->date_rat;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
             $_SESSION['user']['date_act'] = $data[0]->date_act;
             $_SESSION['user']['ip'] = $data[0]->ip;
@@ -652,13 +650,14 @@ class Controller{
     public function getRating(){
 
         $_SESSION['user']['rating'] += 0.2;
+        $_SESSION['user']['date_rat'] = time();
         
         $mod = new User();
         
         $res = $mod->update([
             
             'rating'=>$_SESSION['user']['rating'],
-            'date_rat'=>time(),
+            'date_rat'=>$_SESSION['user']['date_rat'],
         ],"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
         
         if($res) $this->respJson($this->sysMessage('success','Баллы вашего рейтинга увеличены!'));
@@ -666,7 +665,7 @@ class Controller{
     }
     
     
-    public function checkButtonRating(){
+    public function checkDateRat(){
         
         $m = date('m',time());
         $d = date('d',time()); 
@@ -674,29 +673,22 @@ class Controller{
         
         $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи этого дня
 
-        $mod = new User();
-        $data = $mod->find('`date_rat`',"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
+        $date_rat = $_SESSION['user']['date_rat'];
         
-        //debug($data);die;
-        
-        
-        if(($data[0]->date_rat - $yesterday_ts) > 0){
+        if(($date_rat - $yesterday_ts) > 0){
+        //if(($data[0]->date_rat - $yesterday_ts) > 0){
         //if(((time()-12*60*60) - $yesterday_ts) > 0){
             
-            //echo 'не прошли сутки';
-            return false;
-        }else{
-            
-            //echo 'прошли сутки';
-            return true;
-        }
+            return false;//echo 'не прошли сутки';
+        }else return true;//echo 'прошли сутки';
         
     }
     
     public function getButtonRating(){
-    
-        $btn = '<a href="refpage" id="uprating" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
         
+        if($this->checkDateRat()) $btn = '<a href="refpage" id="uprating" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
+        else $btn = '';
+    
         return $btn;        
     }
     
