@@ -33,13 +33,14 @@ class Controller{
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
             
+            $s = $_SESSION['user']['status'];
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $b = number_format($_SESSION['user']['balance'],3,',',' ');
             $lg = $_SESSION['user']['login'];
             $r = number_format($_SESSION['user']['rating'],2,'.',' ');
             $up_r = $this->getButtonRating();
             
-            $m_pr = $this->view->prerender('mini_profile',compact('img','lg','b','r','up_r'));
+            $m_pr = $this->view->prerender('mini_profile',compact('img','s','lg','b','r','up_r'));
             
             $reg = '';
         }
@@ -221,6 +222,7 @@ class Controller{
             $_SESSION['user']['id'] = $data[0]->id;
             $_SESSION['user']['img'] = $data[0]->img;
             $_SESSION['user']['login'] = $data[0]->login;
+            $_SESSION['user']['status'] = $data[0]->status;
             $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['b'] = $data[0]->b;
@@ -656,22 +658,67 @@ class Controller{
     
     
     public function getRating(){
+        
+        $r = $this->checkRatingForBonus(0.2,$bonus);
 
-        $_SESSION['user']['rating'] += 0.2;
+        $_SESSION['user']['rating'] += $r;
+        $_SESSION['user']['status'] = $this->getUserStatus();
         $_SESSION['user']['date_rat'] = time();
+        
+        if($bonus){
+            
+            $_SESSION['user']['balance'] += $bonus;
+            $txt = '<br/><b>, '.$_SESSION['user']['login'].'</b>, вы повысили свой статус и получаете премию в '.$bonus.' руб.!';
+        }else $txt = '';
         
         $mod = new User();
         
         $res = $mod->update([
             
+            'balance'=>$_SESSION['user']['balance'],
             'rating'=>$_SESSION['user']['rating'],
+            'status'=>$_SESSION['user']['status'],
             'date_rat'=>$_SESSION['user']['date_rat'],
         ],"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
         
-        if($res) $this->respJson($this->sysMessage('success','Баллы вашего рейтинга увеличены!'));
+        if($res) $this->respJson($this->sysMessage('success','Баллы вашего рейтинга увеличены!'.$txt));
         else $this->respJson($this->sysMessage('danger','Ошибка обновления рейтинга!'));
     }
     
+    public function getUserStatus(){
+        
+        $r = $_SESSION['user']['rating'];
+        
+        if($r < 9) $status = 'Стажер';
+        if($r >= 10 && $r < 99) $status = 'Рабочий';
+        if($r >= 100 && $r < 249) $status = 'Бригадир';
+        if($r >= 250 && $r < 599) $status = 'Мастер';
+        if($r >= 600 && $r < 999) $status = 'Прораб';
+        if($r >= 1000 && $r < 9999) $status = 'Бизнесмен';
+        if($r >= 10000 && $r < 49999) $status = 'Депутат';
+        if($r >= 50000) $status = 'Олигарх';
+
+        return $status;
+    }
+    
+    public function checkRatingForBonus($q, &$b){// если увеличение поывшает статус, то TRUE
+        
+        $b = 0;
+        
+        $min = $_SESSION['user']['rating'];
+        
+        $max = $_SESSION['user']['rating'] + $q;
+        
+        if($min < 10 && $max >= 10) $b = 2.0; // повышение до Рабочий
+        if($min < 100 && $max >= 100) $b = 4.0;// повышение до Бригадир
+        if($min < 250 && $max >= 250) $b = 6.0;
+        if($min < 600 && $max >= 600) $b = 8.0;
+        if($min < 1000 && $max >= 1000) $b = 10.0;
+        if($min < 10000 && $max >= 10000) $b = 12.0;
+        if($min < 50000 && $max >= 50000) $b = 14.0;
+        
+        return $q;
+    }
     
     public function checkDateRat(){
         

@@ -1,5 +1,7 @@
 <div id="mini-profile">
-<!--     <div>-->
+       <p>
+           <span id="s">Статус:</span><span id="s_n"> <?= $s ?></span>
+       </p>
         <p>
             <img src="/images/<?= $img ?>" class="img-responsive" alt="<?= $lg ?>">
         </p>
