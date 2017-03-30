@@ -650,23 +650,19 @@ class Controller{
     
     
     public function getRating(){
-        
-        
-        debug($this->data);die;
-        
-        
+
         $_SESSION['user']['rating'] += 0.2;
         
         $mod = new User();
         
-        $mod->update([
+        $res = $mod->update([
             
             'rating'=>$_SESSION['user']['rating'],
             'date_rat'=>time(),
         ],"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
         
-        
-        
+        if($res) $this->respJson($this->sysMessage('success','Баллы вашего рейтинга увеличены!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка обновления рейтинга!'));
     }
     
     
@@ -677,13 +673,7 @@ class Controller{
         $y = date('Y',time());
         
         $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи этого дня
-        
-//echo 'Полночь вчера - '.strftime('%d-%m-%Y %H:%M:%S',($yesterday_ts)).'<br/>';
-//echo 'Полночь сегодня - '.strftime('%d-%m-%Y %H:%M:%S',($yesterday_ts + (60*60*24))).'<br/>';
-//echo 'Время сейчас - '.strftime('%d-%m-%Y %H:%M:%S').'<br/>';
-//echo 'Сколько прошло - '.strftime('%H:%M:%S',(time() - $yesterday_ts)).'<br/>';
-        
-        
+
         $mod = new User();
         $data = $mod->find('`date_rat`',"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
         

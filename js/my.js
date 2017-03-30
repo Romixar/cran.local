@@ -346,22 +346,19 @@
     });
     
     
-    $(document).on('click', 'a#uprating', function(e){// выбор реферера при регистр-и
+    $(document).on('click', 'a#uprating', function(e){// получение баллов раз в сутки
         
         e.preventDefault();
         
-        console.log('есть клик!');
+        //console.log('есть клик!');
         
-//        var ref_id = $(e.target).parent().parent().parent().parent().attr('id');
-//        
-//        $('div.ref-preview div.row div').removeClass('selected');
-//        
-//        $(e.target).parent().parent().parent().addClass('selected');
-//        
-//        ref_id = ref_id.substr(4);
-//        
-//        $('input#ref_id').val(ref_id);
-
+        elem = $(this);
+        textButton = $(this).text();
+        
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        
+        post_query('get_rating', '');
+        
         
     });
     
