@@ -223,7 +223,7 @@ class MainController extends Controller{
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $login = $_SESSION['user']['login'];
             
-            $rating = number_format($_SESSION['user']['rating'],1,',',''); ///   текущий рейтинг
+            $rating = number_format($_SESSION['user']['rating'],2,',',''); ///   текущий рейтинг
             
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             $b = $_SESSION['user']['b'];

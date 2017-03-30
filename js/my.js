@@ -359,6 +359,9 @@
         
         post_query('get_rating', '');
         
+        var r = Number($('span#rating').text());
+        
+        $('span#rating').text('').text((0.20 + r).toFixed(2));
         
     });
     

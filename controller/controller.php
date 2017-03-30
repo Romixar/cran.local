@@ -34,9 +34,9 @@ class Controller{
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
             
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
-            $b = $_SESSION['user']['balance'];
+            $b = number_format($_SESSION['user']['balance'],3,',',' ');
             $lg = $_SESSION['user']['login'];
-            $r = $_SESSION['user']['rating'];
+            $r = number_format($_SESSION['user']['rating'],2,'.',' ');
             $up_r = $this->getButtonRating();
             
             $m_pr = $this->view->prerender('mini_profile',compact('img','lg','b','r','up_r'));
