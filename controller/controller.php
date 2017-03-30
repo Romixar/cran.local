@@ -20,6 +20,9 @@ class Controller{
         
         $this->view = new ViewController();
         
+//        debug($_SESSION);
+//        unset($_SESSION['user']['ts']);
+        
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
             $uri = 'login';
@@ -32,7 +35,7 @@ class Controller{
             $uri = 'logout';
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
-            $uprating = $this->getButtonRating();
+            $uprating = $this->checkButtonRating() ? $this->getButtonRating() : '';
             $reg = '';
         }
         $this->btn = compact('refPage','uprating','text','uri','id','reg');
@@ -69,6 +72,7 @@ class Controller{
         if(isset($data['do_comment_f'])) $this->addNewComment();
         //if(isset($data['get_refpage_f'])) $this->actionRefpage();// запрос страницы стена реферов
         if(isset($data['buy_ref_page_f'])) $this->buyRefOnBoard();// покупка места на стене реферов
+        if(isset($data['get_rating_f'])) $this->getRating();// получение ежеднев рейтинга
 
         
     }
@@ -645,34 +649,65 @@ class Controller{
     
     
     
-    
-    
-    
-    
-    
-    public function getButtonRating(){
+    public function getRating(){
         
-//        $m = date('m',time()-(60*60*24));// какой мес вчера
-//        $d = date('d',time()-(60*60*24));// какой день вчера 
-//        $y = date('Y',time()-(60*60*24));// какой год вчера
+        
+        debug($this->data);die;
+        
+        
+        $_SESSION['user']['rating'] += 0.2;
+        
+        $mod = new User();
+        
+        $mod->update([
+            
+            'rating'=>$_SESSION['user']['rating'],
+            'date_rat'=>time(),
+        ],"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
+        
+        
+        
+    }
+    
+    
+    public function checkButtonRating(){
         
         $m = date('m',time());
         $d = date('d',time()); 
         $y = date('Y',time());
         
-        $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи вчераш дня
+        $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи этого дня
         
-        if((time() - $yesterday_ts) >= 60*60*24){
+//echo 'Полночь вчера - '.strftime('%d-%m-%Y %H:%M:%S',($yesterday_ts)).'<br/>';
+//echo 'Полночь сегодня - '.strftime('%d-%m-%Y %H:%M:%S',($yesterday_ts + (60*60*24))).'<br/>';
+//echo 'Время сейчас - '.strftime('%d-%m-%Y %H:%M:%S').'<br/>';
+//echo 'Сколько прошло - '.strftime('%H:%M:%S',(time() - $yesterday_ts)).'<br/>';
+        
+        
+        $mod = new User();
+        $data = $mod->find('`date_rat`',"`login` = '".$_SESSION['user']['login']."' AND `id` = '".$_SESSION['user']['id']."'");
+        
+        //debug($data);die;
+        
+        
+        if(($data[0]->date_rat - $yesterday_ts) > 0){
+        //if(((time()-12*60*60) - $yesterday_ts) > 0){
             
-            $txt = 'прошли сутки<br/>';
-            $btn = $txt.'<a href="refpage" id="refpage" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
+            //echo 'не прошли сутки';
+            return false;
         }else{
-            $txt = 'ещё не сменились сутки';
-            $btn = $txt.'';
+            
+            //echo 'прошли сутки';
+            return true;
         }
         
-        return $btn;
+    }
+    
+    public function getButtonRating(){
+    
+        $btn = '<a href="refpage" id="uprating" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
         
+        return $btn;        
     }
     
     public function unsetEl($el){
