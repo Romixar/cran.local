@@ -32,10 +32,18 @@ class Controller{
             $uri = 'logout';
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
-            $uprating = $this->getButtonRating();
+            
+            $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
+            $b = $_SESSION['user']['balance'];
+            $lg = $_SESSION['user']['login'];
+            $r = $_SESSION['user']['rating'];
+            $up_r = $this->getButtonRating();
+            
+            $m_pr = $this->view->prerender('mini_profile',compact('img','lg','b','r','up_r'));
+            
             $reg = '';
         }
-        $this->btn = compact('refPage','uprating','text','uri','id','reg');
+        $this->btn = compact('refPage','text','uri','id','m_pr','reg');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -667,21 +675,10 @@ class Controller{
     
     public function checkDateRat(){
         
-        $m = date('m',time());
-        $d = date('d',time()); 
-        $y = date('Y',time());
-        
-        $yesterday_ts = mktime(0,0,0,$m,$d,$y);// TS полночи этого дня
+        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
 
-        $date_rat = $_SESSION['user']['date_rat'];
-        
-        if(($date_rat - $yesterday_ts) > 0){
-        //if(($data[0]->date_rat - $yesterday_ts) > 0){
-        //if(((time()-12*60*60) - $yesterday_ts) > 0){
-            
-            return false;//echo 'не прошли сутки';
-        }else return true;//echo 'прошли сутки';
-        
+        if(($_SESSION['user']['date_rat'] - $yesterday_ts) > 0) return false;// 'не прошли сутки';
+        else return true;//echo 'прошли сутки';
     }
     
     public function getButtonRating(){
@@ -740,6 +737,8 @@ class Controller{
         $meta_key = $this->meta_key;
         $tit = 'Пользователь '.$_SESSION['user']['login'];
         $prof = ($_SESSION['user']) ? '<li><a href="/profile" title="'.$tit.'"><i class="glyphicon glyphicon-user"></i></a></li>' : '';
+        
+        
         
         $left = $this->view->prerender('left',$this->btn);
         

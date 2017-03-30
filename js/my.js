@@ -741,6 +741,8 @@
 		        },
 		       complete: function(data) { // сoбытиe пoслe любoгo исхoдa
                    
+                   if($('a#uprating')) $('a#uprating').remove();
+                   
 		            //form.find('input[type="submit"]').prop('disabled', false);
 		         },
             });
