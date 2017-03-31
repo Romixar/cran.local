@@ -580,104 +580,81 @@ class Controller{
             ];
             
             $this->respJson($sysmes, false, false, $mycookie);
-    
-        }else{
+        }
+        
+        $mod->update([
+            'time_lim'=>$lim
+        ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
                 
-            $mod->update([
-                'time_lim'=>$lim
-            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+        $_SESSION['user']['time_lim'] = $lim;
                 
-            $_SESSION['user']['time_lim'] = $lim;
-                
-            $bonus = rand(1, 100) / 100;
+        $bonus = rand(1, 100) / 100;
             
-            // начисляю рефереру отчисления, если он есть
-            if($this->getRefTax($bonus)){
-                
-//                $_SESSION['user']['b'] += 1;// количество бонусов
-                
-                
-            }else{// иначе просто обновлю юзеру баланс
-                
-                $_SESSION['user']['balance'] += $bonus;
-                $_SESSION['user']['b'] += 1;// количество бонусов
+        // начисляю рефереру отчисления, если реферер есть
+        if($tax = $this->getRefTax($bonus)) $this->updateRefBalances($tax,$bonus);
+        else{
+            // иначе просто обновлю юзеру баланс
+            $_SESSION['user']['balance'] += $bonus;
+            $_SESSION['user']['b'] += 1;// количество бонусов
 
-                $user = new User(); // обновление баланса
-                $user->update([
-                    'balance' => $_SESSION['user']['balance'],
-                    'b' => $_SESSION['user']['b']
-                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
-                
-                
-                
-            }
-            
-            
-            
-            
-//            $_SESSION['user']['balance'] += $bonus;
-//            $_SESSION['user']['b'] += 1;// количество бонусов
-//            
-//            
-//            
-//            $user = new User(); // обновление баланса
-//            $user->update([
-//                'balance' => $_SESSION['user']['balance'],
-//                'b' => $_SESSION['user']['b']
-//            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
-            
-            
-            
-            $his_b = new History_b();// сохранение в историю
-            if($his_b->insert([
-                'user_id'=>$_SESSION['user']['id'],
-                'date_add'=>time(),
-                'sum'=>$bonus
-            ])){
-                
-                $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
-            
-                $mycookie = [
-                    'time_lim'=>$lim,
-                ];
-
-                $this->respJson($sysmes, false, false, $mycookie);
-                
-            }
-            $this->respJson($this->sysMessage('danger','Ошибка сохранения в БД!'), false, false, false);
-            
-
-            
+            $user = new User(); // обновление баланса
+            $user->update([
+                'balance' => $_SESSION['user']['balance'],
+                'b' => $_SESSION['user']['b']
+            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");   
         }
             
+        if($this->addBonusHistory($bonus)){
+                
+            $sysmes = $this->sysMessage('success','Поздравляем! Бонус в '.$bonus.' руб. зачислен на ваш баланс!');
+            
+            $mycookie = [
+                'time_lim'=>$lim,
+            ];
+
+            $this->respJson($sysmes, false, false, $mycookie);
+        }
+        $this->respJson($this->sysMessage('danger','Ошибка сохранения в БД!'), false, false, false);
+
+    }
+    
+    public function addBonusHistory($bonus){
         
+        $his_b = new History_b();// сохранение в историю
+        return $his_b->insert([
+                   'user_id'=>$_SESSION['user']['id'],
+                   'date_add'=>time(),
+                   'sum'=>$bonus
+               ]);
     }
     
     public function getRefTax($bonus){ // начисление реф-отчислений, если есть реферер
         
         if($_SESSION['user']['ref_id']){
-            
             $mod = new User();
             $data = $mod->find('`rating`,`b`',"`id`='".$_SESSION['user']['ref_id']."'");
             
-            $tax = $this->getRefTaxForRating($data[0]->rating);// какой % отчисления по рейтингу
-            
-            $tax = $tax * $bonus; // сумма отчисления рефереру (прибавится к его балансу)
-            
-            $_SESSION['user']['balance'] += $bonus; // баланс реферала
-            
-            $_SESSION['user']['b'] += 1;// количество бонусов реферала
-            
-            // обновляем баланс и бонус у реферера и юзера
-            $res = $mod->update2Balances([
-                $_SESSION['user']['ref_id'] => [ $tax, 0 ],
-                
-                $_SESSION['user']['id'] => [ $bonus, 1 ]
-                
-            ]);   
-            if($res) return true;
+            return $this->getRefTaxForRating($data[0]->rating);// какой % отчисления по рейтингу
         }
         return false;
+    }
+    
+    public function updateRefBalances($tax,$bonus){
+        $mod = new User();
+        $tax = $tax * $bonus; // сумма отчисления рефереру (прибавится к его балансу)
+            
+        $_SESSION['user']['balance'] += $bonus; // баланс реферала
+            
+        $_SESSION['user']['b'] += 1;// количество бонусов реферала
+            
+        // обновляем баланс и бонус у реферера и юзера
+        $res = $mod->update2Balances([
+            $_SESSION['user']['ref_id'] => [ $tax, 0 ],
+                
+            $_SESSION['user']['id'] => [ $bonus, 1 ] 
+        ]);   
+        if($res) return true;
+        else return false;
     }
     
     public function addNewComment(){
