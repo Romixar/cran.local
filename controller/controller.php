@@ -225,6 +225,7 @@ class Controller{
             $_SESSION['user']['status'] = $data[0]->status;
             $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
+            $_SESSION['user']['ref_id'] = $data[0]->ref_id;
             $_SESSION['user']['b'] = $data[0]->b;
             $_SESSION['user']['date_rat'] = $data[0]->date_rat;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
@@ -590,14 +591,42 @@ class Controller{
                 
             $bonus = rand(1, 100) / 100;
             
-            $_SESSION['user']['balance'] += $bonus;
-            $_SESSION['user']['b'] += 1;// количество бонусов
+            // начисляю рефереру отчисления, если он есть
+            if($this->getRefTax($bonus)){
+                
+//                $_SESSION['user']['b'] += 1;// количество бонусов
+                
+                
+            }else{// иначе просто обновлю юзеру баланс
+                
+                $_SESSION['user']['balance'] += $bonus;
+                $_SESSION['user']['b'] += 1;// количество бонусов
+
+                $user = new User(); // обновление баланса
+                $user->update([
+                    'balance' => $_SESSION['user']['balance'],
+                    'b' => $_SESSION['user']['b']
+                ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+                
+                
+                
+            }
             
-            $user = new User(); // обновление баланса
-            $user->update([
-                'balance' => $_SESSION['user']['balance'],
-                'b' => $_SESSION['user']['b']
-            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+            
+            
+            
+//            $_SESSION['user']['balance'] += $bonus;
+//            $_SESSION['user']['b'] += 1;// количество бонусов
+//            
+//            
+//            
+//            $user = new User(); // обновление баланса
+//            $user->update([
+//                'balance' => $_SESSION['user']['balance'],
+//                'b' => $_SESSION['user']['b']
+//            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+            
+            
             
             $his_b = new History_b();// сохранение в историю
             if($his_b->insert([
@@ -622,6 +651,33 @@ class Controller{
         }
             
         
+    }
+    
+    public function getRefTax($bonus){ // начисление реф-отчислений, если есть реферер
+        
+        if($_SESSION['user']['ref_id']){
+            
+            $mod = new User();
+            $data = $mod->find('`rating`,`b`',"`id`='".$_SESSION['user']['ref_id']."'");
+            
+            $tax = $this->getRefTaxForRating($data[0]->rating);// какой % отчисления по рейтингу
+            
+            $tax = $tax * $bonus; // сумма отчисления рефереру (прибавится к его балансу)
+            
+            $_SESSION['user']['balance'] += $bonus; // баланс реферала
+            
+            $_SESSION['user']['b'] += 1;// количество бонусов реферала
+            
+            // обновляем баланс и бонус у реферера и юзера
+            $res = $mod->update2Balances([
+                $_SESSION['user']['ref_id'] => [ $tax, 0 ],
+                
+                $_SESSION['user']['id'] => [ $bonus, 1 ]
+                
+            ]);   
+            if($res) return true;
+        }
+        return false;
     }
     
     public function addNewComment(){
@@ -718,6 +774,20 @@ class Controller{
         if($min < 50000 && $max >= 50000) $b = 14.0;
         
         return $q;
+    }
+    
+    public function getRefTaxForRating($r){
+        
+        if($r < 9) $tax = 0.1; // размер реф-отчислени
+        if($r >= 10 && $r < 99) $tax = 0.2;
+        if($r >= 100 && $r < 249) $tax = 0.3;
+        if($r >= 250 && $r < 599) $tax = 0.4;
+        if($r >= 600 && $r < 999) $tax = 0.5;
+        if($r >= 1000 && $r < 9999) $tax = 0.6;
+        if($r >= 10000 && $r < 49999) $tax = 0.7;
+        if($r >= 50000) $tax = 0.9;
+
+        return $tax;
     }
     
     public function checkDateRat(){

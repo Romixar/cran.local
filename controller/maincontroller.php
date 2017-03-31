@@ -227,6 +227,13 @@ class MainController extends Controller{
             $rating = number_format($_SESSION['user']['rating'],2,',',''); ///   текущий рейтинг
             
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
+            
+            
+            $referer = $_SESSION['user']['ref_id'];
+            
+            
+            
+            
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
             $date_act = $_SESSION['user']['date_act'];
@@ -244,7 +251,7 @@ class MainController extends Controller{
             $this->meta_desc = 'Страница профиля мета описание';
             $this->meta_key = 'Страница профиля мета кей';
             
-            $this->render('profile',compact('img','login','status','rating','balance','b','date_reg','date_act','ip','ref_url','email','wal','text')); 
+            $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act','ip','ref_url','email','wal','text')); 
         }
     }
     

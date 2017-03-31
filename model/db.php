@@ -139,6 +139,29 @@ class DB{
         
         return $sth->rowCount();
     }
+    
+    public function update2Balances($data){ // обновить баланс реферала и реферера
+
+        $keys = array_keys($data);
+        $vals = array_values($data);
+        
+        $sql = 'INSERT INTO `'.static::$table.'` ( `id`,  `balance` ,  `b` )  VALUES('.$keys[0].','.$vals[0][0].','.$vals[0][1].'),('.$keys[1].','.$vals[1][0].','.$vals[1][1].') ON DUPLICATE KEY UPDATE `balance` = `balance` + VALUES(`balance`), `b` = `b` + VALUES(`b`)';
+        
+        //'insert into `users` ( `id`,  `balance` ,  `b` )  values(1,200,0),(4,150,1) on duplicate key update `balance` = `balance` + values(`balance`), `b` = `b` + values(`b`)';
+
+//        'UPDATE `'.static::$table.'` SET
+//                `balance` = CASE
+//                WHEN `id` = 4 THEN `balance` + 50
+//                WHEN `id` = 45 THEN `balance` + 100 END
+//                WHERE `id` IN (4, 45)';
+
+           //echo $sql;die;    
+        
+        $sth = $this->dbh->query($sql);
+        
+        return $sth->rowCount();
+        
+    }
 
     
     public function saveDateAct($id, $n){
