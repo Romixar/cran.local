@@ -3,7 +3,7 @@
 <div class="image">
     <img src="/images/<?= $img ?>" class="img-responsive" alt="<?= $login ?>">
 </div>
-
+<p><a href="###" id="addref" class="btn btn-success btn-xs" role="button">Стать его рефералом</a></p>
 
 <p>Ваш рейтинг: <?= $rating ?> баллов</p>
 <p>Ваш баланс: <?= $balance ?> руб.</p>

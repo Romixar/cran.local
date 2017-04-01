@@ -215,7 +215,58 @@ class MainController extends Controller{
         $this->redirect('/');
     }
     
-    public function actionProfile(){
+    public function getPageOtherUser($id){
+        
+        $u = new User();
+        
+        $f = '`login`,`img`,`status`,`rating`,`balance`,`b`,`date_reg`,`date_act`';
+        
+        $data = $u->find($f, '`id`='.$id);
+        
+        //debug($data);die;
+        
+        $login = $data[0]->login;
+        
+        $img = $data[0]->img ? $data[0]->img : 'no-user-image.gif';
+        
+        $status = $data[0]->status;
+        
+        $rating = $data[0]->rating;
+        
+        $balance = $data[0]->balance;
+            
+        $referer = $data[0]->referer;
+            
+        $b = $data[0]->b;
+            
+        $date_reg = $data[0]->date_reg;
+        
+        $date_act = $data[0]->date_act;
+            
+        
+            
+            
+            
+        
+        
+        $this->title = 'Страница '.$login;
+        $this->meta_desc = 'Страница профиля мета описание';
+        $this->meta_key = 'Страница профиля мета кей';
+            
+        $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act')); 
+        
+    }
+    
+    public function actionProfile($id){
+        
+        if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)){
+            
+            $id = (int)$id;
+            
+            $this->getPageOtherUser($id);
+            return;
+        }
+        
 
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
@@ -229,10 +280,7 @@ class MainController extends Controller{
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             
             
-            $referer = $_SESSION['user']['ref_id'];
-            
-            
-            
+            $referer = $_SESSION['user']['ref_id'];// надо получить логин реферера
             
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];

@@ -29,12 +29,12 @@ class Router{
         
         $arr = explode('/',$url);
         
-        // если регистрация и цыфра, то назначить $this->get
-        
+        // если есть GET параметр, то назначить $this->get
         if(isset($arr[2])){
             
             if($arr[1] == 'registration') $this->get = $arr[2];
             if($arr[1] == 'news') $this->get = $arr[2];
+            if($arr[1] == 'profile') $this->get = $arr[2];
             
             unset($arr[2]);
         }
