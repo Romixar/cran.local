@@ -219,7 +219,7 @@ class MainController extends Controller{
         
         $u = new User();
         
-        $f = '`login`,`img`,`status`,`rating`,`balance`,`b`,`date_reg`,`date_act`';
+        $f = '`login`,`ref_id`,`img`,`status`,`rating`,`balance`,`b`,`date_reg`,`date_act`';
         
         $data = $u->find($f, '`id`='.$id);
         
@@ -232,8 +232,8 @@ class MainController extends Controller{
         $rating = $data[0]->rating;
         
         $balance = $data[0]->balance;
-            
-        $referer = ($data[0]->referer) ? $data[0]->referer : 'нет';
+
+        $referer = ($data[0]->ref_id) ? $this->getLoginOnID($data[0]->ref_id) : 'нет';
             
         $toberef = !$_SESSION['user']['ref_id'] ? '<a href="###" id="addref" class="btn btn-success btn-xs" role="button">Стать его рефералом</a>' : '';
         
@@ -242,11 +242,6 @@ class MainController extends Controller{
         $date_reg = $data[0]->date_reg;
         
         $date_act = $data[0]->date_act;
-            
-        
-            
-            
-            
         
         
         $this->title = 'Страница '.$login;
@@ -286,11 +281,7 @@ class MainController extends Controller{
             
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             
-            // надо получить логин реферера
-            $referer = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['ref_id'] : 'нет';
-            
-            
-            
+            $referer = ($_SESSION['user']['ref_id']) ? $this->getLoginOnID($_SESSION['user']['ref_id']) : 'нет';
             
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
@@ -314,6 +305,29 @@ class MainController extends Controller{
             
             $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act','usersettings','userstats'));
         }
+    }
+    
+    public function addNewReferal(){
+        
+        if($this->data['ref_id']){
+            
+            if(!$_SESSION['user']['ref_id']){
+
+                $lg = $this->getLoginOnID($this->data['ref_id']);
+
+                $u = new User();
+            
+                $res = $u->update([
+                    'ref_id'=>$this->data['ref_id']
+                ],"`login`='".$_SESSION['user']['login']."'");
+                
+                $_SESSION['user']['ref_id'] = $this->data['ref_id'];
+
+                if($res) $this->respJson($this->sysMessage('success','Вы прикреплены к рефереру <b>'.$lg.'</b>!'));                
+            }
+        }
+        $this->respJson($this->sysMessage('danger','Ошибка добавления нового реферала!'));
+        
     }
     
     public function actionRegistration($id){

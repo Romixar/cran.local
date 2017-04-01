@@ -686,41 +686,6 @@ class Controller{
         else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария!'));
     }
     
-    public function addNewReferal(){
-        
-        if($this->data['ref_id']){
-            
-            if(!$_SESSION['user']['ref_id']){
-                
-                
-                
-                $lg = $this->getLoginOnID($this->data['ref_id']);
-                
-                
-                
-                $u = new User();
-            
-                $res = $u->update([
-                    'ref_id'=>$this->data['ref_id']
-                ],"`login`='".$_SESSION['user']['login']."'");
-                
-                $_SESSION['user']['ref_id'] = $this->data['ref_id'];
-                
-                //debug($res);die;
-                
-                
-                if($res) $this->respJson($this->sysMessage('success','Вы прикреплены к рефереру <b>'.$lg.'</b>!'));
-                
-            }
-            
-            
-            
-        }
-        $this->respJson($this->sysMessage('danger','Ошибка добавления нового реферала!'));
-
-        
-    }
-    
     public function getLoginOnID($id){
         
         $u = new User();
