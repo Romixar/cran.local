@@ -79,6 +79,8 @@ class Controller{
         //if(isset($data['get_refpage_f'])) $this->actionRefpage();// запрос страницы стена реферов
         if(isset($data['buy_ref_page_f'])) $this->buyRefOnBoard();// покупка места на стене реферов
         if(isset($data['get_rating_f'])) $this->getRating();// получение ежеднев рейтинга
+        
+        if(isset($data['do_addref_f'])) $this->addNewReferal();// запрос хочу стать его рефералом
 
         
     }
@@ -680,10 +682,52 @@ class Controller{
         
         $comm = new Comments();
         
-        //debug($this->data);die;
-        
         if($comm->insert($this->data)) exit();
-        else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления комментария!'));
+    }
+    
+    public function addNewReferal(){
+        
+        if($this->data['ref_id']){
+            
+            if(!$_SESSION['user']['ref_id']){
+                
+                
+                
+                $lg = $this->getLoginOnID($this->data['ref_id']);
+                
+                
+                
+                $u = new User();
+            
+                $res = $u->update([
+                    'ref_id'=>$this->data['ref_id']
+                ],"`login`='".$_SESSION['user']['login']."'");
+                
+                $_SESSION['user']['ref_id'] = $this->data['ref_id'];
+                
+                //debug($res);die;
+                
+                
+                if($res) $this->respJson($this->sysMessage('success','Вы прикреплены к рефереру <b>'.$lg.'</b>!'));
+                
+            }
+            
+            
+            
+        }
+        $this->respJson($this->sysMessage('danger','Ошибка добавления нового реферала!'));
+
+        
+    }
+    
+    public function getLoginOnID($id){
+        
+        $u = new User();
+        
+        $data = $u->find('`login`','`id`='.$id);
+        
+        return $data[0]->login;
     }
     
     

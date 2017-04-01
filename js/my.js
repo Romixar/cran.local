@@ -11,7 +11,7 @@
     var patLogPas = /^[a-z0-9-\._]+$/i; // проверка логина/пароля
                     ///^[a-z0-9-\._]+$/i
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
-    var patLogin = /(admin|moderator)/i;
+    var patErrLogin = /(admin|moderator)/i;
     
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
@@ -63,7 +63,7 @@
         
         submit = true;
         
-        if(patLogin.test($(this).val())) validMessage($(this), 'ERR_LOG');
+        if(patErrLogin.test($(this).val())) validMessage($(this), 'ERR_LOG');
         if($(this).val().indexOf(' ') !== -1) validMessage($(this), 'ERR_NBS');
         if(!patLogPas.test($(this).val())) validMessage($(this), 'ERR_CHR');
         if(($(this).val()).length > 100) validMessage($(this), 'ERR_LEN');
@@ -365,6 +365,33 @@
         
     });
     
+    $(document).on('click', 'a#addref', function(e){// получение баллов раз в сутки
+        
+        e.preventDefault();
+        
+        //console.log('есть клик!');
+        
+        elem = $(this);
+        
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        
+        var arr = (location.href).split('/');
+        
+        if(validGET(arr[4])){
+            
+            post_query('do_addref', '&ref_id='+arr[4]);
+            
+        }
+    });
+    
+    function validGET(str){
+        
+        if(str.length > 20) return false;
+        if(!patLogPas.test(str)) return false;
+        
+        return true;
+    }
+    
     
     //    сделать ассинхронно
 //    $(document).on('click', 'a#refpage', function(e){// открытие стена рефереров
@@ -628,7 +655,7 @@
         
         if(lg.val() === '') validMessage(lg, 'ERR_EMP');
         if(lg.val().indexOf(' ') !== -1) validMessage(lg, 'ERR_NBS');
-        if(patLogin.test(lg.val())) validMessage(lg, 'ERR_LOG');
+        if(patErrLogin.test(lg.val())) validMessage(lg, 'ERR_LOG');
         if((lg.val()).length > 100) validMessage(lg, 'ERR_LEN');
         
         if(pwd.val() === '') validMessage(pwd, 'ERR_EMP');
@@ -730,7 +757,7 @@
                             
                         }
                         
-                        
+                        if($('a#addref')) $('a#addref').remove();// кнопка Хочу стать рефералом
                         
 
                             
@@ -745,6 +772,7 @@
 		       complete: function(data) { // сoбытиe пoслe любoгo исхoдa
                    
                    if($('a#uprating')) $('a#uprating').remove();
+                   
                    
 		            //form.find('input[type="submit"]').prop('disabled', false);
 		         },
