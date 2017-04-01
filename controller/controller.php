@@ -22,14 +22,14 @@ class Controller{
                 
         if(!isset($_SESSION['user'])){
             $text = 'ВОЙТИ';
-            $uri = 'login';
+            $uri = '/login';
             $id = 'u_in';
             $refPage = '';
             $uprating = '';
-            $reg = '<a href="registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
+            $reg = '<a href="/registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
-            $uri = 'logout';
+            $uri = '/logout';
             $id = 'u_out';
             $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
             

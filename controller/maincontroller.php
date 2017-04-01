@@ -223,8 +223,6 @@ class MainController extends Controller{
         
         $data = $u->find($f, '`id`='.$id);
         
-        //debug($data);die;
-        
         $login = $data[0]->login;
         
         $img = $data[0]->img ? $data[0]->img : 'no-user-image.gif';
@@ -235,8 +233,10 @@ class MainController extends Controller{
         
         $balance = $data[0]->balance;
             
-        $referer = $data[0]->referer;
+        $referer = ($data[0]->referer) ? $data[0]->referer : 'нет';
             
+        $toberef = !$_SESSION['user']['ref_id'] ? '<a href="###" id="addref" class="btn btn-success btn-xs" role="button">Стать его рефералом</a>' : '';
+        
         $b = $data[0]->b;
             
         $date_reg = $data[0]->date_reg;
@@ -253,23 +253,30 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница профиля мета описание';
         $this->meta_key = 'Страница профиля мета кей';
             
-        $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act')); 
+        $this->render('profile',compact('img','login','status','rating','balance','referer','toberef','b','date_reg','date_act')); 
         
     }
     
     public function actionProfile($id){
         
-        if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)){
-            
-            $id = (int)$id;
-            
-            $this->getPageOtherUser($id);
-            return;
-        }
+        
         
 
         if(!isset($_SESSION['user'])) $this->redirect('login');
         else{
+            
+            if(is_numeric($id) && preg_match('/^\d{1,10}$/',$id)){
+            
+                $id = (int)$id;
+
+                if($id != $_SESSION['user']['id']){
+
+                    $this->getPageOtherUser($id);
+                    return;
+                }
+            }
+            
+            
             
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $login = $_SESSION['user']['login'];
@@ -279,8 +286,11 @@ class MainController extends Controller{
             
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             
+            // надо получить логин реферера
+            $referer = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['ref_id'] : 'нет';
             
-            $referer = $_SESSION['user']['ref_id'];// надо получить логин реферера
+            
+            
             
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
@@ -299,7 +309,10 @@ class MainController extends Controller{
             $this->meta_desc = 'Страница профиля мета описание';
             $this->meta_key = 'Страница профиля мета кей';
             
-            $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act','ip','ref_url','email','wal','text')); 
+            $usersettings = $this->view->prerender('settings',compact('ip','wal','ref_url','email','text'));
+            $userstats = $this->view->prerender('stats');
+            
+            $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act','usersettings','userstats'));
         }
     }
     
