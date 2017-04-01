@@ -548,13 +548,13 @@ class Controller{
         
     }
     
-    public function getBonus(){
+    public function getLimForBonus(){
         
         $mod = new Bonus();
         
         $ts = time();
         $lim = strtotime('+5 minutes');// лимит времени на не получение бонуса
-        $time_lim = $_SESSION['user']['time_lim'];
+        $time_lim = $_SESSION['user']['time_lim'];// прошлый лимит
         
         if(empty($time_lim)) $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
         
@@ -570,7 +570,7 @@ class Controller{
             $_SESSION['user']['time_lim'] = $lim;
             $time_lim = $ts;
         }
-        
+
         if($ts < $time_lim){
                 
             $sysmes = $this->sysMessage('danger','До получения бонуса осталось '.($time_lim - $ts).' сек.!');
@@ -581,6 +581,15 @@ class Controller{
             
             $this->respJson($sysmes, false, false, $mycookie);
         }
+        
+        return $lim;
+    }
+    
+    public function getBonus(){
+        
+        $lim = $this->getLimForBonus();// лимит времени до следующего бонуса
+        
+        $mod = new Bonus();
         
         $mod->update([
             'time_lim'=>$lim
@@ -593,15 +602,7 @@ class Controller{
         // начисляю рефереру отчисления, если реферер есть
         if($tax = $this->getRefTax($bonus)) $this->updateRefBalances($tax,$bonus);
         else{
-            // иначе просто обновлю юзеру баланс
-            $_SESSION['user']['balance'] += $bonus;
-            $_SESSION['user']['b'] += 1;// количество бонусов
-
-            $user = new User(); // обновление баланса
-            $user->update([
-                'balance' => $_SESSION['user']['balance'],
-                'b' => $_SESSION['user']['b']
-            ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");   
+            $this->updateUserBalance($bonus); // иначе просто обновлю юзеру баланс
         }
             
         if($this->addBonusHistory($bonus)){
@@ -614,8 +615,20 @@ class Controller{
 
             $this->respJson($sysmes, false, false, $mycookie);
         }
-        $this->respJson($this->sysMessage('danger','Ошибка сохранения в БД!'), false, false, false);
+        $this->respJson($this->sysMessage('danger','Ошибка сохранения в БД!'));
+        
+    }
+    
+    public function updateUserBalance($bonus){
+        
+        $_SESSION['user']['balance'] += $bonus;
+        $_SESSION['user']['b'] += 1;// количество бонусов
 
+        $user = new User(); // обновление баланса
+        $user->update([
+            'balance' => $_SESSION['user']['balance'],
+            'b' => $_SESSION['user']['b']
+        ],"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
     }
     
     public function addBonusHistory($bonus){
