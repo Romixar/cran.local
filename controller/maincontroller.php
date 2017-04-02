@@ -63,14 +63,14 @@ class MainController extends Controller{
         $this->render('contacts');
     }
     
-    public function actionManageref(){
+    public function actionRefmanage(){
         $this->title = 'Управление рефералами';
         $this->meta_desc = 'Страница управление рефералами мета описание';
         $this->meta_key = 'Страница управление рефералами мета кей';
         
         $reflist = 'тут будет список рефералов с подробной статистикой';
         
-        $this->render('manage_ref',compact('reflist'));
+        $this->render('ref_manage',compact('reflist'));
     }
     
     public function actionRefpage(){

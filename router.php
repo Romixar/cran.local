@@ -11,6 +11,7 @@ class Router{
         '/reklams' => 'main/reklams',
         '/contacts' => 'main/contacts',
         '/refpage' => 'main/refpage',
+        '/refmanage' => 'main/refmanage',
         '/login' => 'main/login',
         '/profile' => 'main/profile',
         '/logout' => 'main/logout',

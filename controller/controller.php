@@ -44,7 +44,7 @@ class Controller{
             $m_pr = $this->view->prerender('mini_profile',compact('img','s','lg','b','r','up_r'));
             
             $reg = '';
-            $manageRef = '<a href="/manageref" id="manageref" class="btn btn-primary btn-xs" role="button">Упр-е рефералами</a>';
+            $manageRef = '<a href="/refmanage" id="refmanage" class="btn btn-primary btn-xs" role="button">Упр-е рефералами</a>';
         }
         $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef');
         
