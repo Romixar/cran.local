@@ -8,6 +8,9 @@
     <p>
        <?= $refPage ?>
     </p>
+    <p>
+        <?= $manageRef ?>
+    </p>
             
             
     <div><p>текст</p></div>

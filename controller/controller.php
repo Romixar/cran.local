@@ -26,12 +26,13 @@ class Controller{
             $id = 'u_in';
             $refPage = '';
             $uprating = '';
+            $manageRef = '';
             $reg = '<a href="/registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
             $uri = '/logout';
             $id = 'u_out';
-            $refPage = '<a href="refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
+            $refPage = '<a href="/refpage" id="refpage" class="btn btn-primary btn-xs" role="button">Стена рефереров</a>';
             
             $s = $_SESSION['user']['status'];
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
@@ -43,8 +44,9 @@ class Controller{
             $m_pr = $this->view->prerender('mini_profile',compact('img','s','lg','b','r','up_r'));
             
             $reg = '';
+            $manageRef = '<a href="/manageref" id="manageref" class="btn btn-primary btn-xs" role="button">Упр-е рефералами</a>';
         }
-        $this->btn = compact('refPage','text','uri','id','m_pr','reg');
+        $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -799,7 +801,7 @@ class Controller{
     
     public function getButtonRating(){
         
-        if($this->checkDateRat()) $btn = '<a href="refpage" id="uprating" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
+        if($this->checkDateRat()) $btn = '<a href="###" id="uprating" class="btn btn-danger btn-xs" role="button">Получи 0,2 балла!</a>';
         else $btn = '';
     
         return $btn;        

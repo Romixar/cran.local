@@ -86,14 +86,14 @@ class DB{
     
     public function find($fields, $where='', $asc='',$lim=''){
         
-        if(strpos($fields,'`') === false){
-            
-            $arr = explode(',',$fields);
-            
-            for($i=0; $i<count($arr); $i++) $arr[$i] = '`'.$arr[$i].'`';
-            
-            $fields = implode(',',$arr);
-        }
+//        if(strpos($fields,'`') === false){
+//            
+//            $arr = explode(',',$fields);
+//            
+//            for($i=0; $i<count($arr); $i++) $arr[$i] = '`'.$arr[$i].'`';
+//            
+//            $fields = implode(',',$arr);
+//        }
         
         $sql = "SELECT ".$fields." FROM `".static::$table."`";
         
