@@ -392,6 +392,59 @@
         return true;
     }
     
+    $(document).on('click', 'a#set_ref_back', function(e){// получение баллов раз в сутки
+        
+        e.preventDefault();
+        
+        var boxes = $("input:checkbox");
+        
+        var theArray = new Array();
+        
+        for(var i=0; i<boxes.length; i++){
+          
+        var box = boxes[i]; 
+
+            if($(box).prop('checked')){
+                
+                theArray[theArray.length] = $(box).attr('id');
+            }
+        }
+
+        console.log(theArray);
+        
+        
+
+    });
+    
+    
+//    var boxes = $("input:checkbox");
+//    
+//    $(document).on("change", 'input:checkbox', function(){
+//
+//
+//      var theArray = new Array();
+//        
+//      for(var i=0;i<boxes.length;i++){
+//          
+//        var box = boxes[i]; 
+//
+//        if($(box).prop('checked')){
+//          //theArray[theArray.length] = $(box).val();
+//          theArray[theArray.length] = $(box).attr('id');
+//        }
+//    }
+//
+//        console.log(theArray);
+//      //showValues(theArray);
+//    });
+    
+
+    
+    
+    
+ 
+    
+    
     
     //    сделать ассинхронно
 //    $(document).on('click', 'a#refpage', function(e){// открытие стена рефереров

@@ -93,40 +93,49 @@ class MainController extends Controller{
         
         $data = $u->find($f,$w);
         
-        //debug($data);
-        
-        $ref2lvl = $this->getHtmlReferals($data, 2);// рефералы 2-го ур-ня
+        $reflist = $this->getHtmlReferals($data, 2);// рефералы 2-го ур-ня
         
         
         
-        $this->render('ref_2lvl',compact('ref2lvl'));
+        $this->render('ref_2lvl',compact('reflist'));
         
         
     }
     
     public function getHtmlReferals($data, $fl=''){
         
+        $h = ($fl) ? '<th>Реферал</th>' : '';
+        
+        $inc = (!$fl) ? '<th>Кол-во<br/>рефералов</th><th>Доход</th>' : '';
+        
+        $str = '<thead><tr><th>-</th><th>ID, Логин,<br/>Рейтинг</th>'.$h.'
+                <th>Серфинг,<br/>Задания</th>
+                <th>Регистр-я,<br>Присоедин.<br/>Активность</th>'.$inc.'
+                <th>Рефбек</th></tr></thead><tbody>';
+        
         for($i=0; $i<count($data); $i++){
             
-            $r = ($fl) ? '<br>'.$this->getLoginOnID($data[$i]->ref_id) : '';
-            
-            $a = $data[$i]->id.'<br/>'.$data[$i]->login.'<br/>'.$data[$i]->rating.$r;
+            if($fl) $r = '<td>'.$this->getLoginOnID($data[$i]->ref_id).'</td>';
+                
+            $a = $data[$i]->id.'<br/>'.$data[$i]->login.'<br/>'.$data[$i]->rating;
             
             $b = '56<br/>456';
             
             $c = $data[$i]->date_reg.'<br/>'.$data[$i]->date_ref.'<br/>'.$data[$i]->date_act;
             
-            $d = $data[$i]->t_ref;
+            $d = (!$fl) ? '<td>'.$data[$i]->t_ref.'</td>' : '';
             
-            $e = ($this->getRefTaxForRating($data[$i]->rating) * 100).'%';
+            
+            if(!$fl) $e = '<td>'.($this->getRefTaxForRating($data[$i]->rating) * 100).'%</td>'; 
             
             $f = 'еще нет';
             
+            $chBx = '<input type="checkbox" name="cb'.($i+1).'" id="'.($i+1).'" />';
             
-            $str .= '<tr><td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td></tr>';
+            $str .= '<tr><td>'.$chBx.'</td><td>'.$a.'</td>'.$r.'<td>'.$b.'</td><td>'.$c.'</td>'.$d.$e.'<td>'.$f.'</td></tr>';
             
         }
-        return $str;
+        return $str.'</tbody>';
     }
     
     
