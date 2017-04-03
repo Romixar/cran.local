@@ -68,10 +68,38 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница управление рефералами мета описание';
         $this->meta_key = 'Страница управление рефералами мета кей';
         
-        $reflist = 'тут будет список рефералов с подробной статистикой';
+        $u = new User();
+        $f = '`id`,`t_ref`,`date_ref`,`login`,`rating`,`date_reg`,`date_act`';
+        $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
+        
+        $reflist = $this->getHtmlReferals($data);
         
         $this->render('ref_manage',compact('reflist'));
     }
+    
+    public function getHtmlReferals($data){
+        $str = '';
+        for($i=0; $i<count($data); $i++){
+            
+            $a = $data[$i]->id.'<br/>'.$data[$i]->login.'<br/>'.$data[$i]->rating;
+            
+            $b = '56<br/>456';
+            
+            $c = $data[$i]->date_reg.'<br/>'.$data[$i]->date_ref.'<br/>'.$data[$i]->date_act;
+            
+            $d = $data[$i]->t_ref;
+            
+            $e = ($this->getRefTaxForRating($data[$i]->rating) * 100).'%';
+            
+            $f = 'еще нет';
+            
+            
+            $str .= '<tr><td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td></tr>';
+            
+        }
+        return $str;
+    }
+    
     
     public function actionRefpage(){
         $this->title = 'Стена рефереров';
@@ -83,8 +111,6 @@ class MainController extends Controller{
         $data = $user->getRefPageData();
         
         // удаление последних рефереров, еслт они есть
-        
-        
         $data = $this->delLastRef($data, count($data));
 
         

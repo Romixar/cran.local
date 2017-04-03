@@ -284,11 +284,27 @@ class DB{
         else return false;
     }
     
+//    'SELECT `id`,`login`,`ref_id` FROM `users` WHERE `ref_id`=4' - ' рефералы 4-го'
+//        
+//        
+//        
+//        
+//    'SELECT `id`,`ref_id`, COUNT(`ref_id`) FROM `users` WHERE `id`=4 GROUP BY `ref_id`' - 'кол-во рефералов'
+//        
+//    
+//    'SELECT `id`,`login`,COUNT(DISTINCT `ref_id`) FROM `users` GROUP BY `id` ORDER BY 3 DESC'
+//        
+//        
+//        
+//    'SELECT `id`,`login` FROM `users` WHERE `ref_id` IN (SELECT `id` FROM `users` WHERE `ref_id`=4)'
+//        
+//        
+//        
+//        
+//    'SELECT `id`,`login`,COUNT(`id`) FROM `users` WHERE `id` IN (SELECT `ref_id` FROM `users` WHERE `ref_id` IN (SELECT `id` FROM `users` WHERE `ref_id`=4)) GROUP BY `ref_id`  ' - 'тот реферал у которго есть рефералы'
+//        
     
-    
-    
-    
-    
+        
     
     
 }
