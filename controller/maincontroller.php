@@ -72,16 +72,45 @@ class MainController extends Controller{
         $f = '`id`,`t_ref`,`date_ref`,`login`,`rating`,`date_reg`,`date_act`';
         $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
         
-        $reflist = $this->getHtmlReferals($data);
+
+        
+        $reflist = $this->getHtmlReferals($data);// рефералы 1-го ур-ня
+        
+
+        
         
         $this->render('ref_manage',compact('reflist'));
     }
     
-    public function getHtmlReferals($data){
-        $str = '';
+    public function actionRef2lvl(){
+        $this->title = 'Управление рефералами';
+        $this->meta_desc = 'Страница управление рефералами мета описание';
+        $this->meta_key = 'Страница управление рефералами мета кей';
+        
+        $u = new User();
+        $f = '`id`,`ref_id`,`date_ref`,`login`,`rating`,`date_reg`,`date_act`';
+        $w = "`ref_id` IN (SELECT `id` FROM `users` WHERE `ref_id` ='".$_SESSION['user']['id']."')";
+        
+        $data = $u->find($f,$w);
+        
+        //debug($data);
+        
+        $ref2lvl = $this->getHtmlReferals($data, 2);// рефералы 2-го ур-ня
+        
+        
+        
+        $this->render('ref_2lvl',compact('ref2lvl'));
+        
+        
+    }
+    
+    public function getHtmlReferals($data, $fl=''){
+        
         for($i=0; $i<count($data); $i++){
             
-            $a = $data[$i]->id.'<br/>'.$data[$i]->login.'<br/>'.$data[$i]->rating;
+            $r = ($fl) ? '<br>'.$this->getLoginOnID($data[$i]->ref_id) : '';
+            
+            $a = $data[$i]->id.'<br/>'.$data[$i]->login.'<br/>'.$data[$i]->rating.$r;
             
             $b = '56<br/>456';
             

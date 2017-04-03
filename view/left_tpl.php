@@ -11,6 +11,9 @@
     <p>
         <?= $manageRef ?>
     </p>
+    <p>
+        <?= $ref2Lvl ?>
+    </p>
             
             
     <div><p>текст</p></div>

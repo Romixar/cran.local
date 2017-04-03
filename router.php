@@ -12,6 +12,7 @@ class Router{
         '/contacts' => 'main/contacts',
         '/refpage' => 'main/refpage',
         '/refmanage' => 'main/refmanage',
+        '/ref2lvl' => 'main/ref2lvl',
         '/login' => 'main/login',
         '/profile' => 'main/profile',
         '/logout' => 'main/logout',
