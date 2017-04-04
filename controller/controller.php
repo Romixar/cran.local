@@ -11,6 +11,8 @@ class Controller{
     public $title;
     public $meta_desc;
     public $meta_key;
+    
+    public $r_b; // рефбэк пользователя
 
     
     public function __construct(){
@@ -695,7 +697,9 @@ class Controller{
         
         $u = new User();
         
-        $data = $u->find('`login`','`id`='.$id);
+        $data = $u->find('`login`,`set_r_b`','`id`='.$id);
+        
+        $this->r_b = $data[0]->set_r_b;
         
         return $data[0]->login;
     }

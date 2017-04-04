@@ -396,6 +396,9 @@
         
         e.preventDefault();
         
+        elem = $(this);
+        textButton = $(this).text();
+        
         var boxes = $("input:checkbox");
         
         var theArray = new Array();
@@ -415,6 +418,8 @@
         var opt = $('#percent_rb option:selected').val();// выбранный процент
 
         console.log(opt);
+        
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
         post_query('do_ref_b', '&user_ids='+str+'&percent_rb='+opt);
         

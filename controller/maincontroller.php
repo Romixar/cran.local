@@ -3,7 +3,7 @@
 class MainController extends Controller{
     
 
-        
+     
     
     
     public function actionIndex(){
@@ -142,15 +142,26 @@ class MainController extends Controller{
         
         $u_ids = json_decode($this->data['user_ids']);
         
-        $percent = $this->data['percent_rb'];
+        $percent = $this->data['percent_rb'] * 100;
+        
+        
+        if(is_numeric($percent) && ($percent <= 90)){
+            
+            $u = new User();
+            
+            $res = $u->update([
+                'set_r_b'=>$percent
+            ],"`id`=".$_SESSION['user']['id']." AND `login`='".$_SESSION['user']['login']."'");
+            
+            if($res) $this->respJson($this->sysMessage('success','Установлен рефбэк для новых рефералов - <b>'.$percent.'%</b>'));
+            
+        }
+        
+        $this->respJson($this->sysMessage('danger','Ошибка установки рефбэка!'));
         
         
         
-        
-        
-        
-        
-        debug($this->data);die;
+        //debug($this->data);die;
         
         
         
@@ -408,11 +419,16 @@ class MainController extends Controller{
             if(!$_SESSION['user']['ref_id']){
 
                 $lg = $this->getLoginOnID($this->data['ref_id']);
+                
+                
+                
+                
 
                 $u = new User();
             
                 $res = $u->update([
-                    'ref_id'=>$this->data['ref_id']
+                    'ref_id'=>$this->data['ref_id'],
+                    'ref_b'=>$this->r_b // рефбэк пользователя
                 ],"`login`='".$_SESSION['user']['login']."'");
                 
                 $_SESSION['user']['ref_id'] = $this->data['ref_id'];
