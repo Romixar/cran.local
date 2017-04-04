@@ -69,7 +69,7 @@ class MainController extends Controller{
         $this->meta_key = 'Страница управление рефералами мета кей';
         
         $u = new User();
-        $f = '`id`,`t_ref`,`date_ref`,`login`,`rating`,`date_reg`,`date_act`';
+        $f = '`id`,`t_ref`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
         $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
         
 
@@ -88,7 +88,7 @@ class MainController extends Controller{
         $this->meta_key = 'Страница управление рефералами мета кей';
         
         $u = new User();
-        $f = '`id`,`ref_id`,`date_ref`,`login`,`rating`,`date_reg`,`date_act`';
+        $f = '`id`,`ref_id`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
         $w = "`ref_id` IN (SELECT `id` FROM `users` WHERE `ref_id` ='".$_SESSION['user']['id']."')";
         
         $data = $u->find($f,$w);
@@ -104,7 +104,7 @@ class MainController extends Controller{
     
     public function getHtmlReferals($data, $fl=''){
         
-        $h_r = ($fl) ? '<th>Реферал</th>' : '';
+        $h_r = ($fl) ? '<th>Реферер</th>' : '';
         
         $h_rd = (!$fl) ? '<th>Кол-во<br/>рефералов</th><th>Доход</th>' : '';
         
@@ -128,7 +128,7 @@ class MainController extends Controller{
             
             if(!$fl) $e = '<td>'.($this->getRefTaxForRating($data[$i]->rating) * 100).'%</td>'; 
             
-            $rfb = 'еще нет';
+            $rfb = $data[$i]->ref_b.'%';
             
             $chBx = '<input type="checkbox" id="'.$data[$i]->id.'" />';
             
@@ -419,10 +419,6 @@ class MainController extends Controller{
             if(!$_SESSION['user']['ref_id']){
 
                 $lg = $this->getLoginOnID($this->data['ref_id']);
-                
-                
-                
-                
 
                 $u = new User();
             
