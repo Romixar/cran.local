@@ -104,13 +104,13 @@ class MainController extends Controller{
     
     public function getHtmlReferals($data, $fl=''){
         
-        $h = ($fl) ? '<th>Реферал</th>' : '';
+        $h_r = ($fl) ? '<th>Реферал</th>' : '';
         
-        $inc = (!$fl) ? '<th>Кол-во<br/>рефералов</th><th>Доход</th>' : '';
+        $h_rd = (!$fl) ? '<th>Кол-во<br/>рефералов</th><th>Доход</th>' : '';
         
-        $str = '<thead><tr><th>-</th><th>ID, Логин,<br/>Рейтинг</th>'.$h.'
+        $str = '<thead><tr><th>-</th><th>ID, Логин,<br/>Рейтинг</th>'.$h_r.'
                 <th>Серфинг,<br/>Задания</th>
-                <th>Регистр-я,<br>Присоедин.<br/>Активность</th>'.$inc.'
+                <th>Регистр-я,<br>Присоедин.<br/>Активность</th>'.$h_rd.'
                 <th>Рефбек</th></tr></thead><tbody>';
         
         for($i=0; $i<count($data); $i++){
@@ -123,20 +123,38 @@ class MainController extends Controller{
             
             $c = $data[$i]->date_reg.'<br/>'.$data[$i]->date_ref.'<br/>'.$data[$i]->date_act;
             
-            $d = (!$fl) ? '<td>'.$data[$i]->t_ref.'</td>' : '';
+            $t_r = (!$fl) ? '<td>'.$data[$i]->t_ref.'</td>' : '';
             
             
             if(!$fl) $e = '<td>'.($this->getRefTaxForRating($data[$i]->rating) * 100).'%</td>'; 
             
-            $f = 'еще нет';
+            $rfb = 'еще нет';
             
-            $chBx = '<input type="checkbox" name="cb'.($i+1).'" id="'.($i+1).'" />';
+            $chBx = '<input type="checkbox" id="'.$data[$i]->id.'" />';
             
-            $str .= '<tr><td>'.$chBx.'</td><td>'.$a.'</td>'.$r.'<td>'.$b.'</td><td>'.$c.'</td>'.$d.$e.'<td>'.$f.'</td></tr>';
+            $str .= '<tr><td>'.$chBx.'</td><td>'.$a.'</td>'.$r.'<td>'.$b.'</td><td>'.$c.'</td>'.$t_r.$e.'<td>'.$rfb.'</td></tr>';
             
         }
         return $str.'</tbody>';
     }
+    
+    public function addNewRefBack(){
+        
+        $u_ids = json_decode($this->data['user_ids']);
+        
+        
+        
+        
+        
+        
+        
+        debug($u_ids);die;
+        
+        
+        
+    }
+    
+    
     
     
     public function actionRefpage(){

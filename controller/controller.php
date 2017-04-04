@@ -85,6 +85,7 @@ class Controller{
         if(isset($data['get_rating_f'])) $this->getRating();// получение ежеднев рейтинга
         
         if(isset($data['do_addref_f'])) $this->addNewReferal();// запрос хочу стать его рефералом
+        if(isset($data['do_ref_b_f'])) $this->addNewRefBack();// запрос на установку рефбэка
 
         
     }

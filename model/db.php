@@ -270,22 +270,6 @@ class DB{
 
     }
     
-//    public function getReferals(){
-//        
-//
-//        
-//        
-//        'SELECT `id`,`login` FROM `users` WHERE `ref_id` = 4' - мои реф-лы 1-го ур-ня
-//            
-//        'SELECT `id`,`login` FROM `users` WHERE `ref_id` IN (
-//            SELECT `id` FROM `users` WHERE `ref_id` = 4
-//        )' - рефералы 2-го ур-ня
-//            
-//            
-//        debug($sql);die;
-//        
-//        
-//    }
     
     public function delete($w){
         

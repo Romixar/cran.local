@@ -409,8 +409,13 @@
                 theArray[theArray.length] = $(box).attr('id');
             }
         }
+        
+        var str = JSON.stringify(theArray);
 
-        console.log(theArray);
+        //console.log(theArray);
+        console.log(str);
+        
+        post_query('do_ref_b', '&user_ids='+str);
         
         
 
