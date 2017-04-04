@@ -142,13 +142,15 @@ class MainController extends Controller{
         
         $u_ids = json_decode($this->data['user_ids']);
         
+        $percent = $this->data['percent_rb'];
         
         
         
         
         
         
-        debug($u_ids);die;
+        
+        debug($this->data);die;
         
         
         

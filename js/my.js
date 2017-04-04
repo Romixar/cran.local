@@ -411,39 +411,15 @@
         }
         
         var str = JSON.stringify(theArray);
+        
+        var opt = $('#percent_rb option:selected').val();// выбранный процент
 
-        //console.log(theArray);
-        console.log(str);
+        console.log(opt);
         
-        post_query('do_ref_b', '&user_ids='+str);
+        post_query('do_ref_b', '&user_ids='+str+'&percent_rb='+opt);
         
         
-
     });
-    
-    
-//    var boxes = $("input:checkbox");
-//    
-//    $(document).on("change", 'input:checkbox', function(){
-//
-//
-//      var theArray = new Array();
-//        
-//      for(var i=0;i<boxes.length;i++){
-//          
-//        var box = boxes[i]; 
-//
-//        if($(box).prop('checked')){
-//          //theArray[theArray.length] = $(box).val();
-//          theArray[theArray.length] = $(box).attr('id');
-//        }
-//    }
-//
-//        console.log(theArray);
-//      //showValues(theArray);
-//    });
-    
-
     
     
     
