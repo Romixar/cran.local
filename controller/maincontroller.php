@@ -63,6 +63,26 @@ class MainController extends Controller{
         $this->render('contacts');
     }
     
+    public function actionRefstock(){
+        $this->title = 'Биржа рефералов';
+        $this->meta_desc = 'Страница биржа рефералов мета описание';
+        $this->meta_key = 'Страница биржа рефералов мета кей';
+        
+        
+        $refstock = $this->getHtmlTableStock();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        $this->render('refstock',compact('refstock'));
+    }
+    
     public function actionRefmanage(){
         $this->title = 'Управление рефералами';
         $this->meta_desc = 'Страница управление рефералами мета описание';
@@ -98,6 +118,64 @@ class MainController extends Controller{
         
         
         $this->render('ref_2lvl',compact('reflist'));
+        
+        
+    }
+    
+    public function getHtmlTableStock(){
+        
+        $str = '<thead>
+                    <tr>
+                        <th>
+                            -
+                        </th>
+                        <th>
+                            ID, Логин,<br/>Рейтинг/Продавец
+                        </th>
+                        <th>
+                            Серфинг,<br/>Задания
+                        </th>
+                        <th>
+                            Регистр-я,<br>Присоедин.<br/>Активность
+                        </th>
+                        <th>
+                            Кол-во<br/>рефералов
+                        </th>
+                        <th>
+                            Доход<br/>сут.
+                        </th>
+                        <th>
+                            Цена
+                        </th>
+                    </tr>
+                </thead><tbody>';
+        
+        for($i=0; $i<10; $i++){
+            
+            $str .= '<tr>';
+            
+            $a = '<input type="checkbox" />';
+            
+            $b = '7877<br/>Romario76765<br/>15,80<br/>admin';
+            
+            $c = '34<br/>256';
+            
+            $d = '22-03-2016<br/>23-03-2016<br/>5-04-2017';
+            
+            $e = '23';
+            
+            $f = '6,3 руб.';
+            
+            $g = '120 руб.';
+            
+            
+            $str .= '<td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td><td>'.$g.'</td>';
+            
+            $str .= '</tr>';
+            
+        }
+        
+        return $str.'</tbody>';
         
         
     }

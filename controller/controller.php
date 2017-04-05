@@ -49,8 +49,8 @@ class Controller{
             
             $reg = '';
             $manageRef = '<a href="/refmanage" id="refmanage" class="btn btn-primary btn-xs" role="button">Мои рефералы</a>';
-            $ref2Lvl = '<a href="/ref2lvl" id="ref2lvl" class="btn btn-primary btn-xs" role="button">Рефералы 2-го ур-ня</a>';
-            $refstock = '<a href="/refstock" id="refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
+            $ref2Lvl = '<a href="/ref2lvl" class="btn btn-primary btn-xs" role="button">Рефералы 2-го ур-ня</a>';
+            $refstock = '<a href="/refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
             
         }
         $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl','refstock');
