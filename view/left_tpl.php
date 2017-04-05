@@ -9,6 +9,9 @@
        <?= $refPage ?>
     </p>
     <p>
+        <?= $refstock ?>
+    </p>
+    <p>
         <?= $manageRef ?>
     </p>
     <p>

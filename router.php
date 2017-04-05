@@ -13,6 +13,7 @@ class Router{
         '/refpage' => 'main/refpage',
         '/refmanage' => 'main/refmanage',
         '/ref2lvl' => 'main/ref2lvl',
+        '/refstock' => 'main/refstock',
         '/login' => 'main/login',
         '/profile' => 'main/profile',
         '/logout' => 'main/logout',

@@ -133,7 +133,7 @@ class MainController extends Controller{
             
             $b = '56<br/>456';
             
-            $c = $data[$i]->date_reg.'<br/>'.$data[$i]->date_ref.'<br/>'.$data[$i]->date_act;
+            $c = $data[$i]->date_reg.'<br/>'.$this->formDate($data[$i]->date_ref).'<br/>'.$data[$i]->date_act;
             
             $t_r = (!$fl) ? '<td>'.$data[$i]->t_ref.'</td>' : '';
             
@@ -160,6 +160,8 @@ class MainController extends Controller{
         if(is_numeric($percent) && ($percent <= 90)){
             
             $u = new User();
+            
+            $_SESSION['user']['set_r_b'] = $percent;
             
             $res = $u->update([
                 'set_r_b'=>$percent
@@ -400,7 +402,7 @@ class MainController extends Controller{
             
             $referer = ($_SESSION['user']['ref_id']) ? $this->getLoginOnID($_SESSION['user']['ref_id']) : 'нет';
             $ref_b = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['ref_b'].'%' : '';
-            $date_ref = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['date_ref'] : '';
+            $date_ref = ($_SESSION['user']['ref_id']) ? $this->formDate($_SESSION['user']['date_ref']) : '';
             
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
@@ -433,11 +435,14 @@ class MainController extends Controller{
             if(!$_SESSION['user']['ref_id']){
 
                 $lg = $this->getLoginOnID($this->data['ref_id']);
+                
+                $_SESSION['user']['date_ref'] = time();
 
                 $u = new User();
             
                 $res = $u->update([
                     'ref_id'=>$this->data['ref_id'],
+                    'date_ref'=>$_SESSION['user']['date_ref'],
                     'ref_b'=>$this->r_b // рефбэк пользователя
                 ],"`login`='".$_SESSION['user']['login']."'");
                 
