@@ -36,24 +36,18 @@
       </div>
       <!-- Основное содержимое модального окна -->
       <div class="modal-body">
-       
-       
-        
-        
-        
+
          <table class="table table-hover ref_list">
      
-        <?= $refTable ?>
+            <?= $refTable ?>
 
-         </table>
-        
-        
+         </table>        
         
       </div>
       <!-- Футер модального окна -->
       <div class="modal-footer">
 <!--        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>-->
-        <button type="button" class="btn btn-primary">Выбрать</button>
+        <button type="button" id="addrefstock" data-dismiss="modal" class="btn btn-primary">Выбрать</button>
       </div>
     </div>
   </div>

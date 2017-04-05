@@ -365,7 +365,7 @@
         
     });
     
-    $(document).on('click', 'a#addref', function(e){// получение баллов раз в сутки
+    $(document).on('click', 'a#addref', function(e){// хочу стать его рефералом
         
         e.preventDefault();
         
@@ -392,7 +392,7 @@
         return true;
     }
     
-    $(document).on('click', 'a#set_ref_back', function(e){// получение баллов раз в сутки
+    $(document).on('click', 'a#set_ref_back', function(e){// установка рефбэка
         
         e.preventDefault();
         
@@ -422,6 +422,24 @@
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
         post_query('do_ref_b', '&user_ids='+str+'&percent_rb='+opt);
+        
+        
+    });
+    
+    $(document).on('click', 'button#addrefstock', function(e){// добавление реферала на биржу
+        
+        e.preventDefault();
+        
+        elem = $('a#refstock');
+        textButton = $(this).text();
+        
+        
+
+        console.log('клик');
+        
+        viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
+        
+//        post_query('do_ref_b', '&user_ids='+str+'&percent_rb='+opt);
         
         
     });
