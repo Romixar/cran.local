@@ -72,15 +72,19 @@ class MainController extends Controller{
         $refstock = $this->getHtmlTableStock();
         
         
+        $u = new User();
+        $f = '`id`,`t_ref`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
+        $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
+        
+        $refTable = $this->getHtmlReferals($data);// рефералы 1-го ур-ня
+        
+        
+        //debug($refTable);
         
         
         
         
-        
-        
-        
-        
-        $this->render('refstock',compact('refstock'));
+        $this->render('refstock',compact('refstock','refTable'));
     }
     
     public function actionRefmanage(){
