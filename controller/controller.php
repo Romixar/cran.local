@@ -235,6 +235,9 @@ class Controller{
             $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
             $_SESSION['user']['ref_id'] = $data[0]->ref_id;
+            $_SESSION['user']['ref_b'] = $data[0]->ref_b;
+            $_SESSION['user']['set_r_b'] = $data[0]->set_r_b;
+            $_SESSION['user']['date_ref'] = $data[0]->date_ref;
             $_SESSION['user']['b'] = $data[0]->b;
             $_SESSION['user']['date_rat'] = $data[0]->date_rat;
             $_SESSION['user']['date_reg'] = $data[0]->date_reg;
@@ -663,7 +666,20 @@ class Controller{
     
     public function updateRefBalances($tax,$bonus){
         $mod = new User();
-        $tax = $tax * $bonus; // сумма отчисления рефереру (прибавится к его балансу)
+        $tax = round(($tax * $bonus), 3);; // сумма отчисления рефереру (прибавится к его балансу)
+        
+        
+        
+        if($_SESSION['user']['ref_b']){
+            
+            $ref_b = ($_SESSION['user']['ref_b'] / 100) * $tax;// то, что по рефбеку идет рефералу
+            
+            $bonus += round($ref_b, 3);
+            
+            $tax -= round($ref_b, 3);
+            
+        }
+        
             
         $_SESSION['user']['balance'] += $bonus; // баланс реферала
             

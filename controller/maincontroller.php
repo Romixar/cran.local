@@ -72,14 +72,14 @@ class MainController extends Controller{
         $f = '`id`,`t_ref`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
         $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
         
-
+        $opt = $this->getHtmlOptions($_SESSION['user']['set_r_b']);
         
         $reflist = $this->getHtmlReferals($data);// рефералы 1-го ур-ня
         
 
         
         
-        $this->render('ref_manage',compact('reflist'));
+        $this->render('ref_manage',compact('reflist','opt'));
     }
     
     public function actionRef2lvl(){
@@ -100,6 +100,18 @@ class MainController extends Controller{
         $this->render('ref_2lvl',compact('reflist'));
         
         
+    }
+    
+    public function getHtmlOptions($percent){
+        
+        for($i=0; $i<10; $i++){
+            
+            if($i*10 == $percent) $sel = 'selected';
+            else $sel = '';
+            
+            $str .= '<option '.$sel.' value="'.($i/10).'">'.($i*10).'%</option>';    
+        }
+        return $str;
     }
     
     public function getHtmlReferals($data, $fl=''){
@@ -140,7 +152,7 @@ class MainController extends Controller{
     
     public function addNewRefBack(){
         
-        $u_ids = json_decode($this->data['user_ids']);
+        $u_ids = json_decode($this->data['user_ids']);//  ID моих рефералов
         
         $percent = $this->data['percent_rb'] * 100;
         
@@ -387,6 +399,8 @@ class MainController extends Controller{
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
             
             $referer = ($_SESSION['user']['ref_id']) ? $this->getLoginOnID($_SESSION['user']['ref_id']) : 'нет';
+            $ref_b = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['ref_b'].'%' : '';
+            $date_ref = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['date_ref'] : '';
             
             $b = $_SESSION['user']['b'];
             $date_reg = $_SESSION['user']['date_reg'];
@@ -408,7 +422,7 @@ class MainController extends Controller{
             $usersettings = $this->view->prerender('settings',compact('ip','wal','ref_url','email','text'));
             $userstats = $this->view->prerender('stats');
             
-            $this->render('profile',compact('img','login','status','rating','balance','referer','b','date_reg','date_act','usersettings','userstats'));
+            $this->render('profile',compact('img','login','status','rating','balance','referer','ref_b','date_ref','b','date_reg','date_act','usersettings','userstats'));
         }
     }
     
