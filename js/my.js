@@ -435,7 +435,7 @@
         
         
         
-        var boxes = $("input:checkbox");
+        var boxes = $("input:checkbox");// коллекция выделенных чекбоксов
         
         var theArray = new Array();
         
@@ -444,19 +444,22 @@
         var box = boxes[i]; 
 
             if($(box).prop('checked')){
-                var id = $(box).attr('id');
-                theArray[theArray.length] = { "ID":id,"цена": $(box).attr('id')};
+                var id = $(box).attr("id");
+                
+                theArray[theArray.length] = [
+                    id,
+                    $('input#price_'+id).val()
+                ];
             }
         }
         
         var str = JSON.stringify(theArray);
         
-        console.log(theArray);
+        console.log(str);
         
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
-        post_query('addrefstock', '&user_ids='+str);
-        
+        post_query('addrefstock', '&referals='+str);
         
     });
     

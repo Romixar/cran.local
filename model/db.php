@@ -190,23 +190,37 @@ class DB{
 
     }
     
-    public function insert($data){
+    public function insert($data){// вставка по одной строке либо несколько
         $keys = [];
         $vals = [];
+        
         foreach($data as $k => $v){
-            $keys[] = '`'.$k.'`';
-            if(is_numeric($v)) $vals[] = $v;
-            else $vals[] = "'".$v."'";
+            
+            if(strpos($k,',') !== false) $strkeys = '('.$k.')';
+            else $keys[] = '`'.$k.'`';
+
+            if(strpos($v,'(') !== false) $strvals = $v;
+            else{
+                if(is_numeric($v)) $vals[] = $v;
+                else $vals[] = "'".$v."'";
+                $fl = 1;
+            }
+            
         }
         
-        $sql = 'INSERT INTO `'.static::$table.'` ('.implode(',',$keys).') VALUES ('.implode(',',$vals).')';
+        if(!isset($strvals)) $strvals = '('.implode(',',$vals).')';
+        if(!isset($strkeys)) $strkeys = '('.implode(',',$keys).')';
         
+        $sql = 'INSERT INTO `'.static::$table.'` '.$strkeys.' VALUES '.$strvals;
         
         //echo $sql;exit;
         
         $sth = $this->dbh->query($sql);
         
-        return $this->dbh->lastInsertId();
+        if($fl) return $this->dbh->lastInsertId();
+        else return $sth->rowCount();
+        
+        //return $this->dbh->lastInsertId();
     }
     
     public function save($data){
