@@ -27,7 +27,7 @@
 
 
 <div id="myModal" class="modal fade">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <!-- Заголовок модального окна -->
       <div class="modal-header">

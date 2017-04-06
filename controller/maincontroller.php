@@ -76,7 +76,7 @@ class MainController extends Controller{
         $f = '`id`,`t_ref`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
         $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
         
-        $refTable = $this->getHtmlReferals($data);// рефералы 1-го ур-ня
+        $refTable = $this->getHtmlReferals($data, false, true);// мои рефералы с чекбоксами и инпутами
         
         
         //debug($refTable);
@@ -85,6 +85,16 @@ class MainController extends Controller{
         
         
         $this->render('refstock',compact('refstock','refTable'));
+    }
+    
+    public function addRefStock(){
+        
+        $u_ids = json_encode($this->data['user_ids']);
+        
+        
+        //debug($this->data);die;
+        debug($u_ids);die;
+        
     }
     
     public function actionRefmanage(){
@@ -196,16 +206,20 @@ class MainController extends Controller{
         return $str;
     }
     
-    public function getHtmlReferals($data, $fl=''){
+    public function getHtmlReferals($data, $fl='', $chb=''){
         
         $h_r = ($fl) ? '<th>Реферер</th>' : '';
         
         $h_rd = (!$fl) ? '<th>Кол-во<br/>рефералов</th><th>Доход</th>' : '';
         
-        $str = '<thead><tr><th>-</th><th>ID, Логин,<br/>Рейтинг</th>'.$h_r.'
+        $chb = ($chb) ? '<th>-</th>' : '';
+        
+        $pr = ($chb) ? '<th>Цена</th>' : '';
+        
+        $str = '<thead><tr>'.$chb.'<th>ID, Логин,<br/>Рейтинг</th>'.$h_r.'
                 <th>Серфинг,<br/>Задания</th>
                 <th>Регистр-я,<br>Присоедин.<br/>Активность</th>'.$h_rd.'
-                <th>Рефбек</th></tr></thead><tbody>';
+                <th>Рефбек</th>'.$pr.'</tr></thead><tbody>';
         
         for($i=0; $i<count($data); $i++){
             
@@ -224,9 +238,12 @@ class MainController extends Controller{
             
             $rfb = $data[$i]->ref_b.'%';
             
-            $chBx = '<input type="checkbox" id="'.$data[$i]->id.'" />';
+            $chBx = ($chb) ? '<td><input type="checkbox" id="'.$data[$i]->id.'" /></td>' : '';
             
-            $str .= '<tr><td>'.$chBx.'</td><td>'.$a.'</td>'.$r.'<td>'.$b.'</td><td>'.$c.'</td>'.$t_r.$e.'<td>'.$rfb.'</td></tr>';
+            $inp = ($chb) ? '<td><input type="text" name="price" /></td>' : '';
+            
+            
+            $str .= '<tr>'.$chBx.'<td>'.$a.'</td>'.$r.'<td>'.$b.'</td><td>'.$c.'</td>'.$t_r.$e.'<td>'.$rfb.'</td>'.$inp.'</tr>';
             
         }
         return $str.'</tbody>';

@@ -91,6 +91,7 @@ class Controller{
         
         if(isset($data['do_addref_f'])) $this->addNewReferal();// запрос хочу стать его рефералом
         if(isset($data['do_ref_b_f'])) $this->addNewRefBack();// запрос на установку рефбэка
+        if(isset($data['addrefstock_f'])) $this->addRefStock();// добавление реферала на биржу
 
         
     }

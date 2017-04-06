@@ -399,21 +399,21 @@
         elem = $(this);
         textButton = $(this).text();
         
-        var boxes = $("input:checkbox");
-        
-        var theArray = new Array();
-        
-        for(var i=0; i<boxes.length; i++){
-          
-        var box = boxes[i]; 
-
-            if($(box).prop('checked')){
-                
-                theArray[theArray.length] = $(box).attr('id');
-            }
-        }
-        
-        var str = JSON.stringify(theArray);
+//        var boxes = $("input:checkbox");
+//        
+//        var theArray = new Array();
+//        
+//        for(var i=0; i<boxes.length; i++){
+//          
+//        var box = boxes[i]; 
+//
+//            if($(box).prop('checked')){
+//                
+//                theArray[theArray.length] = $(box).attr('id');
+//            }
+//        }
+//        
+//        var str = JSON.stringify(theArray);
         
         var opt = $('#percent_rb option:selected').val();// выбранный процент
 
@@ -434,12 +434,28 @@
         textButton = $(this).text();
         
         
+        
+        var boxes = $("input:checkbox");
+        
+        var theArray = new Array();
+        
+        for(var i=0; i<boxes.length; i++){
+          
+        var box = boxes[i]; 
 
-        console.log('клик');
+            if($(box).prop('checked')){
+                var id = $(box).attr('id');
+                theArray[theArray.length] = { "ID":id,"цена": $(box).attr('id')};
+            }
+        }
+        
+        var str = JSON.stringify(theArray);
+        
+        console.log(theArray);
         
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
-//        post_query('do_ref_b', '&user_ids='+str+'&percent_rb='+opt);
+        post_query('addrefstock', '&user_ids='+str);
         
         
     });
@@ -1003,7 +1019,8 @@
     
     function inpFocus(){
         
-        var inp = $('input');
+        //var inp = $('input');
+        var inp = $('input:not([name=price]');
         var txt = $('textarea');
         
         inp.focusin(function(){
