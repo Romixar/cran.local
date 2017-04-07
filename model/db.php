@@ -149,6 +149,19 @@ class DB{
         return $sth->rowCount();
     }
     
+    public function updateRefUsers($ids){
+        
+        for($i=0; $i<count($ids); $i++) $str .= '('.$ids[$i].',0,0,0),';
+        
+        $str = substr($str,0,-1);
+        
+        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`ref_id`,`date_ref`,`ref_b`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `ref_id` = VALUES(`ref_id`), `date_ref` = VALUES(`date_ref`), `ref_b` = VALUES(`ref_b`)';
+        
+        $sth = $this->dbh->query($sql);
+        
+        return $sth->rowCount();
+    }
+    
     public function update2Balances($data){ // обновить баланс реферала и реферера
 
         $keys = array_keys($data);

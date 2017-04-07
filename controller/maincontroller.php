@@ -93,7 +93,6 @@ class MainController extends Controller{
         
         if(is_array($referals) && !empty($referals)){
             
-            
             for($i=0; $i<count($referals); $i++){
                 
                 if(count($referals[$i]) != 2) $err = 1;
@@ -102,6 +101,7 @@ class MainController extends Controller{
                 
                 $values .= '('.$referals[$i][0].','.$id.','.$referals[$i][1].','.time().'),';
                 
+                $ids[$i] = $referals[$i][0];// ID-эшки выбранных рефералов
             }
             
             if(!$err){
@@ -113,23 +113,17 @@ class MainController extends Controller{
                 $res = $refs->insert([
                     '`user_id`,`seller_id`,`price`,`date_add`'=>$values
                 ]);
+                
+                $u = new User();
+                
+                $u->updateRefUsers($ids);
 
 
                 $this->respJson($this->sysMessage('success','Добавлено на биржу '.$res.' рефералов!'));
-                
             }
         }
         
-        
         $this->respJson($this->sysMessage('danger','Ошибка формата данных!'));
-
-        
-        
-        
-        
-        
-        
-        
     }
     
     public function actionRefmanage(){

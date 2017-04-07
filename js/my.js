@@ -432,7 +432,9 @@
         
         elem = $('a#refstock');
         textButton = $(this).text();
-
+        
+        //var theArray = initChecks(trs);
+        
         var boxes = $("input:checkbox");// коллекция выделенных чекбоксов
         
         var theArray = new Array();
@@ -455,11 +457,15 @@
                 theArray[theArray.length] = [
                     id,
                     price
-                    //$('input#price_'+id).val()
                 ];
                 
-                trs[trs.length] = $(box).parent().parent();// остальные ячецки
+                trs[trs.length] = $(box).parent().parent();// остальные ячейки
             }
+        }
+        
+        if(theArray.length == 0){
+            sysMes('danger','Не выбрано ни одного элемента!'); 
+            return;
         }
         
         var str = JSON.stringify(theArray);
@@ -471,6 +477,8 @@
         htmlStockTable(theArray, trs);
         
     });
+    
+
     
     function validPrice(price){
         
