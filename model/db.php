@@ -280,21 +280,34 @@ class DB{
         if($lim) $sql .= ' LIMIT '.$lim;
         
         $sth = $this->dbh->query($sql);
-        $res = $sth->fetchAll();
         
-        for($i=0; $i<count($res); $i++){
-            
-            foreach($res[$i] as $k => $v){
-                
-                if(is_numeric($k)) unset($res[$i][$k]);// удаление дублирующих числовых ключей
-                
-            }
-            
-        }        
+        $res = $this->removeDoubleKeys($sth->fetchAll());
         
         if(!empty($res)) return $res;
         return false;
-
+    }
+    
+    public function getRefStock(){
+        
+        $sql = 'SELECT `users`.`id`,`login`,`t_ref`,`rating`,`date_reg`,`date_ref`,`date_act`, `refstock`.`user_id` FROM `'.static::$table.'` JOIN `refstock` WHERE `users`.`id` = `refstock`.`user_id` ORDER BY `refstock`.`date_add` DESC';
+        
+        //echo $sql;
+        
+        $sth = $this->dbh->query($sql);
+        
+        $res = $this->removeDoubleKeys($sth->fetchAll());
+        
+        if(!empty($res)) return $res;
+        return false;
+    }
+    
+    private function removeDoubleKeys($data){// удаление дублирующих числовых ключей
+        
+        for($i=0; $i<count($data); $i++){
+            
+            foreach($data[$i] as $k => $v) if(is_numeric($k)) unset($data[$i][$k]);
+        }
+        return $data;
     }
     
     

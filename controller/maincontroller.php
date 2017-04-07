@@ -69,10 +69,21 @@ class MainController extends Controller{
         $this->meta_key = 'Страница биржа рефералов мета кей';
         
         
-        $refstock = $this->getHtmlTableStock();
-        
         
         $u = new User();
+        
+        $data = $u->getRefStock();
+        
+        debug($data);//die;
+        
+        
+        
+        
+        
+        $refstock = $this->getHtmlTableStock($data);
+        
+        
+        // мои рефералы в иодальном окне
         $f = '`id`,`t_ref`,`date_ref`,`ref_b`,`login`,`rating`,`date_reg`,`date_act`';
         $data = $u->find($f,"`ref_id`='".$_SESSION['user']['id']."'",'`id` ASC');
         
