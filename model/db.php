@@ -289,9 +289,7 @@ class DB{
     
     public function getRefStock(){
         
-        $sql = 'SELECT `users`.`id`,`login`,`t_ref`,`rating`,`date_reg`,`date_ref`,`date_act`, `refstock`.`user_id` FROM `'.static::$table.'` JOIN `refstock` WHERE `users`.`id` = `refstock`.`user_id` ORDER BY `refstock`.`date_add` DESC';
-        
-        //echo $sql;
+        $sql = 'SELECT `users`.`id`,`login`,`t_ref`,`rating`,`date_reg`,`date_ref`,`date_act`, `refstock`.`user_id`,`refstock`.`seller_id`,`refstock`.`seller`,`refstock`.`price` FROM `'.static::$table.'` JOIN `refstock` WHERE `users`.`id` = `refstock`.`user_id` ORDER BY `refstock`.`date_add` DESC';
         
         $sth = $this->dbh->query($sql);
         

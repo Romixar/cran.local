@@ -72,7 +72,7 @@ class MainController extends Controller{
         
         $u = new User();
         
-        $data = $u->getRefStock();
+        $data = $u->getRefStock();// запрос биржи рефералов
         
         debug($data);//die;
         
@@ -100,19 +100,20 @@ class MainController extends Controller{
     
     public function addRefStock(){
         
-        $referals = json_decode($this->data['referals']);
+        $refs = json_decode($this->data['referals']);
         
-        if(is_array($referals) && !empty($referals)){
+        if(is_array($refs) && !empty($refs)){
             
-            for($i=0; $i<count($referals); $i++){
+            for($i=0; $i<count($refs); $i++){
                 
-                if(count($referals[$i]) != 2) $err = 1;
+                if(count($refs[$i]) != 2) $err = 1;
                 
                 $id = $_SESSION['user']['id'];
+                $lg = $_SESSION['user']['login'];
                 
-                $values .= '('.$referals[$i][0].','.$id.','.$referals[$i][1].','.time().'),';
+                $values .= '('.$refs[$i][0].','.$id.','.$lg.','.$refs[$i][1].','.time().'),';
                 
-                $ids[$i] = $referals[$i][0];// ID-эшки выбранных рефералов
+                $ids[$i] = $refs[$i][0];// ID-эшки выбранных рефералов
             }
             
             if(!$err){
@@ -122,10 +123,10 @@ class MainController extends Controller{
                 $refs = new Refstock();
 
                 $res = $refs->insert([
-                    '`user_id`,`seller_id`,`price`,`date_add`'=>$values
+                    '`user_id`,`seller_id`,`seller`,`price`,`date_add`'=>$values
                 ]);
                 
-                $u = new User();
+                $u = new User();// обновление некот-х данных этих рефералов
                 
                 $u->updateRefUsers($ids);
 
@@ -176,9 +177,9 @@ class MainController extends Controller{
         
     }
     
-    public function getHtmlTableStock(){
+    public function getHtmlTableStock($data){
         
-        $str = '<thead>
+        $str = '<thead style="font-size:14px">
                     <tr>
                         <th>
                             -
@@ -196,34 +197,39 @@ class MainController extends Controller{
                             Кол-во<br/>рефералов
                         </th>
                         <th>
-                            Доход<br/>сут.
+                            Доход<br/>руб./сут.
                         </th>
                         <th>
-                            Цена
+                            Цена, руб.
+                        </th>
+                        <th>
+                            -
                         </th>
                     </tr>
                 </thead><tbody>';
         
-        for($i=0; $i<10; $i++){
+        for($i=0; $i<count($data); $i++){
             
             $str .= '<tr>';
             
-            $a = '<input type="checkbox" />';
+            $a = ($data[$i]['seller_id'] == $_SESSION['user']['id']) ? '<a href="#" title="Редактировать"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>' : '';
             
-            $b = '7877<br/>Romario76765<br/>15,80<br/>admin';
+            $b = $data[$i]['id'].'<br/>'.$data[$i]['login'].'<br/>'.$data[$i]['rating'].'<br/>'.$data[$i]['seller'];
             
             $c = '34<br/>256';
             
-            $d = '22-03-2016<br/>23-03-2016<br/>5-04-2017';
+            $d = $data[$i]['date_reg'].'<br/>'.$data[$i]['date_ref'].'<br/>'.$data[$i]['date_act'];
             
-            $e = '23';
+            $e = $data[$i]['t_ref'];
             
-            $f = '6,3 руб.';
+            $f = '6,3';
             
-            $g = '120 руб.';
+            $g = $data[$i]['price'];
+            
+            $h = '<a href="#" title="Купить"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a>';
             
             
-            $str .= '<td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td><td>'.$g.'</td>';
+            $str .= '<td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td><td>'.$g.'</td><td>'.$h.'</td>';
             
             $str .= '</tr>';
             
