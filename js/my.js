@@ -432,46 +432,25 @@
         
         elem = $('a#refstock');
         textButton = $(this).text();
-        
-        
-        
+
         var boxes = $("input:checkbox");// коллекция выделенных чекбоксов
         
         var theArray = new Array();
         
         var trs = [];
         
-        var err = '';
-
-        var regD = /^\d{1,4}(\.){0,1}\d{1,4}$/;
-        
-        
         for(var i=0; i<boxes.length; i++){
           
         var box = boxes[i];
         
-
             if($(box).prop('checked')){
                 var id = $(box).attr("id");
                 
                 var price = $('input#price_'+id).val();
                 
-                // заменить запятую на точку и округлить до 2-х
-                price = price.replace(",",".");
-                price = price.replace(" ","");
+                price = validPrice(price);
                 
-                if(isNaN(price)) err = 1;
-                
-                if(price.indexOf('.') !== -1){
-                    
-                    price = Number(price).toFixed(2);
-                    
-                    console.log(price);
-                    
-                }
-                
-                
-                if(regD.test(price)) console.log('ок');
+                if(price === false) return;
                 
                 theArray[theArray.length] = [
                     id,
@@ -479,33 +458,44 @@
                     //$('input#price_'+id).val()
                 ];
                 
-                trs[trs.length] = $(box).parent().parent();
+                trs[trs.length] = $(box).parent().parent();// остальные ячецки
             }
         }
         
-        if(theArray.length != 0 && err == ''){
-           
-           
-           
-        }
-        
-        
-        
         var str = JSON.stringify(theArray);
-        
-        //console.log(theArray.length);
         
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
-        //post_query('addrefstock', '&referals='+str);
+        post_query('addrefstock', '&referals='+str);
         
         htmlStockTable(theArray, trs);
         
     });
     
+    function validPrice(price){
+        
+        var regP = /^\d{1,4}(\.){0,1}\d{1,4}$/;
+        
+        price = price.trim();
+        
+        // заменить запятую на точку и округлить до 2-х
+        price = price.replace(",",".");
+        price = price.replace(" ","");
+                
+        if(isNaN(price) || !regP.test(price)){
+            
+            // вывести сообщение об ошибке формата
+            sysMes('danger','Неверно заполнено поле цена!'); 
+            return false;
+        }
+                
+        if(price.indexOf('.') !== -1) price = Number(price).toFixed(2);
+        return price;
+    }
+    
     function htmlStockTable(arr, trs){
         
-        var table = $('table.ref_list tbody');
+        var table = $('table#listrefstock tbody');
         
         var obj = JSON.parse($.cookie('user'));
         
@@ -517,6 +507,13 @@
         
             table.prepend(tr);
         }
+    }
+    
+    function sysMes(type,mes){
+        
+        var al = $('div.alert');
+        if(al) al.remove();
+        $(document).find('div.main div.col-md-12 h4:first').after(getTplMes(mes,type));
     }
     
  

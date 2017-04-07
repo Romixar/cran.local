@@ -11,7 +11,7 @@
  <div class="row">
  
 <div class="col-md-12">
- <table class="table table-hover ref_list">
+ <table id="listrefstock" class="table table-hover ref_list">
      
         <?= $refstock ?>
 
