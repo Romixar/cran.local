@@ -441,6 +441,11 @@
         
         var trs = [];
         
+        var err = '';
+
+        var regD = /^\d{1,4}(\.){0,1}\d{1,4}$/;
+        
+        
         for(var i=0; i<boxes.length; i++){
           
         var box = boxes[i];
@@ -449,19 +454,46 @@
             if($(box).prop('checked')){
                 var id = $(box).attr("id");
                 
+                var price = $('input#price_'+id).val();
+                
+                // заменить запятую на точку и округлить до 2-х
+                price = price.replace(",",".");
+                price = price.replace(" ","");
+                
+                if(isNaN(price)) err = 1;
+                
+                if(price.indexOf('.') !== -1){
+                    
+                    price = Number(price).toFixed(2);
+                    
+                    console.log(price);
+                    
+                }
+                
+                
+                if(regD.test(price)) console.log('ок');
+                
                 theArray[theArray.length] = [
                     id,
-                    $('input#price_'+id).val()
+                    price
+                    //$('input#price_'+id).val()
                 ];
                 
                 trs[trs.length] = $(box).parent().parent();
-                //trs[trs.length] = $(box);
             }
         }
         
+        if(theArray.length != 0 && err == ''){
+           
+           
+           
+        }
+        
+        
+        
         var str = JSON.stringify(theArray);
         
-        console.log(str);
+        //console.log(theArray.length);
         
         viewIcon3(elem, 'refresh gly-spin');// запуск крутилки в кнопке
         
@@ -473,8 +505,6 @@
     
     function htmlStockTable(arr, trs){
         
-        
-        
         var table = $('table.ref_list tbody');
         
         var obj = JSON.parse($.cookie('user'));
@@ -483,19 +513,10 @@
             
             var tds = $(trs[i][0]).find('td');// коллекция td в строке выбранного реферала
             
-            console.log(tds[1].innerHTML); // строка выбранного реферала
-            
-            
-            
-            var tr = '<tr><td></td><td>'+tds[1].innerHTML+'<br>'+obj.login+'</td>876765<td>jgvgdxfd</td><td>kjhb</td><td>jbj</td><td>klmk</td><td>'+arr[i][1]+'</td></tr>';
+            var tr = '<tr><td></td><td>'+tds[1].innerHTML+'<br>'+obj.login+'</td><td>'+tds[2].innerHTML+'</td><td>'+tds[3].innerHTML+'</td><td>'+tds[4].innerHTML+'</td><td>10%</td><td>'+arr[i][1]+'</td></tr>';
         
             table.prepend(tr);
-            
         }
-        
-        
-        
-        
     }
     
  
