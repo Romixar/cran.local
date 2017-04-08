@@ -21,6 +21,8 @@
     var p_id; // ID комментария родителя
     var childs = false;// есть ли дети у коммента
     
+    var tableRefs; // модальное окно с выбором рефералалов
+    
     
     var uri = location.href;
     if(uri.split('/')[3] == '' || uri.split('/')[3] == '###'){
@@ -446,9 +448,15 @@
         
         // запускать модальное окно с покупкой
         
-        $('div.modal-header h4').text('').text('Покупка реферала на бирже');
+        tableRefs = $('div.modal-content').clone();
+        
+        $('div.modal-header h4').text('Покупка реферала на бирже');
         
         $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+id+' | '+lg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
+        
+        var but = $('div.modal-footer button');
+        
+        but.text('Купить').attr('id','buy_ref').removeClass('btn-primary').addClass('btn-success');
         
         $('#myModal').modal({
             backdrop: 'static',
@@ -466,6 +474,20 @@
         
     });
     
+    $(document).on('click', 'a#refstock', function(e){ // кнопка Выставить на биржу
+        
+        e.preventDefault();
+        
+        // открытие модального окна с таблицей реыералов
+        if(tableRefs !== undefined) $('div#myModal div').text('').append(tableRefs);
+        
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: true 
+        });
+        
+    });
+    
     $(document).on('click', 'button#addrefstock', function(e){// добавление реферала на биржу
         
         e.preventDefault();
@@ -473,7 +495,6 @@
         elem = $('a#refstock');
         textButton = $(this).text();
         
-        //var theArray = initChecks(trs);
         
         var boxes = $("input:checkbox");// коллекция выделенных чекбоксов
         

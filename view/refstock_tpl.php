@@ -5,7 +5,8 @@
     <p>Вы можете выставить своего реферала на биржу или приобрести нового.</p>
     
     <p>
-       <a href="#myModal" id="refstock" class="btn btn-success" data-toggle="modal" role="button">Выставить на биржу</a>
+<!--      myModal             data-toggle="modal"-->
+       <a href="###" id="refstock" class="btn btn-success" role="button">Выставить на биржу</a>
     </p>
     
  <div class="row">
