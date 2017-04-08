@@ -74,7 +74,7 @@ class MainController extends Controller{
         
         $data = $u->getRefStock();// запрос биржи рефералов
         
-        debug($data);//die;
+        //debug($data);//die;
         
         
         
@@ -182,9 +182,6 @@ class MainController extends Controller{
         $str = '<thead style="font-size:14px">
                     <tr>
                         <th>
-                            -
-                        </th>
-                        <th>
                             ID, Логин,<br/>Рейтинг/Продавец
                         </th>
                         <th>
@@ -212,8 +209,6 @@ class MainController extends Controller{
             
             $str .= '<tr>';
             
-            $a = ($data[$i]['seller_id'] == $_SESSION['user']['id']) ? '<a href="#" title="Редактировать"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>' : '';
-            
             $b = $data[$i]['id'].'<br/>'.$data[$i]['login'].'<br/>'.$data[$i]['rating'].'<br/>'.$data[$i]['seller'];
             
             $c = '34<br/>256';
@@ -226,10 +221,10 @@ class MainController extends Controller{
             
             $g = $data[$i]['price'];
             
-            $h = '<a href="#" title="Купить"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a>';
+            $h = ($data[$i]['seller_id'] == $_SESSION['user']['id']) ? '<a href="#" id="editref" title="Редактировать"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>' : '<a href="#" id="buy_ref_stock" title="Купить"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a>';
             
             
-            $str .= '<td>'.$a.'</td><td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td><td>'.$g.'</td><td>'.$h.'</td>';
+            $str .= '<td>'.$b.'</td><td>'.$c.'</td><td>'.$d.'</td><td>'.$e.'</td><td>'.$f.'</td><td>'.$g.'</td><td>'.$h.'</td>';
             
             $str .= '</tr>';
             

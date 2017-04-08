@@ -426,6 +426,46 @@
         
     });
     
+    $(document).on('click', 'a#buy_ref_stock', function(e){// покупка реферала на бирже
+        
+        e.preventDefault();
+        
+        var tr = e.target.closest("tr");
+
+        var tds = $(tr).find('td'); // коллекция td-эшек
+        
+        var str1 = $(tds[0]).html(); // HTML код перв ячейки
+        
+        var id = str1.substr(0,str1.indexOf('<br>'));
+        
+        var str = str1.substr(str1.indexOf('<br>') + 4);
+        
+        var lg = str.substr(0,str.indexOf('<br>'));
+        
+        var price = $(tds[5]).html(); // HTML код ячейки с ценой
+        
+        // запускать модальное окно с покупкой
+        
+        $('div.modal-header h4').text('').text('Покупка реферала на бирже');
+        
+        $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+id+' | '+lg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
+        
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: true 
+        });
+        
+        
+
+        //console.log(str6);
+        
+
+        
+        //post_query('addrefstock', '&referals='+str);
+        
+        
+    });
+    
     $(document).on('click', 'button#addrefstock', function(e){// добавление реферала на биржу
         
         e.preventDefault();
