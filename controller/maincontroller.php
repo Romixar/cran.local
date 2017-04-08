@@ -151,7 +151,7 @@ class MainController extends Controller{
         
         if($data[0]->user_id == $_SESSION['user']['id']) $this->respJson($this->sysMessage('danger','Покупка невозможна!'));
         
-        //if($data[0]->price > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счете недостаточно средств!'));
+        if($data[0]->price > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счете недостаточно средств!'));
         
         
         // обновить в таблице users покупателя, продавца и реферала

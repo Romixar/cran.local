@@ -176,6 +176,11 @@ class DB{
 //                WHEN `id` = 4 THEN `balance` + 50
 //                WHEN `id` = 45 THEN `balance` + 100 END
 //                WHERE `id` IN (4, 45)';
+        
+        
+        
+        
+        
 
            //echo $sql;die;    
         
@@ -187,20 +192,163 @@ class DB{
     
     public function update3Rows($data){
         
-        for($i=0; $i<count($data); $i++){
+//        for($i=0; $i<count($data); $i++){
+//                
+//            $str .= '('.$data[$i]['id'].','.$data[$i]['balance'].','.$data[$i]['ref_id'].','.$data[$i]['date_ref'].','.$data[$i]['t_ref'].','.$data[$i]['ref_b'].'),';
+//                
+//        }
+//        $str = substr($str,0,-1);
+        
+        
+        for($i=0; $i<3; $i++){
+            
+            foreach($data[$i] as $k => $v){
                 
-            $str .= '('.$data[$i]['id'].','.$data[$i]['balance'].','.$data[$i]['ref_id'].','.$data[$i]['date_ref'].','.$data[$i]['t_ref'].','.$data[$i]['ref_b'].',),';
+                if($k === 'balance'){
+                    
+                    $str .= '`balance` = CASE ';
+                    
+                    if($i == 0) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN '.$data[$i]['balance'].' ';
+                    if($i == 1) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `balance` ';
+                    if($i == 2) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `balance` + '.$data[$i]['balance'].' ';
+                    
+                    $str .= 'END, ';
+                    continue;
+                }
                 
+                if($k == 't_ref'){
+                    
+                    $str .= '`t_ref` = CASE';
+                    
+                    if($i == 0) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `t_ref` + 1 ';
+                    if($i == 1) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `t_ref` ';
+                    if($i == 2) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `t_ref` 1 1 ';
+                    
+                    $str .= 'END, ';
+                    continue;
+                }
+                
+                $str .= '`'.$k.'` = CASE ';
+                
+                if($v == 0) $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN `'.$k.'` ';
+                else $str .= 'WHEN `id` = '.$data[$i]['id'].' THEN '.$data[$i][$k].' ';
+                
+                $str .= 'END, ';
+                
+            }
+            
+            
         }
         
+        $str = substr($str, 0, -1);
+            
+        echo $str;die;
+        
+        '`id` = CASE WHEN `id` = 44 THEN 44 END,
+        
+        `balance` = CASE WHEN `id` = 44 THEN 355 END,
+        
+        `ref_id` = CASE WHEN `id` = 44 THEN `ref_id` END,
+        
+        `date_ref` = CASE WHEN `id` = 44 THEN `date_ref` END,
+        
+        `t_ref` = CASEWHEN `id` = 44 THEN `t_ref` + 1 END,
+        
+        `ref_b` = CASE WHEN `id` = 44 THEN `ref_b` END,
+        
+        `id` = CASE WHEN `id` = 15 THEN 15 END,
+        
+        `balance` = CASE WHEN `id` = 15 THEN `balance` END,
+        
+        `ref_id` = CASE WHEN `id` = 15 THEN 44 END,
+        
+        `date_ref` = CASE WHEN `id` = 15 THEN 1491662365 END,
+        
+        `t_ref` = CASEWHEN `id` = 15 THEN `t_ref` END,
+        
+        `ref_b` = CASE WHEN `id` = 15 THEN 70 END,
+        
+        `id` = CASE WHEN `id` = 4 THEN 4 END,
+        
+        `balance` = CASE WHEN `id` = 4 THEN `balance` + 200.00 END,
+        
+        `ref_id` = CASE WHEN `id` = 4 THEN `ref_id` END,
+        
+        `date_ref` = CASE WHEN `id` = 4 THEN `date_ref` END,
+        
+        `t_ref` = CASEWHEN `id` = 4 THEN `t_ref` 1 1 END,
+        
+        `ref_b` = CASE WHEN `id` = 4 THEN `ref_b` END,'
         
         
-        $str = substr($str,0,-1);
         
         
-        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`balance`,`ref_id`,`date_ref`,`t_ref`,`ref_b`) VALUES'.$str.' ON DUPLICATE KEY UPDATE `balance` = `balance` + VALUES(`balance`), `ref_id` = `ref_id` + VALUES(`ref_id`), `date_ref` = `date_ref` + VALUES(`date_ref`), `t_ref` = `t_ref` + VALUES(`t_ref`), `ref_b` = `ref_b` + VALUES(`ref_b`)';
         
-        echo $sql;die;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        'UPDATE `users` SET
+        
+       `balance` = CASE
+       
+       WHEN `id` = 2 THEN 200
+       WHEN `id` = 3 THEN `balance`
+       WHEN `id` = 4 THEN `balance` + 400
+       
+       END,
+       
+       `ref_id` = CASE
+       
+       WHEN `id` = 2 THEN `ref_id`
+       WHEN `id` = 3 THEN 44
+       WHEN `id` = 4 THEN `ref_id`
+       
+       END,
+       
+       `date_ref` = CASE
+       
+       WHEN `id` = 2 THEN `date_ref`
+       WHEN `id` = 3 THEN 8776765554
+       WHEN `id` = 4 THEN `date_ref`
+       
+       END,
+       
+       `t_ref` = CASE
+       
+       WHEN `id` = 2 THEN `t_ref` + 1
+       WHEN `id` = 3 THEN `t_ref`
+       WHEN `id` = 4 THEN `t_ref` - 1
+       
+       END,
+       
+       `ref_b` = CASE
+       
+       WHEN `id` = 2 THEN `ref_b`
+       WHEN `id` = 3 THEN 60
+       WHEN `id` = 4 THEN `ref_b`
+       
+       END
+       
+       WHERE `id` IN (2, 3, 4)';
+        
+        
+        
+        
+        
+        
+        
+//        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`balance`,`ref_id`,`date_ref`,`t_ref`,`ref_b`) VALUES'.$str.' ON DUPLICATE KEY UPDATE `balance` = `balance` + VALUES(`balance`), `ref_id` = `ref_id` + VALUES(`ref_id`), `date_ref` = `date_ref` + VALUES(`date_ref`), `t_ref` = `t_ref` + VALUES(`t_ref`), `ref_b` = `ref_b` + VALUES(`ref_b`)';
+        
+        //echo $sql;die;
         
         $sth = $this->dbh->query($sql);
         
