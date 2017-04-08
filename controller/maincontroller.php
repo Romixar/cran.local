@@ -138,6 +138,31 @@ class MainController extends Controller{
         $this->respJson($this->sysMessage('danger','Ошибка формата данных!'));
     }
     
+    public function buyRefStock(){
+        
+        if(preg_match('/^\d{1,10}$/',$this->data['user_id'])) $id = $this->data['user_id'];
+        else $this->respJson($this->sysMessage('danger','Ошибка формата данных!'));
+        
+
+        $mod = new Refstock();
+        
+        $data = $mod->find('`user_id`,`price`','`user_id`='.$id);
+        
+        if(count($data) != 1) $this->respJson($this->sysMessage('danger','Ошибка в базе данных!'));
+            
+        
+        
+        
+        $lg = $this->getLoginOnID($id);
+        
+        $this->respJson($this->sysMessage('success','Приобретен реферал ID '.$id.' | '.$lg.'!'));
+        
+        debug($data);die;
+        die;
+        
+        
+    }
+    
     public function actionRefmanage(){
         $this->title = 'Управление рефералами';
         $this->meta_desc = 'Страница управление рефералами мета описание';

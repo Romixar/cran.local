@@ -22,6 +22,8 @@
     var childs = false;// есть ли дети у коммента
     
     var tableRefs; // модальное окно с выбором рефералалов
+    var buyID; // ID покупаемого реферала
+    
     
     
     var uri = location.href;
@@ -428,7 +430,7 @@
         
     });
     
-    $(document).on('click', 'a#buy_ref_stock', function(e){// покупка реферала на бирже
+    $(document).on('click', 'a#buy_ref_stock', function(e){// выбор реферала на бирже д/покупки
         
         e.preventDefault();
         
@@ -438,7 +440,7 @@
         
         var str1 = $(tds[0]).html(); // HTML код перв ячейки
         
-        var id = str1.substr(0,str1.indexOf('<br>'));
+        buyID = str1.substr(0,str1.indexOf('<br>'));// ID покупаемого реферала
         
         var str = str1.substr(str1.indexOf('<br>') + 4);
         
@@ -452,7 +454,7 @@
         
         $('div.modal-header h4').text('Покупка реферала на бирже');
         
-        $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+id+' | '+lg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
+        $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+buyID+' | '+lg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
         
         var but = $('div.modal-footer button');
         
@@ -463,13 +465,21 @@
             keyboard: true 
         });
         
+    });
+    
+    $(document).on('click', 'button#buy_ref', function(e){ // покупка реферала
         
-
-        //console.log(str6);
+        e.preventDefault();
         
-
+        if(buyID !== undefined){
+            
+            console.log('щас покупка реферала '+buyID);
+            
+            post_query('buy_refstock', '&user_id='+buyID);
+            
+            
+        }else sysMes('danger','Не выбран реферал для покупки!');
         
-        //post_query('addrefstock', '&referals='+str);
         
         
     });
