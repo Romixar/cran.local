@@ -142,18 +142,69 @@ class MainController extends Controller{
         
         if(preg_match('/^\d{1,10}$/',$this->data['user_id'])) $id = $this->data['user_id'];
         else $this->respJson($this->sysMessage('danger','Ошибка формата данных!'));
-        
 
         $mod = new Refstock();
         
-        $data = $mod->find('`user_id`,`price`','`user_id`='.$id);
+        $data = $mod->find('`user_id`,`seller_id`,`buyer_id`,`price`','`user_id`='.$id);
         
-        if(count($data) != 1) $this->respJson($this->sysMessage('danger','Ошибка в базе данных!'));
+        if(count($data) !== 1) $this->respJson($this->sysMessage('danger','Ошибка в базе данных!'));
+        
+        if($data[0]->user_id == $_SESSION['user']['id']) $this->respJson($this->sysMessage('danger','Покупка невозможна!'));
+        
+        //if($data[0]->price > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счете недостаточно средств!'));
+        
+        
+        // обновить в таблице users покупателя, продавца и реферала
+        
+        $_SESSION['user']['balance'] -= $data[0]->price;
+        
+           
+        $u = new User();
+        
+        $arrBuyer = [
+            'id'=>$_SESSION['user']['id'],// ID покупателя
+            'balance'=>$_SESSION['user']['balance'],
+            'ref_id'=>0, // без изменений
+            'date_ref'=>0,
+            't_ref'=>1,  // увеличить на единицу
+            'ref_b'=>0,
+        ];
+        
+        $arrRef = [
+            'id'=>$data[0]->user_id,// ID реферала
+            'balance'=>0,
+            'ref_id'=>$_SESSION['user']['id'], 
+            'date_ref'=>time(), // дата подключения к рефереру (покупателю)
+            't_ref'=>0,
+            'ref_b'=>$_SESSION['user']['set_r_b'],
+        ];
+        
+        $arrSeller = [
+            'id'=>$data[0]->seller_id,// ID продавца
+            'balance'=>$data[0]->price,
+            'ref_id'=>0,
+            'date_ref'=>0,
+            't_ref'=>-1,
+            'ref_b'=>0,
+        ];
+        
+        $res = $u->update3Rows([ $arrBuyer, $arrRef, $arrSeller ]);
+        
+        
+        // удалить из таблицы биржа рефералов этого реферала
+        
+        
+        
+        
+        
+        // зачислить процент коммиссии на счет системы
+        
+        
             
         
         
         
-        $lg = $this->getLoginOnID($id);
+        //$lg = $this->getLoginOnID($id);
         
         $this->respJson($this->sysMessage('success','Приобретен реферал ID '.$id.' | '.$lg.'!'));
         

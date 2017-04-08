@@ -184,6 +184,30 @@ class DB{
         return $sth->rowCount();
         
     }
+    
+    public function update3Rows($data){
+        
+        for($i=0; $i<count($data); $i++){
+                
+            $str .= '('.$data[$i]['id'].','.$data[$i]['balance'].','.$data[$i]['ref_id'].','.$data[$i]['date_ref'].','.$data[$i]['t_ref'].','.$data[$i]['ref_b'].',),';
+                
+        }
+        
+        
+        
+        $str = substr($str,0,-1);
+        
+        
+        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`balance`,`ref_id`,`date_ref`,`t_ref`,`ref_b`) VALUES'.$str.' ON DUPLICATE KEY UPDATE `balance` = `balance` + VALUES(`balance`), `ref_id` = `ref_id` + VALUES(`ref_id`), `date_ref` = `date_ref` + VALUES(`date_ref`), `t_ref` = `t_ref` + VALUES(`t_ref`), `ref_b` = `ref_b` + VALUES(`ref_b`)';
+        
+        echo $sql;die;
+        
+        $sth = $this->dbh->query($sql);
+        
+        return $sth->rowCount();
+        
+        
+    }
 
     
     public function saveDateAct($id, $n){
