@@ -68,7 +68,7 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница биржа рефералов мета описание';
         $this->meta_key = 'Страница биржа рефералов мета кей';
         
-        
+        //debug($_SESSION['user']);
         
         $u = new User();
         
@@ -191,10 +191,18 @@ class MainController extends Controller{
         $res = $u->update3Rows([ $arrBuyer, $arrRef, $arrSeller ]);
         
         
-        // удалить из таблицы биржа рефералов этого реферала
+        // пометить в таблице биржа рефералов этого реферала как проданный
         
+        $upd = $mod->update([
+            'buy'=>1,
+            'buyer_id'=>$_SESSION['user']['id'],
+            'buyer'=>$_SESSION['user']['login'],
+            'date_sale'=>time()
+        ],'`user_id`='.$data[0]->user_id);
         
+        if($upd == 1 && $res == 3) $this->respJson($this->sysMessage('success','Приобретен реферал <b>ID '.$id.' | '.$this->data['login'].'</b>!'));
         
+        $this->respJson($this->sysMessage('danger','Ошибка обновления базы данных!'));
         
         
         // зачислить процент коммиссии на счет системы
@@ -206,7 +214,7 @@ class MainController extends Controller{
         
         //$lg = $this->getLoginOnID($id);
         
-        $this->respJson($this->sysMessage('success','Приобретен реферал ID '.$id.' | '.$lg.'!'));
+        
         
         debug($data);die;
         die;

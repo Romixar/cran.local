@@ -22,8 +22,9 @@
     var childs = false;// есть ли дети у коммента
     
     var tableRefs; // модальное окно с выбором рефералалов
+    var trRefs; // строка выбранного реферала
     var buyID; // ID покупаемого реферала
-    
+    var refLg; // Логин покупаемого реферала
     
     
     var uri = location.href;
@@ -434,9 +435,9 @@
         
         e.preventDefault();
         
-        var tr = e.target.closest("tr");
+        trRefs = e.target.closest("tr");// строка выбранного реферала
 
-        var tds = $(tr).find('td'); // коллекция td-эшек
+        var tds = $(trRefs).find('td'); // коллекция td-эшек
         
         var str1 = $(tds[0]).html(); // HTML код перв ячейки
         
@@ -444,7 +445,7 @@
         
         var str = str1.substr(str1.indexOf('<br>') + 4);
         
-        var lg = str.substr(0,str.indexOf('<br>'));
+        refLg = str.substr(0,str.indexOf('<br>'));
         
         var price = $(tds[5]).html(); // HTML код ячейки с ценой
         
@@ -454,7 +455,7 @@
         
         $('div.modal-header h4').text('Покупка реферала на бирже');
         
-        $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+buyID+' | '+lg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
+        $('div.modal-body').text('').append('<p>Вы покупаете реферала <span style="color:red">ID '+buyID+' | '+refLg+'</span> на бирже</p><p>С вашего баланса будет списано '+price+' руб.</p>');
         
         var but = $('div.modal-footer button');
         
@@ -473,9 +474,9 @@
         
         if(buyID !== undefined){
             
-            console.log('щас покупка реферала '+buyID);
+            console.log('щас покупка реферала '+buyID+' логин'+refLg);
             
-            post_query('buy_refstock', '&user_id='+buyID);
+            //post_query('buy_refstock', '&user_id='+buyID+'&login='+refLg);
             
             
         }else sysMes('danger','Не выбран реферал для покупки!');
@@ -959,16 +960,15 @@
                             
                             if(obj.mycookie.img != undefined) buildRefPage(obj.mycookie);
                             if(obj.mycookie && obj.mycookie.img == undefined) saveMyCookie(obj.mycookie);
-                            
-                            
                         }
+                        if(obj.flname === 'ok') $(trRefs).remove();// удаление купленного реферала
                         
                         if($('a#addref')) $('a#addref').remove();// кнопка Хочу стать рефералом
                         
 
                             
                         
-                    }else removeDisabled();// разболир и снять крутилку
+                    }else removeDisabled();// разблокир и снять крутилку
                 },
                 error: function(xhr, ajaxOptions, thrownError){
                     
