@@ -476,7 +476,7 @@
             
             console.log('щас покупка реферала '+buyID+' логин'+refLg);
             
-            //post_query('buy_refstock', '&user_id='+buyID+'&login='+refLg);
+            post_query('buy_refstock', '&user_id='+buyID+'&login='+refLg);
             
             
         }else sysMes('danger','Не выбран реферал для покупки!');
@@ -1095,7 +1095,7 @@
     }
     
     function setTextSubmit(){
-        elem.text('').append(textButton);
+        if(elem !== undefined) elem.text('').append(textButton);
     }
     
     function getTplMes(mes, type){

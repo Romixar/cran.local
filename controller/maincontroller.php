@@ -145,11 +145,11 @@ class MainController extends Controller{
 
         $mod = new Refstock();
         
-        $data = $mod->find('`user_id`,`seller_id`,`buyer_id`,`price`','`user_id`='.$id);
+        $data = $mod->find('`buy`,`user_id`,`seller_id`,`buyer_id`,`price`','`user_id`='.$id);
         
         if(count($data) !== 1) $this->respJson($this->sysMessage('danger','Ошибка в базе данных!'));
         
-        if($data[0]->user_id == $_SESSION['user']['id']) $this->respJson($this->sysMessage('danger','Покупка невозможна!'));
+        if(($data[0]->user_id == $_SESSION['user']['id']) || ($data[0]->buy == 1)) $this->respJson($this->sysMessage('danger','Покупка невозможна!'));
         
         if($data[0]->price > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счете недостаточно средств!'));
         
@@ -200,7 +200,7 @@ class MainController extends Controller{
             'date_sale'=>time()
         ],'`user_id`='.$data[0]->user_id);
         
-        if($upd == 1 && $res == 3) $this->respJson($this->sysMessage('success','Приобретен реферал <b>ID '.$id.' | '.$this->data['login'].'</b>!'));
+        if($upd == 1 && $res == 3) $this->respJson($this->sysMessage('success','Приобретен реферал <b>ID '.$id.' | '.$this->data['login'].'</b>!'), $flname='ok');
         
         $this->respJson($this->sysMessage('danger','Ошибка обновления базы данных!'));
         
