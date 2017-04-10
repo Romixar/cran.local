@@ -15,10 +15,66 @@ class MainController extends Controller{
         
         $b_tpl = $this->view->prerender('bonus',compact('bonus'));
         
+        $l_tpl = $this->view->prerender('lottery');
+        
+        
+        $this->render('index',compact('b_tpl','l_tpl'));
+    }
+    
+    public function checkLotteryBonus(){
+        
+        if(!isset($_SESSION['user'])) $this->respJson($this->sysMessage('danger','Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!'));
+        
+        if(!is_numeric($this->data['sum'])) $this->respJson($this->sysMessage('danger','Сумма указана не верно!'));
+            
+        if($this->data['sum'] > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счёте не достачно средств!'));
+        
+        // занести в список играющих и поставить лимит до след игры
         
         
         
-        $this->render('index',compact('b_tpl'));
+        
+        
+        
+        $randsund = rand(1, 3);
+        
+        
+        if($this->data['sund_id'] == $randsund){
+            
+            $bonus = $this->data['sum'] * 2;
+            $_SESSION['user']['balance'] += $bonus;
+            
+            $type = 'success';
+            $mes = 'Поздравляем! Сумма в <b>'.$bonus.' руб.</b> зачислена на ваш баланс.';
+        }else{
+            
+            $_SESSION['user']['balance'] -= $this->data['sum'];
+            
+            $type = 'danger';
+            $mes = 'Не угадали! деньги были в <b>'.$randsund.'</b> сундуке :(((.';
+        }
+        
+        
+        
+        // занести в БД новый баланс
+        
+        $u = new User();
+        
+        $u->update([
+            '`balance`'=>$_SESSION['user']['balance']
+        ],"`id`=".$_SESSION['user']['id']);
+        
+        
+        // занести в историю лотерей
+        
+        
+        
+        
+        
+        $this->respJson($this->sysMessage($type,$mes));
+        
+        debug($this->data);die;
+        
     }
     
     

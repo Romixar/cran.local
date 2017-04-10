@@ -21,6 +21,7 @@
     var p_id; // ID комментария родителя
     var childs = false;// есть ли дети у коммента
     
+    var regP = /^\d{1,4}(\.){0,1}\d{1,4}$/; // регулярка цены
     var tableRefs; // модальное окно с выбором рефералалов
     var trRefs; // строка выбранного реферала
     var buyID; // ID покупаемого реферала
@@ -554,13 +555,9 @@
     
     function validPrice(price){
         
-        var regP = /^\d{1,4}(\.){0,1}\d{1,4}$/;
-        
         price = price.trim();
         
-        // заменить запятую на точку и округлить до 2-х
-        price = price.replace(",",".");
-        price = price.replace(" ","");
+        price = formSum(price); // заменить запятую на точку и округлить до 2-х
                 
         if(isNaN(price) || !regP.test(price)){
             
@@ -596,6 +593,15 @@
         $(document).find('div.main div.col-md-12 h4:first').after(getTplMes(mes,type));
     }
     
+    function formSum(sum){// заменить запятую на точку и округлить до 2-х
+        sum = sum.replace(",",".");
+        sum = sum.replace(" ","");
+        if(!isNaN(sum) && regP.test(sum)){
+            if(sum.indexOf('.') !== -1) sum = Number(sum).toFixed(2);
+            return sum;
+        }
+        return false;
+    }
  
     
     
@@ -616,6 +622,32 @@
 //
 //    });
 
+    $(document).on('click', 'p#sunduki', function(e){
+        
+        e.preventDefault();
+        
+        var sund = e.target.id;
+        
+        var sum = $('input#lottery_sum').val();
+        
+        if(sum === '') validMessage($('input#lottery_sum'), 'ERR_EMP');
+        
+        sum = formSum(sum);// заменить запятую на точку и округлить до 2-х
+        
+        if(sum){
+            
+            console.log('цифры - '+sum);
+            
+            post_query('do_lottery', '&sund_id='+sund+'&sum='+sum);
+            
+            
+            
+            return;
+        }else validMessage($('input#lottery_sum'), 'ERR_ERR');
+
+        console.log('Ошибка в sum');
+        
+    });
 
     
     $('div.profile a#submit').click(function(e){// отправка img аватарки и e-mail
@@ -1032,6 +1064,7 @@
             'ERR_NME': 'В названии файла должны быть латинские символы и цифры!',
             'ERR_PSW': 'Пароль должен быть от 5 до 15 символов!',
             'ERR_LOG': 'Недопустимое слово в Вашем логине!',
+            'ERR_ERR': 'Поле заполнено не верно!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);

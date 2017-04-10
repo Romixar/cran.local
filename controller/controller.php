@@ -84,6 +84,7 @@ class Controller{
         if(isset($data['get_ref_list_f'])) $this->getRefList();// email авторизованного
         if(isset($data['get_b_list_f'])) $this->getBList();// запрос списка бонусов
         if(isset($data['get_bonus_f'])) $this->checkResponseBonus();// запрос бонуса
+        if(isset($data['do_lottery_f'])) $this->checkLotteryBonus();// запрос лотереи
         if(isset($data['do_comment_f'])) $this->addNewComment();
         //if(isset($data['get_refpage_f'])) $this->actionRefpage();// запрос страницы стена реферов
         if(isset($data['buy_ref_page_f'])) $this->buyRefOnBoard();// покупка места на стене реферов
