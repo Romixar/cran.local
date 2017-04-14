@@ -17,22 +17,27 @@ class WorksController extends Controller{
         
         debug($data);
         
+        $content = $this->view->prerender('serf');
+        
         $names = $this->getTabs('class="active"','names');
-        $tabs = $this->getTabs(' in active','tabs');
+        $tabs = $this->getTabs(' in active','tabs',$content);
 
         $this->render('works',compact('names','tabs'));
     }
     
     
-    public function getTabs($class,$tpl){
+    public function getTabs($class,$tpl,$content=''){
         
         $arr = $this->nmsWorks;
         
         for($i=0; $i<count($arr); $i++){
             $cl = ($i == 0) ? $class : '';
+            
+            $content = ($i == 0) ? $content : '';
+            
             $name = $arr[$i];
             
-            $str .= $this->view->prerender($tpl,compact('i','cl','name'));
+            $str .= $this->view->prerender($tpl,compact('i','cl','name','content'));
         }
         return $str;
     }
