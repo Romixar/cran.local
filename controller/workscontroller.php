@@ -15,9 +15,11 @@ class WorksController extends Controller{
         
         $data = $this->getSerfing();
         
-        debug($data);
+        //debug($data);
         
-        $content = $this->view->prerender('serf');
+        $content = $this->getHtmlSerf($data);
+        
+        //$content = $this->view->prerender('serf');
         
         $names = $this->getTabs('class="active"','names');
         $tabs = $this->getTabs(' in active','tabs',$content);
@@ -47,8 +49,28 @@ class WorksController extends Controller{
         $mod = new Serfing();
         
         return $mod->find('*');
+    }
+    
+    public function getHtmlSerf($data){
         
+        $str = '<div class="panel-group serf" id="collapse-group">';
         
+        for($i=0; $i<count($data); $i++){
+            
+            
+            $str .= $this->view->prerender('serf',[
+                'i'=>$i,
+                'n'=>$data[$i]->n,
+                'url'=>$data[$i]->url,
+                'title'=>$data[$i]->title,
+                'price'=>$data[$i]->price
+            ]);
+            
+            
+        }
+        
+        $str .= '</div>';
+        return $str;
         
     }
     
