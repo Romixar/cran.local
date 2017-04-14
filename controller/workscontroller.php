@@ -13,7 +13,9 @@ class WorksController extends Controller{
         $this->meta_key = 'Страница Задания / работы мета кей';
 
         
+        $data = $this->getSerfing();
         
+        debug($data);
         
         $names = $this->getTabs('class="active"','names');
         $tabs = $this->getTabs(' in active','tabs');
@@ -33,6 +35,16 @@ class WorksController extends Controller{
             $str .= $this->view->prerender($tpl,compact('i','cl','name'));
         }
         return $str;
+    }
+    
+    public function getSerfing(){
+        
+        $mod = new Serfing();
+        
+        return $mod->find('*');
+        
+        
+        
     }
     
     
