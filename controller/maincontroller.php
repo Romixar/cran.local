@@ -23,17 +23,18 @@ class MainController extends Controller{
     
     public function checkLotteryBonus(){
         
-        if(!isset($_SESSION['user'])) $this->respJson($this->sysMessage('danger','Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!'));
-        
+        if(!$this->checkResponseBonus()) return;
+
         if(!is_numeric($this->data['sum'])) $this->respJson($this->sysMessage('danger','Сумма указана не верно!'));
             
         if($this->data['sum'] > $_SESSION['user']['balance']) $this->respJson($this->sysMessage('danger','На вашем счёте не достачно средств!'));
         
         // занести в список играющих и поставить лимит до след игры
         
+        $lim = $this->getLimForBonus('lottery');
         
         
-        
+        debug($lim);die;
         
         
         $randsund = rand(1, 3);
@@ -51,7 +52,7 @@ class MainController extends Controller{
             $_SESSION['user']['balance'] -= $this->data['sum'];
             
             $type = 'danger';
-            $mes = 'Не угадали! деньги были в <b>'.$randsund.'</b> сундуке :(((.';
+            $mes = 'Не угадали! Деньги были в <b>'.$randsund.'</b> сундуке :(((.';
         }
         
         

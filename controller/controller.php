@@ -557,34 +557,53 @@ class Controller{
     
     public function checkResponseBonus(){
         
-        if(isset($_SESSION['user'])) $this->getBonus();
+        if(isset($_SESSION['user'])) return true; //$this->getBonus();
         else{
-            $sysmes = $this->sysMessage('danger','Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!');
-            $this->respJson($sysmes);
+            $type = 'danger';
+            $mes = 'Зарегистрируйтесь или авторизуйтесь, чтобы ежедневно получать бонусы!';
+            $this->respJson($this->sysMessage($type,$mes));
         }
         
     }
     
-    public function getLimForBonus(){
+    public function getLimForBonus($fl=''){
         
         $mod = new Bonus();
         
         $ts = time();
         $lim = strtotime('+5 minutes');// лимит времени на не получение бонуса
-        $time_lim = $_SESSION['user']['time_lim'];// прошлый лимит
         
-        if(empty($time_lim)) $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+        if($fl == 'lottery') $time_lim = $_SESSION['user']['time_lim_l'];// прошлый лимит
+        else $time_lim = $_SESSION['user']['time_lim'];// прошлый лимит
         
-        if(isset($data) && $data != false) $time_lim = $data[0]->time_lim;
+        //if(empty($time_lim)) $data = $mod->find('*',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+        if(empty($time_lim)) $data = $mod->find('`time_lim`,`time_lim_l`',"`ip` = '".$_SESSION['user']['ip']."' AND `login` = '".$_SESSION['user']['login']."'");
+        
+        if(isset($data) && $data != false){
+            
+            
+            
+            if($fl == 'lottery') $time_lim = $data[0]->time_lim_l;
+            else $time_lim = $data[0]->time_lim;
+            
+            
+            
+        } 
         if(isset($data) && $data == false){
+            
+            if($fl == 'lottery') $f = 'time_lim_l';
+            else $f = 'time_lim';
             
             $mod->insert([
                 'ip'=>$_SESSION['user']['ip'],
                 'login'=>$_SESSION['user']['login'],
-                'time_lim'=>$lim
+                $f=>$lim
             ]);
             
-            $_SESSION['user']['time_lim'] = $lim;
+            
+            if($fl == 'lottery') $_SESSION['user']['time_lim_l'] = $lim;
+            else $_SESSION['user']['time_lim'] = $lim;
+            
             $time_lim = $ts;
         }
 
@@ -603,6 +622,8 @@ class Controller{
     }
     
     public function getBonus(){
+        
+        if(!$this->checkResponseBonus()) return;
         
         $lim = $this->getLimForBonus();// лимит времени до следующего бонуса
         
