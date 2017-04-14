@@ -18,8 +18,7 @@ class WorksController extends Controller{
         //debug($data);
         
         $content = $this->getHtmlSerf($data);
-        
-        //$content = $this->view->prerender('serf');
+
         
         $names = $this->getTabs('class="active"','names');
         $tabs = $this->getTabs(' in active','tabs',$content);
@@ -73,6 +72,8 @@ class WorksController extends Controller{
         return $str;
         
     }
+    
+
     
     
     
