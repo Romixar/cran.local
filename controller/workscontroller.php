@@ -15,7 +15,7 @@ class WorksController extends Controller{
         
         $data = $this->getSerfing();
         
-        debug($data);
+        //debug($data);
 
         
         $content = $this->getHtmlSerf($data);

@@ -46,7 +46,15 @@
 					document.getElementById('timer').innerHTML=count;
 					timer=setTimeout('countdown()',1000);
 				}else{
-                    alert('таймер закончился');
+                    //alert('таймер закончился');
+                    
+                    document.getElementById('serfframe').innerHTML='';
+                    
+                    var content = 'Новый контент';
+                    
+                    document.getElementById('serfframe').innerHTML=content;
+                    
+                    
 					//location.href='frame_footer.php?splin=c81e728d9d4c2f636f067f89cc14862c';
 				}
 			}

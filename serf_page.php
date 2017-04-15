@@ -1,3 +1,4 @@
+<?php $timer = $_GET['timer']; ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
  <head>
@@ -8,6 +9,28 @@
 <link rel='icon' href='/favicon.ico'>
 
   <link rel="stylesheet" href="/css/style.css">
+  
+<!--  <script src="/js/test.js"></script>-->
+  <script type="text/javascript">
+    count=<?= $timer ?> + 7;
+		setTimeout('timerCount()', 1000);
+			function timerCount(){
+                
+			    count--;
+
+				if(count>=0){
+					timer=setTimeout('timerCount()',1000);
+				}else{
+                    
+                    var frtimer = document.getElementsByName('TIMER');
+                    
+                    var prntEl = frtimer[0].parentNode;
+                    
+                    prntEl.removeChild(frtimer[0]);
+
+				}
+			}
+</script>
  </head>
  <frameset rows="100,*" frameborder='0'>
  
@@ -20,4 +43,5 @@
      <frame src="http://<?= $url ?>" name="CONTENT">
      
  </frameset>
+
 </html>
