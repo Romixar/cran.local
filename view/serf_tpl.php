@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
 
-    <a href="http://cran.local/serf_page.php?url=<?= $url ?>" class="linkserf" target="_blank">
+    <a href="http://cran.local/serf_page.php?url=<?= $url ?>&timer=<?= $timer ?>" class="linkserf" target="_blank">
         <?= $title ?>
     </a>
 

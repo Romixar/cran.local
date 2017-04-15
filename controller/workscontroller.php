@@ -15,7 +15,7 @@ class WorksController extends Controller{
         
         $data = $this->getSerfing();
         
-        //debug($data);
+        debug($data);
 
         
         $content = $this->getHtmlSerf($data);
@@ -61,6 +61,7 @@ class WorksController extends Controller{
             $str .= $this->view->prerender('serf',[
                 'i'=>$i,
                 'n'=>$data[$i]->n,
+                'timer'=>$data[$i]->timer,
                 'url'=>$data[$i]->url,
                 'title'=>$data[$i]->title,
                 'price'=>$data[$i]->price

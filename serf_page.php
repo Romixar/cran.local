@@ -4,17 +4,20 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Просмотр страницы</title>
   
-<link rel='icon' type='image/png' href='http://profitruble.com/img/inter_profit.png'>
+<link rel='icon' type='image/png' href='http://<?= $_SERVER['HTTP_HOST'] ?>/images/ruble.png'>
 <link rel='icon' href='/favicon.ico'>
 
   <link rel="stylesheet" href="/css/style.css">
  </head>
  <frameset rows="100,*" frameborder='0'>
  
-  <frame src="timer.html" name="TIMER" noresize noborder>
-  
-  <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
-  
-  <frame src="http://<?= $url ?>" name="CONTENT">
+     <?php $timer = $_GET['timer']; ?>
+
+     <frame src="timer.php?timer=<?= $timer ?>" name="TIMER" noresize noborder>
+
+     <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
+
+     <frame src="http://<?= $url ?>" name="CONTENT">
+     
  </frameset>
 </html>
