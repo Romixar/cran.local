@@ -43,6 +43,41 @@
           $('input#password').next().html('');// очистить весь HTML внутри span.icon
       };
       
+      
+      
+      
+//$( window ).on("beforeunload", function( event ) {// запрет закрытия
+//
+//    if ( $( event.target.activeElement ).is("a") )
+//
+//    {
+//
+//        return;
+//
+//    }
+//
+//    return "Все несохраненные данные будут утеряны!";
+//
+//});
+//      
+//$( window ).keydown(function( event ){// запрет перезагрузки
+//
+//        //F5 or Ctrl+R
+//
+//    if ( event.keyCode == 116 || ( event.ctrlKey && event.keyCode == 82 ) )
+//
+//        refresh = true;
+//
+//});
+      
+    window.onblur = function(){
+        document.title='документ неактивен'
+    }
+    window.onfocus = function(){
+        document.title='документ снова активен'
+    }
+
+
 
 
   </script>
