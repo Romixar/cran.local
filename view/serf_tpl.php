@@ -1,8 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
 
-<!--    <a href="http://<?//= $url ?>" target="_blank"><?//= $title ?></a>-->
-    <a href="http://cran.local/serf_page.php" class="linkserf" target="_blank"><?= $title ?></a>
+    <a href="http://cran.local/serf_page.php?url=<?= $url ?>" class="linkserf" target="_blank">
+        <?= $title ?>
+    </a>
 
     <div style="float:right">
         <a data-toggle="collapse" class="open" data-parent="#collapse-group" href="#el<?= ($i+1) ?>">
