@@ -8,6 +8,9 @@ class Router{
         '/statistic' => 'statistic/index',
         '/faq' => 'main/faq',
         '/works' => 'works/index',
+        
+        //'/serf_page.php' => 'works/index',
+        
         '/reklams' => 'main/reklams',
         '/contacts' => 'main/contacts',
         '/refpage' => 'main/refpage',
@@ -70,7 +73,7 @@ class Router{
             
         }
         
-        // в случае если не найдено контроллеров, запуск главной стьраницы
+        // в случае если не найдено контроллеров, запуск главной страницы
         $ctrl = 'Main';
         $act = 'Index';
             

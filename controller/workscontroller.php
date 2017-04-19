@@ -75,6 +75,21 @@ class WorksController extends Controller{
         
     }
     
+    
+    public function addSerfView(){
+        
+        
+        
+        
+        
+        
+        
+        debug($this->data);die;
+        
+        
+        
+    }
+    
 
     
     

@@ -95,6 +95,10 @@ class Controller{
         if(isset($data['addrefstock_f'])) $this->addRefStock();// добавление реферала на биржу
         if(isset($data['buy_refstock_f'])) $this->buyRefStock();// покупка реферала с биржи
         
+        
+        if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
+
+        
     }
     
 

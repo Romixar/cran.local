@@ -1,5 +1,5 @@
     
-
+    var act = 'controller/controller';
     
     var timer; /// ID таймера
 
@@ -7,34 +7,20 @@
         return document.getElementById(el);
     }
 
-//    ifvisible.on('statusChanged', function(e){
-//
-//        //d("result").innerHTML += (e.status+"<br>");
-//        //d("serfframe").innerHTML += (e.status+"<br>");
-//        
-//        var stopTxt = '<b style="color:red">Нарушен просмотр! Деньги не зачислены!</b>';
-//        
-//        if(e.status == 'hidden'){
-//            
-//            d("serfframe").innerHTML = stopTxt;
-//            
-//            clearTimeout(timer);
-//        }
-//    });
-
-    
 
     function myTimerDown(cnt){
 
         cnt--;
 
         if(cnt >= 0){
-
-            d('timer').innerHTML = cnt;
+            
+            if(d('timer')) d('timer').innerHTML = cnt;
             
             timer = setTimeout(myTimerDown,1000, cnt);
             
         }else{
+            
+            clearTimeout(timer);
             
             replFrameContent();
         }
@@ -43,36 +29,74 @@
       
      
      function replFrameContent(){
+
          
-        d('serfframe').innerHTML = '';
-
-        var content = '<p>Получите за просмотр:</p><button>0,0234 руб.</button>';
-
-        d('serfframe').innerHTML = content;
+         d('serfframe').innerHTML = '';
+         
+         var content = '<p>Получите за просмотр:</p><button id="getserfpay">0,0234 руб.</button>';
+         
+         d('serfframe').innerHTML = content;
          
      }
 
+    $(document).on('click', 'button#getserfpay', function(e){// запрос серфинг платы за просмотр
+        
+        e.preventDefault();
+        
+        var str = 25;
+        
+        post_query('addserfview', '&serf_id='+str);
+        
+    });
 
-    
-    
+    function post_query(name, str){
 
+        console.log(str);
 
+        $.ajax({// отправляем её
 
+                url: act,
+                type: 'POST',
+                data: name + '_f=' + str,
+                cache: false,
+                beforeSend: function(data){ // сoбытиe дo oтпрaвки
+		        },
+                success: function(res){
 
-
-	function timerCount(count){
-                
-	   count--;
-
-	   if(count >= 0){
-           
-           timer = setTimeout(timerCount,1000,count);
-       }else{
+                    console.log(res);
                     
-           removeFrame();
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    
+		            console.log(xhr.status); // пoкaжeм oтвeт сeрвeрa
+		            console.log(thrownError); // и тeкст oшибки
+		        },
+		        complete: function(data){ // сoбытиe пoслe любoгo исхoдa
+		        },
+            });
+    };
 
-       }
-	}
+
+    
+    
+
+
+
+
+
+//	function timerCount(count){
+//                
+//	   count--;
+//
+//	   if(count >= 0){
+//           
+//           timer2 = setTimeout(timerCount,1000,count);
+//       }else{
+//                    
+//           removeFrame();
+//
+//       }
+//	}
       
       
     function removeFrame(){

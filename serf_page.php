@@ -16,7 +16,7 @@
   
   <script type="text/javascript">
 
-		setTimeout(timerCount, 1000, count = <?= $timer ?> + 5);//  отсчёт таймера и скрытие фрейма
+		//setTimeout(timerCount, 1000, count = <?//= $timer ?> + 5);//  отсчёт таймера и скрытие фрейма
     
   </script>
  </head>

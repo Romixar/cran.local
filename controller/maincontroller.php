@@ -795,6 +795,16 @@ class MainController extends Controller{
     
     
     
+    public function addSerfView(){
+        
+        $mod = new WorksController();
+        $mod->addSerfView();
+    }
+    
+    
+    
+    
+    
     
     
     
