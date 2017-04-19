@@ -21,6 +21,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
   <script type="text/javascript">
+      
       function rem(){
           $('div.alert').remove();
           $('div.main a.col-md-3').remove();
@@ -42,9 +43,6 @@
           $('input#password').val('');
           $('input#password').next().html('');// очистить весь HTML внутри span.icon
       };
-      
-      
-      
       
 //$( window ).on("beforeunload", function( event ) {// запрет закрытия
 //
@@ -69,15 +67,6 @@
 //        refresh = true;
 //
 //});
-      
-    window.onblur = function(){
-        document.title='документ неактивен'
-    }
-    window.onfocus = function(){
-        document.title='документ снова активен'
-    }
-
-
 
 
   </script>
@@ -153,6 +142,8 @@
         
     </div>
 </div>
+
+
  
   <script src="/js/jquery.cookie.js"></script>
   <script src="/js/my.js"></script>
