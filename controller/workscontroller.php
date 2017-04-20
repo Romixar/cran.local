@@ -60,6 +60,7 @@ class WorksController extends Controller{
             
             $str .= $this->view->prerender('serf',[
                 'i'=>$i,
+                'id'=>$data[$i]->id,
                 'n'=>$data[$i]->n,
                 'timer'=>$data[$i]->timer,
                 'url'=>$data[$i]->url,
@@ -79,6 +80,7 @@ class WorksController extends Controller{
     public function addSerfView(){
         
         
+        
         $mod = new History_s();
         
         // период текущие сутки
@@ -89,13 +91,54 @@ class WorksController extends Controller{
         
         if(empty($data)){
             
-            $mod->insert([
-               'user_id' => $_SESSION['user']['id'],
+            // записать ID просмотренной ссылки в строку serf_ids
+            
+            $id = (int) $this->data['serf_id'];
+            
+            if(is_int($id) && preg_match('/^\d{1,10}$/',$id)){
+            
+                $serf_ids = $id.',';
+            
+            
+                $res = $mod->insert([
+                   'user_id' => $_SESSION['user']['id'],
+
+                   'serf_ids' => $serf_ids,
+
+                   'date_add' => time(),
+                ]);
                 
-               'serf_ids' => $_SESSION['user']['id'],
+                if($res) exit($res);
                 
-               'date_add' => time(),
-            ]);
+                die;
+                
+                //else $this->respJson($this->sysMessage('danger','Ошибка добавления нового реферала!'));
+                
+            }
+
+            
+        }else{
+            
+            if(count($data) != 1) exit; // ошибка, т.к. в сутки только по одной строке на юзера
+            
+            // добавляю к уже просмотренную юзером ссылкам, еще одну
+            
+            $id = (int) $this->data['serf_id'];
+            
+            $serf_ids = $data[0]->serf_ids.$id.',';
+            
+            $res = $mod->update([
+                
+                'serf_ids' => $serf_ids,
+
+            ],'`user_id` = '.$_SESSION['user']['id']);
+            
+            
+            
+            if($res) exit($res);
+                
+            die;
+            
             
         }
         
@@ -105,18 +148,7 @@ class WorksController extends Controller{
         debug($data);die;
         
         
-        if($this->checkNewDay(time())){
-            
-            // прошли сутки или более
-            echo 'прошли сутки или более';
-            
-        }else{
-            
-            
-            // НЕ прошли сутки
-            echo 'НЕ прошли сутки';
-            
-        }
+
         
         
         

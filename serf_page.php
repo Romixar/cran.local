@@ -23,8 +23,9 @@
  <frameset rows="100,*" frameborder='0'>
  
      <?php $timer = $_GET['timer']; ?>
+     <?php $serf_id = $_GET['serf_id']; ?>
 
-     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>" name="TIMER" noresize noborder>
+     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>" name="TIMER" noresize noborder>
 
      <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
 

@@ -1,4 +1,5 @@
 <?php $timer = $_GET['timer']; ?>
+<?php $serf_id = $_GET['serf_id']; ?>
 
 <!doctype html>
 
@@ -21,6 +22,8 @@
   <script src="/js/myscript.js"></script>
   
 <script type="text/javascript">
+    
+    var serf_id = <?= $serf_id ?>;
     
     $(document).ready(function(){
         

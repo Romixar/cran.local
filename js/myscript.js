@@ -43,9 +43,17 @@
         
         e.preventDefault();
         
-        var str = 25;
+        if(serf_id != undefined){
+            
+            var str = serf_id;
         
-        post_query('addserfview', '&serf_id='+str);
+            post_query('addserfview', '&serf_id='+str);
+            
+            
+            
+        }
+        
+        
         
     });
 
