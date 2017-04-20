@@ -844,6 +844,14 @@ class Controller{
         return $tax;
     }
     
+    public function checkNewDay($ts){ // проверка это текущие сутки или нет
+        
+        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        
+        if(($ts - $yesterday_ts) > 0) return false;// 'не прошли сутки';
+        else return true;//echo 'прошли сутки';
+    }
+    
     public function checkDateRat(){
         
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня

@@ -79,6 +79,45 @@ class WorksController extends Controller{
     public function addSerfView(){
         
         
+        $mod = new History_s();
+        
+        // период текущие сутки
+        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
+        
+        $data = $mod->find('`user_id`, `serf_ids`, `date_add`','`user_id` = '.$_SESSION['user']['id'].' AND `date_add` BETWEEN '.$yesterday_ts.' AND '.$today_ts);
+        
+        if(empty($data)){
+            
+            $mod->insert([
+               'user_id' => $_SESSION['user']['id'],
+                
+               'serf_ids' => $_SESSION['user']['id'],
+                
+               'date_add' => time(),
+            ]);
+            
+        }
+        
+        
+        
+        
+        debug($data);die;
+        
+        
+        if($this->checkNewDay(time())){
+            
+            // прошли сутки или более
+            echo 'прошли сутки или более';
+            
+        }else{
+            
+            
+            // НЕ прошли сутки
+            echo 'НЕ прошли сутки';
+            
+        }
+        
         
         
         
