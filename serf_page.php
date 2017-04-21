@@ -24,8 +24,9 @@
  
      <?php $timer = $_GET['timer']; ?>
      <?php $serf_id = $_GET['serf_id']; ?>
+     <?php $price = $_GET['price']; ?>
 
-     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>" name="TIMER" noresize noborder>
+     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>" name="TIMER" noresize noborder>
 
      <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
 

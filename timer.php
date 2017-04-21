@@ -25,7 +25,7 @@
 <script type="text/javascript">
     
     var serf_id = <?= $serf_id ?>;
-    //var price = <?//= $price ?>;
+    var price = <?= $_GET['price'] ?>;
     
     $(document).ready(function(){
         

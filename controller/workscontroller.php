@@ -122,14 +122,8 @@ class WorksController extends Controller{
                    'date_add' => time(),
                 ]);
                 
-                if($res_id) exit($res_id);
-                
-                die;
-                
-                
-                
-                
-                //else $this->respJson($this->sysMessage('danger','Ошибка!'));
+                if($res_id) debug($res_id);
+                else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
                 
             }
 
@@ -138,7 +132,7 @@ class WorksController extends Controller{
             
             if(count($data) != 1) exit; // ошибка, т.к. в сутки только по одной строке на юзера
             
-            // добавляю к уже просмотренную юзером ссылкам, еще одну
+            // добавляю к уже просмотренным юзером ссылкам, еще одну
             
             $id = (int) $this->data['serf_id'];
             
@@ -150,42 +144,26 @@ class WorksController extends Controller{
                 
                 'date_add' => time(),
                 
-                'sum' => $data[0]->sum + $data[0]->price,
+                'sum' => ($data[0]->sum + $data[0]->price),
 
             ],'`user_id` = '.$_SESSION['user']['id'].' AND `date_add` = '.$data[0]->date_add);
             
             
-            
-            
-            
-            debug($res);die;
-            
             if($res) debug($res);
-                
-            die;
-            
+            else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
             
         }
         
-        
-        
-        
-        debug($data);die;
-        
-        
-
-        
-        
-        
-        
-        
-        
-        debug($this->data);die;
-        
-        
-        
     }
     
+    
+    public function getAlertJS($sysmes){
+        
+        echo json_encode([
+            'alert'=>$sysmes,
+        ]);
+        exit();
+    }
 
     
     

@@ -33,7 +33,9 @@
          
          d('serfframe').innerHTML = '';
          
-         var content = '<p>Получите за просмотр:</p><button id="getserfpay">0,0234 руб.</button>';
+         price = Number(price).toFixed(4);
+         
+         var content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
          
          d('serfframe').innerHTML = content;
          
@@ -72,6 +74,10 @@
                 success: function(res){
 
                     console.log(res);
+                    
+                    obj = JSON.parse(res);
+                    
+                    if(obj.alert) alert(obj.alert);
                     
                 },
                 error: function(xhr, ajaxOptions, thrownError){
