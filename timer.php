@@ -1,5 +1,6 @@
 <?php $timer = $_GET['timer']; ?>
 <?php $serf_id = $_GET['serf_id']; ?>
+<?php $price = $_GET['price']; ?>
 
 <!doctype html>
 
@@ -24,6 +25,7 @@
 <script type="text/javascript">
     
     var serf_id = <?= $serf_id ?>;
+    //var price = <?//= $price ?>;
     
     $(document).ready(function(){
         

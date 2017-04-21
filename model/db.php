@@ -53,6 +53,33 @@ class DB{
         return false;
     }
     
+    
+    public function findSerfData($fields, $serf_id, $user_id, $yes_ts, $tod_ts){
+        
+        $sql = 'SELECT '.$fields.'
+
+FROM `'.static::$table.'`
+
+JOIN `serfing`
+
+WHERE `serfing`.`id` = '.$serf_id.'
+
+AND `history_s`.`user_id` = '.$user_id.'
+
+AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
+        
+        
+        //echo $sql; die;
+        
+        
+        $res = $this->select($sql);
+        if(!empty($res)) return $res;
+        return false;
+        
+        
+        
+    }
+    
     public function findEmail($em){
         
         $sql = "SELECT * FROM `users` WHERE `email` = '".$em."'";
@@ -333,6 +360,24 @@ class DB{
         return false;
         
     }
+    
+    //  1492722000
+    
+    //  1492808400
+    
+    //'
+//    SELECT `user_id`, `serf_ids`, `date_add`,`sum`,`serfing`.`price`
+//
+//FROM `history_s`
+//JOIN `serfing`
+//
+//WHERE `serfing`.`id` = 3'
+
+    
+    
+    
+    
+    
     
     public function getBonusRating(){
         

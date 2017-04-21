@@ -87,7 +87,21 @@ class WorksController extends Controller{
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
-        $data = $mod->find('`user_id`, `serf_ids`, `date_add`','`user_id` = '.$_SESSION['user']['id'].' AND `date_add` BETWEEN '.$yesterday_ts.' AND '.$today_ts);
+//        echo $yesterday_ts.'<br/>';
+//        echo $today_ts.'<br/>'; die;
+//        
+//        $data = $mod->find('`user_id`, `serf_ids`, `date_add`,`sum`','`user_id` = '.$_SESSION['user']['id'].' AND `date_add` BETWEEN '.$yesterday_ts.' AND '.$today_ts);
+        
+        $user_id = $_SESSION['user']['id'];
+        
+        $serf_id = (int) $this->data['serf_id'];
+        
+        //`history_s`.`id`, 
+        
+        $f = '`user_id`, `serf_ids`, `date_add`,`sum`,`serfing`.`price`';
+        
+        $data = $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
+        
         
         if(empty($data)){
             
@@ -100,7 +114,7 @@ class WorksController extends Controller{
                 $serf_ids = $id.',';
             
             
-                $res = $mod->insert([
+                $res_id = $mod->insert([
                    'user_id' => $_SESSION['user']['id'],
 
                    'serf_ids' => $serf_ids,
@@ -108,11 +122,14 @@ class WorksController extends Controller{
                    'date_add' => time(),
                 ]);
                 
-                if($res) exit($res);
+                if($res_id) exit($res_id);
                 
                 die;
                 
-                //else $this->respJson($this->sysMessage('danger','Ошибка добавления нового реферала!'));
+                
+                
+                
+                //else $this->respJson($this->sysMessage('danger','Ошибка!'));
                 
             }
 
@@ -130,12 +147,20 @@ class WorksController extends Controller{
             $res = $mod->update([
                 
                 'serf_ids' => $serf_ids,
+                
+                'date_add' => time(),
+                
+                'sum' => $data[0]->sum + $data[0]->price,
 
-            ],'`user_id` = '.$_SESSION['user']['id']);
+            ],'`user_id` = '.$_SESSION['user']['id'].' AND `date_add` = '.$data[0]->date_add);
             
             
             
-            if($res) exit($res);
+            
+            
+            debug($res);die;
+            
+            if($res) debug($res);
                 
             die;
             
