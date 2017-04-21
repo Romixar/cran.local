@@ -79,6 +79,8 @@ class WorksController extends Controller{
     
     public function addSerfView(){
         
+        $ts = time();// дата просмотра
+        
         $serf_id = (int) $this->data['serf_id'];
         
         if(!is_int($serf_id) && !preg_match('/^\d{1,10}$/',$serf_id)) $this->getAlertJS('Ошибка ID!');
@@ -91,12 +93,24 @@ class WorksController extends Controller{
         
         $user_id = $_SESSION['user']['id'];
         
-        $f = '`user_id`, `serf_ids`, `date_add`,`sum`,`serfing`.`price`';
+        $f = '`user_id`,`serf_ids`,`dates_views`,`date_add`,`sum`,`serfing`.`price`,`serfing`.`period`';
         
         $data = $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
         
         // ошибка, т.к. в сутки только по одной строке на юзера
         if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
+        
+        
+        if(!empty($data)){
+            
+            // проверка нажатия уже просмотренных ссылок
+            
+            if(!$this->checkSerfLink($serf_id, $data[0]->serf_ids, $data[0]->dates_views, $data[0]->period)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена');
+            
+            
+        }
+        
+        
         
         if(empty($data)){
             
@@ -110,8 +124,10 @@ class WorksController extends Controller{
                'user_id' => $user_id,
 
                'serf_ids' => $serf_ids,
+                
+               'dates_views' => $ts.',',
 
-               'date_add' => time(),
+               'date_add' => $ts,
                 
                'sum' => $price
             ]);
@@ -126,8 +142,10 @@ class WorksController extends Controller{
         $res = $mod->update([
                 
             'serf_ids' => $serf_ids,
+            
+            'dates_views' => $data[0]->dates_views.$ts.',',
                 
-            'date_add' => time(),
+            'date_add' => $ts,
                 
             'sum' => ($data[0]->sum + $data[0]->price),
 
@@ -136,6 +154,24 @@ class WorksController extends Controller{
         
         if($res){debug($res);die;}
         else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
+    }
+    
+    public function checkSerfLink($serf_id, $serf_ids, $dates_views, $period){
+        
+        $serf_ids = substr($serf_ids,0,-1);
+        
+        $arr = implode(',',$serf_ids);
+        
+        if(in_array($serf_id, $arr)){
+            
+            
+            
+            
+        }
+        return false;
+        
+        
+        
     }
     
     public function getSerfPrice($serf_id){
