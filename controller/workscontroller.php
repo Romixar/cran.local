@@ -79,7 +79,9 @@ class WorksController extends Controller{
     
     public function addSerfView(){
         
+        $serf_id = (int) $this->data['serf_id'];
         
+        if(!is_int($serf_id) && !preg_match('/^\d{1,10}$/',$serf_id)) $this->getAlertJS('Ошибка ID!');
         
         $mod = new History_s();
         
@@ -87,72 +89,62 @@ class WorksController extends Controller{
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
-//        echo $yesterday_ts.'<br/>';
-//        echo $today_ts.'<br/>'; die;
-//        
-//        $data = $mod->find('`user_id`, `serf_ids`, `date_add`,`sum`','`user_id` = '.$_SESSION['user']['id'].' AND `date_add` BETWEEN '.$yesterday_ts.' AND '.$today_ts);
-        
         $user_id = $_SESSION['user']['id'];
-        
-        $serf_id = (int) $this->data['serf_id'];
-        
-        //`history_s`.`id`, 
         
         $f = '`user_id`, `serf_ids`, `date_add`,`sum`,`serfing`.`price`';
         
         $data = $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
         
+        // ошибка, т.к. в сутки только по одной строке на юзера
+        if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
         
         if(empty($data)){
             
+            $price = $this->getSerfPrice($serf_id);
+            
             // записать ID просмотренной ссылки в строку serf_ids
+            $serf_ids = $serf_id.',';
             
-            $id = (int) $this->data['serf_id'];
-            
-            if(is_int($id) && preg_match('/^\d{1,10}$/',$id)){
-            
-                $serf_ids = $id.',';
-            
-            
-                $res_id = $mod->insert([
-                   'user_id' => $_SESSION['user']['id'],
+            $res_id = $mod->insert([
+                
+               'user_id' => $user_id,
 
-                   'serf_ids' => $serf_ids,
+               'serf_ids' => $serf_ids,
 
-                   'date_add' => time(),
-                ]);
+               'date_add' => time(),
                 
-                if($res_id) debug($res_id);
-                else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
+               'sum' => $price
+            ]);
                 
-            }
-
-            
-        }else{
-            
-            if(count($data) != 1) exit; // ошибка, т.к. в сутки только по одной строке на юзера
-            
-            // добавляю к уже просмотренным юзером ссылкам, еще одну
-            
-            $id = (int) $this->data['serf_id'];
-            
-            $serf_ids = $data[0]->serf_ids.$id.',';
-            
-            $res = $mod->update([
-                
-                'serf_ids' => $serf_ids,
-                
-                'date_add' => time(),
-                
-                'sum' => ($data[0]->sum + $data[0]->price),
-
-            ],'`user_id` = '.$_SESSION['user']['id'].' AND `date_add` = '.$data[0]->date_add);
-            
-            
-            if($res) debug($res);
-            else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
-            
+            if($res_id){debug($res_id);die;}
+            else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
         }
+            
+        // добавляю к уже просмотренным юзером ссылкам, еще одну
+        $serf_ids = $data[0]->serf_ids.$serf_id.',';
+            
+        $res = $mod->update([
+                
+            'serf_ids' => $serf_ids,
+                
+            'date_add' => time(),
+                
+            'sum' => ($data[0]->sum + $data[0]->price),
+
+        ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
+            
+        
+        if($res){debug($res);die;}
+        else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
+    }
+    
+    public function getSerfPrice($serf_id){
+        
+        $serf = new Serfing();
+        
+        $data = $serf->find('`id`,`price`','`id`='.$serf_id);
+        
+        return $data[0]->price;
         
     }
     

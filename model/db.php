@@ -57,19 +57,19 @@ class DB{
     public function findSerfData($fields, $serf_id, $user_id, $yes_ts, $tod_ts){
         
         $sql = 'SELECT '.$fields.'
-
-FROM `'.static::$table.'`
-
-JOIN `serfing`
-
-WHERE `serfing`.`id` = '.$serf_id.'
-
-AND `history_s`.`user_id` = '.$user_id.'
-
-AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
+                FROM `'.static::$table.'`
+                JOIN `serfing`
+                WHERE `serfing`.`id` = '.$serf_id.'
+                AND `history_s`.`user_id` = '.$user_id.'
+                AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
+        
+            
+    //  1492722000 - полночь 20.04
+    
+    //  1492808400 - полночь 21.04
         
         
-        //echo $sql; die;
+    //echo $sql; die;
         
         
         $res = $this->select($sql);
@@ -360,24 +360,6 @@ AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
         return false;
         
     }
-    
-    //  1492722000
-    
-    //  1492808400
-    
-    //'
-//    SELECT `user_id`, `serf_ids`, `date_add`,`sum`,`serfing`.`price`
-//
-//FROM `history_s`
-//JOIN `serfing`
-//
-//WHERE `serfing`.`id` = 3'
-
-    
-    
-    
-    
-    
     
     public function getBonusRating(){
         
