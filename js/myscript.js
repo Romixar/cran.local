@@ -25,7 +25,20 @@
             replFrameContent();
         }
          
-     }
+    }
+
+    function badView(){
+        
+        if(serf_id != undefined){
+            
+            var str = serf_id;
+        
+            post_query('addserfview', '&serf_id='+str+'&view=0');
+            
+        }
+        
+        
+    }
       
      
      function replFrameContent(){
@@ -49,7 +62,7 @@
             
             var str = serf_id;
         
-            post_query('addserfview', '&serf_id='+str);
+            post_query('addserfview', '&serf_id='+str+'&view=1');
             
             
             

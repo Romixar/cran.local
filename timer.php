@@ -41,6 +41,8 @@
             if(e.status == 'hidden'){
 
                 d("serfframe").innerHTML = stopTxt;
+                
+                badView();
 
                 clearTimeout(timer);
             }

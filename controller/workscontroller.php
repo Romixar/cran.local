@@ -77,7 +77,9 @@ class WorksController extends Controller{
     }
     
     
-    public function addSerfView(){
+    public function addSerfView(){// добавление просмотра серфинга
+        
+        $user_id = $_SESSION['user']['id'];
         
         $ts = time();// дата просмотра
         
@@ -85,57 +87,79 @@ class WorksController extends Controller{
         
         if(!is_int($serf_id) && !preg_match('/^\d{1,10}$/',$serf_id)) $this->getAlertJS('Ошибка ID!');
         
+        
+        $data = $this->getSerfDataOnDay($serf_id, $user_id);
+        
+        
+        
+        if(is_int($serf_id)){
+            
+            $this->getAlertJS('Ошибка ID!');
+            exit();
+        }
+        
+        
+        
+        
+        // ошибка, т.к. в сутки только по одной строке на юзера
+        if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
+        
+        
+        if($this->data['view']){// просмотр прерван или нет
+                
+            if(empty($data)) $price = $this->getSerfPrice($serf_id);
+            else $price = $data[0]->price;
+        }else $price = 0;
+        
+        if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
+        else{
+            
+            // проверка на нажатие уже просмотренных ссылок
+            if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
+            else $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
+        }
+        
+    }
+    
+    public function getSerfDataOnDay($serf_id, $user_id){
+        
         $mod = new History_s();
         
         // период текущие сутки
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
-        $user_id = $_SESSION['user']['id'];
-        
         $f = '`user_id`,`serf_ids`,`dates_views`,`date_add`,`sum`,`serfing`.`price`,`serfing`.`period`';
         
-        $data = $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
+        return $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
         
-        // ошибка, т.к. в сутки только по одной строке на юзера
-        if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
+    }
+    
+    public function insertSerfLink($serf_id, $user_id, $ts, $price){
         
-        
-        if(!empty($data)){
+        $mod = new History_s();
             
-            // проверка нажатия уже просмотренных ссылок
-            
-            if(!$this->checkSerfLink($serf_id, $data[0]->serf_ids, $data[0]->dates_views, $data[0]->period)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена');
-            
-            
-        }
-        
-        
-        
-        if(empty($data)){
-            
-            $price = $this->getSerfPrice($serf_id);
-            
-            // записать ID просмотренной ссылки в строку serf_ids
-            $serf_ids = $serf_id.',';
-            
-            $res_id = $mod->insert([
+        $res_id = $mod->insert([
                 
-               'user_id' => $user_id,
+           'user_id' => $user_id,
 
-               'serf_ids' => $serf_ids,
+           'serf_ids' => $serf_id.',',// записать ID просмотренной ссылки в строку serf_ids
                 
-               'dates_views' => $ts.',',
+           'dates_views' => $ts.',',
 
-               'date_add' => $ts,
-                
-               'sum' => $price
-            ]);
-                
-            if($res_id){debug($res_id);die;}
-            else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
-        }
+           'date_add' => $ts,
             
+           'sum' => $price
+        ]);
+                
+        if($res_id){debug($res_id);die;}
+        else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
+    }
+    
+    public function updateSerfLink($data, $serf_id, $user_id, $ts, $price){
+        
+        $mod = new History_s();
+        
         // добавляю к уже просмотренным юзером ссылкам, еще одну
         $serf_ids = $data[0]->serf_ids.$serf_id.',';
             
@@ -147,30 +171,37 @@ class WorksController extends Controller{
                 
             'date_add' => $ts,
                 
-            'sum' => ($data[0]->sum + $data[0]->price),
+            'sum' => ($data[0]->sum + $price),
 
         ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
-            
         
         if($res){debug($res);die;}
         else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
     }
     
-    public function checkSerfLink($serf_id, $serf_ids, $dates_views, $period){
+    
+    
+    public function checkSerfLink($serf_id, $data){
         
-        $serf_ids = substr($serf_ids,0,-1);
+        $serf_ids = substr($data[0]->serf_ids,0,-1);
         
-        $arr = implode(',',$serf_ids);
+        $arr = explode(',',$serf_ids);
         
         if(in_array($serf_id, $arr)){
             
+            $dates_views = substr($data[0]->dates_views,0,-1);
             
+            $arr_dates = explode(',',$dates_views);
             
+            foreach($arr as $k => $v){
+                
+                if($v == $serf_id) $ts_view = $arr_dates[$k];// TS когда была просмотрена ссылка
+            }
             
+            if(($ts_view + $data[0]->period) > time()) return false; // нельзя просматривать
+            else return true;
         }
-        return false;
-        
-        
+        return true;
         
     }
     
