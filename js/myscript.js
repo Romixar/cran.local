@@ -2,9 +2,10 @@
     var act = 'controller/controller';
     
     var timer; /// ID таймера
-    var timer2; /// ID таймера второго
 
     var flagView = true; // флаг просмотра (если true то следить за просмотром)
+    
+
 
     function d(el){
         return document.getElementById(el);
@@ -25,13 +26,11 @@
             
             clearTimeout(timer);
             
-            // остановить отслеживание статусов вкладки
-            flagView = false;
+            flagView = false; // остановить отслеживание статусов вкладки
             
             replFrameContent();
             
-            // запускаю второй счетчик
-            setTimeout(timerCount, 1000, count = 5);//  отсчёт таймера и скрытие фрейма
+            
         }
          
     }
@@ -131,51 +130,14 @@
 		        },
             });
     };
-
-
-    
-    
-
-
-
-
-
-	function timerCount(count){
-                
-	   count--;
-
-	   if(count >= 0){
-           
-           console.log(count);
-           
-           timer2 = setTimeout(timerCount,1000,count);
-       }else{
-            
-           clearTimeout(timer2);
-           removeFrame();
-           //failedView();
-
-       }
-	}
       
       
-    function removeFrame(){
-          
-        //var frtimer = document.getElementsByName('TIMER');
+    function removeFrame(frtimer, prntEl){// скрытие фрейма после счетчика
         
-        var frtimer = $('#resultFrame');
+        failedView(); // засчитываю провальный просмотр
         
         frtimer.remove();
-                    
-        //var prntEl = frtimer[0].parentNode;
-        //var prntEl = frtimer.parent;
-        var prntEl = $('#mainframe');
         
-        console.log(frtimer);
-                    
-        //prntEl.remove(frtimer);
-                    
-        //prntEl.setAttribute('rows','*');
         prntEl.attr('rows','*');
           
     }

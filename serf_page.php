@@ -1,4 +1,5 @@
 <?php $timer = $_GET['timer']; ?>
+<?php $serf_id = $_GET['serf_id']; ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
  <head>
@@ -14,16 +15,27 @@
   
   <script src="/js/myscript.js"></script>
   
-  <script type="text/javascript">
-      
-      //if(!flagView) 
-    
+     <script type="text/javascript">
+         
+         $(document).ready(function(){
+             
+             var msek = (<?= $timer ?> * 1000) + 15000;// ч/з 15 сек. просмотр будет провален
+             
+             serf_id = <?= $serf_id ?>;
+             
+             frtimer = $('#resultFrame');
+             
+             prntEl = $('#mainframe');
+             
+             setTimeout(removeFrame, msek, frtimer, prntEl);//  отсчёт и скрытие фрейма
+             
+         });
+
   </script>
+
  </head>
  <frameset id="mainframe" rows="100,*" frameborder='0'>
  
-     <?php $timer = $_GET['timer']; ?>
-     <?php $serf_id = $_GET['serf_id']; ?>
      <?php $price = $_GET['price']; ?>
 
      <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>" name="TIMER" noresize noborder>
@@ -33,5 +45,8 @@
      <frame src="http://<?= $url ?>" name="CONTENT">
      
  </frameset>
+ 
+
+   
  
 </html>
