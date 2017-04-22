@@ -27,33 +27,16 @@
     var serf_id = <?= $serf_id ?>;
     var price = <?= $price ?>;
     
-    
     $(document).ready(function(){
         
         setTimeout(myTimerDown, 1000, <?= $timer ?>);
         
         ifvisible.on('statusChanged', function(e){
             
-            var statuses = '';
-
-            var stopTxt = '<b style="color:red">Нарушен просмотр! Деньги не зачислены!</b>';
-
-            if(e.status == 'hidden') statuses += e.status;
-                
-            if(statuses == 'hidden'){// сработает только после первого hidden
-                    
-                d("serfframe").innerHTML = stopTxt;
-                    
-                failedView();
-                    
-                clearTimeout(timer);
-            }
+            if(flagView) actualityView(e);
 
         });
         
-        
-                   
-
     });
 
 </script>

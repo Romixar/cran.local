@@ -2,6 +2,9 @@
     var act = 'controller/controller';
     
     var timer; /// ID таймера
+    var timer2; /// ID таймера второго
+
+    var flagView = true; // флаг просмотра (если true то следить за просмотром)
 
     function d(el){
         return document.getElementById(el);
@@ -23,12 +26,34 @@
             clearTimeout(timer);
             
             // остановить отслеживание статусов вкладки
-            
-            
+            flagView = false;
             
             replFrameContent();
+            
+            // запускаю второй счетчик
+            setTimeout(timerCount, 1000, count = 5);//  отсчёт таймера и скрытие фрейма
         }
          
+    }
+
+    function actualityView(e){
+            
+        var statuses = '';
+
+        var stopTxt = '<b style="color:red">Нарушен просмотр! Деньги не зачислены!</b>';
+
+        if(e.status == 'hidden') statuses += e.status;
+                
+        if(statuses == 'hidden'){// сработает только после первого hidden
+                    
+            d("serfframe").innerHTML = stopTxt;
+                    
+            failedView();
+                    
+            clearTimeout(timer);
+        }
+            
+            
     }
 
     function failedView(){
@@ -115,30 +140,43 @@
 
 
 
-//	function timerCount(count){
-//                
-//	   count--;
-//
-//	   if(count >= 0){
-//           
-//           timer2 = setTimeout(timerCount,1000,count);
-//       }else{
-//                    
-//           removeFrame();
-//
-//       }
-//	}
+	function timerCount(count){
+                
+	   count--;
+
+	   if(count >= 0){
+           
+           console.log(count);
+           
+           timer2 = setTimeout(timerCount,1000,count);
+       }else{
+            
+           clearTimeout(timer2);
+           removeFrame();
+           //failedView();
+
+       }
+	}
       
       
     function removeFrame(){
           
-        var frtimer = document.getElementsByName('TIMER');
+        //var frtimer = document.getElementsByName('TIMER');
+        
+        var frtimer = $('#resultFrame');
+        
+        frtimer.remove();
                     
-        var prntEl = frtimer[0].parentNode;
+        //var prntEl = frtimer[0].parentNode;
+        //var prntEl = frtimer.parent;
+        var prntEl = $('#mainframe');
+        
+        console.log(frtimer);
                     
-        prntEl.removeChild(frtimer[0]);
+        //prntEl.remove(frtimer);
                     
-        prntEl.setAttribute('rows','*');
+        //prntEl.setAttribute('rows','*');
+        prntEl.attr('rows','*');
           
     }
 

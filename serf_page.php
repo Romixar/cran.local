@@ -15,12 +15,12 @@
   <script src="/js/myscript.js"></script>
   
   <script type="text/javascript">
-
-		//setTimeout(timerCount, 1000, count = <?//= $timer ?> + 5);//  отсчёт таймера и скрытие фрейма
+      
+      //if(!flagView) 
     
   </script>
  </head>
- <frameset rows="100,*" frameborder='0'>
+ <frameset id="mainframe" rows="100,*" frameborder='0'>
  
      <?php $timer = $_GET['timer']; ?>
      <?php $serf_id = $_GET['serf_id']; ?>
