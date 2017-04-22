@@ -4,6 +4,7 @@
     var timer; /// ID таймера
 
     var flagView = true; // флаг просмотра (если true то следить за просмотром)
+
     
 
 
@@ -29,8 +30,6 @@
             flagView = false; // остановить отслеживание статусов вкладки
             
             replFrameContent();
-            
-            
         }
          
     }
@@ -63,8 +62,9 @@
         
             post_query('addserfview', '&serf_id='+str+'&view=0');
             
+            
+            
         }
-        
         
     }
       
@@ -134,7 +134,12 @@
       
     function removeFrame(frtimer, prntEl){// скрытие фрейма после счетчика
         
-        failedView(); // засчитываю провальный просмотр
+        //if(fV) failedView(); // засчитываю провальный просмотр, если еще не было
+        
+        
+        failedView();
+        
+        
         
         frtimer.remove();
         
