@@ -90,17 +90,6 @@ class WorksController extends Controller{
         
         $data = $this->getSerfDataOnDay($serf_id, $user_id);
         
-        
-        
-        if(is_int($serf_id)){
-            
-            $this->getAlertJS('Ошибка ID!');
-            exit();
-        }
-        
-        
-        
-        
         // ошибка, т.к. в сутки только по одной строке на юзера
         if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
         
@@ -112,12 +101,11 @@ class WorksController extends Controller{
         }else $price = 0;
         
         if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
-        else{
             
-            // проверка на нажатие уже просмотренных ссылок
-            if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
-            else $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
-        }
+        // проверка на нажатие уже просмотренных ссылок
+        if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
+        
+        $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
         
     }
     
@@ -152,7 +140,7 @@ class WorksController extends Controller{
            'sum' => $price
         ]);
                 
-        if($res_id){debug($res_id);die;}
+        if($res_id){debug($res_id);exit();}
         else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
     }
     
@@ -175,7 +163,7 @@ class WorksController extends Controller{
 
         ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
         
-        if($res){debug($res);die;}
+        if($res){debug($res);exit();}
         else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
     }
     

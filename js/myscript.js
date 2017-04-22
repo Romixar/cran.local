@@ -22,12 +22,16 @@
             
             clearTimeout(timer);
             
+            // остановить отслеживание статусов вкладки
+            
+            
+            
             replFrameContent();
         }
          
     }
 
-    function badView(){
+    function failedView(){
         
         if(serf_id != undefined){
             
