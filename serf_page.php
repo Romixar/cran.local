@@ -37,8 +37,9 @@
  <frameset id="mainframe" rows="100,*" frameborder='0'>
  
      <?php $price = $_GET['price']; ?>
+     <?php $rand = $_GET['rand']; ?>
 
-     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>" name="TIMER" noresize noborder>
+     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>&rand=<?= $rand ?>" name="TIMER" noresize noborder>
 
      <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
 

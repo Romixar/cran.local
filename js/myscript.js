@@ -5,8 +5,6 @@
 
     var flagView = true; // флаг просмотра (если true то следить за просмотром)
 
-
-
     
 
 
@@ -88,29 +86,64 @@
             
             price = (price != undefined) ? Number(price).toFixed(4) : 0;
             
-            //price = Number(price).toFixed(4);
-         
-            content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
+            if(rand != undefined){
+                
+                var btns = getHtmlButtons(rand, price);
+            
+                //content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
+                content = '<p>Получите за просмотр:</p>'+btns;
+                
+            }
         }
         
         d('serfframe').innerHTML = content;
         
     }
 
+    function getHtmlButtons(rand, price){
+        
+        var str = '<p id="btns">';
+        var p;
+        
+        for(var i=1; i<5; i++){
+            
+            p = (i == rand) ? price : 0;
+            
+            str += '<button id="'+i+'">'+p+' руб.</button>';
+        }
+        return str += '</p>';
+    }
 
-    $(document).on('click', 'button#getserfpay', function(e){// запрос серфинг платы за просмотр
+
+    $(document).on('click', '#btns button', function(e){// запрос серфинг платы за просмотр
         
         e.preventDefault();
         
-        if(serf_id != undefined){
+//        console.log(e.target.id);
+//        
+//        console.log(rand);
+        
+        if(e.target.id == rand && serf_id != undefined){
             
             var str = serf_id;
         
             post_query('addserfview', '&serf_id='+str+'&view=1');
             
+        }else{
             
+            post_query('addserfview', '&serf_id='+serf_id+'&view=0');
             
         }
+        
+//        if(serf_id != undefined){
+//            
+//            var str = serf_id;
+//        
+//            post_query('addserfview', '&serf_id='+str+'&view=1');
+//            
+//            
+//            
+//        }
         
         
         

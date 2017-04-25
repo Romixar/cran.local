@@ -65,7 +65,8 @@ class WorksController extends Controller{
                 'timer'=>$data[$i]->timer,
                 'url'=>$data[$i]->url,
                 'title'=>$data[$i]->title,
-                'price'=>$data[$i]->price
+                'price'=>$data[$i]->price,
+                'rand'=>rand(1,4),
             ]);
             
             

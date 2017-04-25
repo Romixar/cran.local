@@ -1,6 +1,7 @@
 <?php $timer = $_GET['timer']; ?>
 <?php $serf_id = $_GET['serf_id']; ?>
 <?php $price = $_GET['price']; ?>
+<?php $rand = $_GET['rand']; ?>
 
 <!doctype html>
 
@@ -26,6 +27,7 @@
     
     var serf_id = <?= $serf_id ?>;
     var price = <?= $price ?>;
+    var rand = <?= $rand ?>
     
     $(document).ready(function(){
         
