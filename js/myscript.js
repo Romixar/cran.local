@@ -75,19 +75,28 @@
         
     }
       
-     
-     function replFrameContent(){
 
+
+    function replFrameContent(mes=''){
+        
+        var content = '';
+        
+        d('serfframe').innerHTML = '';
+        
+        if(mes) content = '<b style="color:blue">'+mes+'</b>';
+        else{
+            
+            price = (price != undefined) ? Number(price).toFixed(4) : 0;
+            
+            //price = Number(price).toFixed(4);
          
-         d('serfframe').innerHTML = '';
-         
-         price = Number(price).toFixed(4);
-         
-         var content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
-         
-         d('serfframe').innerHTML = content;
-         
-     }
+            content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
+        }
+        
+        d('serfframe').innerHTML = content;
+        
+    }
+
 
     $(document).on('click', 'button#getserfpay', function(e){// запрос серфинг платы за просмотр
         
@@ -126,6 +135,8 @@
                     obj = JSON.parse(res);
                     
                     if(obj.alert) alert(obj.alert);
+                    
+                    if(obj.replFrCont) replFrameContent(obj.replFrCont);
                     
                 },
                 error: function(xhr, ajaxOptions, thrownError){

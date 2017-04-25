@@ -116,16 +116,17 @@ class WorksController extends Controller{
     
     public function updateBalances($price){// обновить баланс пользователя и реферера если есть
         
-        $tax = $this->getRefTax($price);/// % отчисления реферерру, если он есть
-            
-        //debug($tax);
-            
-        $this->updateRefBalances($tax,$price,false);
+        $balance = $_SESSION['user']['balance'];
         
-        $this->getAlertJS('На ваш баланс зачислено '.$price.' руб.!');
-            
-        //die;
+        /// % отчисления реферерру, если он есть
+        $this->updateRefBalances($this->getRefTax($price),$price,false);
         
+        $balance = round(($_SESSION['user']['balance'] - $balance), 4);
+        
+        
+        $this->replFrameContent('На ваш баланс зачислено '.$balance.' руб.!');
+        
+        //$this->getAlertJS('На ваш баланс зачислено '.$balance.' руб.!');
         
     }
     
@@ -234,6 +235,15 @@ class WorksController extends Controller{
         $data = $serf->find('`id`,`price`','`id`='.$serf_id);
         
         return $data[0]->price;
+        
+    }
+    
+    public function replFrameContent($mes){
+        
+        echo json_encode([
+            'replFrCont'=>$mes,
+        ]);
+        exit();
         
     }
     
