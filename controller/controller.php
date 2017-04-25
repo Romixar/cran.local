@@ -696,7 +696,7 @@ class Controller{
     
     public function updateRefBalances($tax,$bonus){
         $mod = new User();
-        $tax = round(($tax * $bonus), 3);; // сумма отчисления рефереру (прибавится к его балансу)
+        $tax = round(($tax * $bonus), 3); // сумма отчисления рефереру (прибавится к его балансу)
         
         
         

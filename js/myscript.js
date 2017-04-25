@@ -5,6 +5,8 @@
 
     var flagView = true; // флаг просмотра (если true то следить за просмотром)
 
+
+
     
 
 
@@ -54,7 +56,10 @@
             
     }
 
+
     function failedView(){
+
+        
         
         if(serf_id != undefined){
             
@@ -65,6 +70,8 @@
             
             
         }
+        
+
         
     }
       
@@ -134,11 +141,7 @@
       
     function removeFrame(frtimer, prntEl){// скрытие фрейма после счетчика
         
-        //if(fV) failedView(); // засчитываю провальный просмотр, если еще не было
-        
-        
-        failedView();
-        
+        //failedView(); // засчитываю провальный просмотр, если еще не было
         
         
         frtimer.remove();

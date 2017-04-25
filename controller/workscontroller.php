@@ -87,9 +87,9 @@ class WorksController extends Controller{
         
         if(!is_int($serf_id) && !preg_match('/^\d{1,10}$/',$serf_id)) $this->getAlertJS('Ошибка ID!');
         
-        
         $data = $this->getSerfDataOnDay($serf_id, $user_id);
         
+
         // ошибка, т.к. в сутки только по одной строке на юзера
         if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
         
@@ -100,12 +100,21 @@ class WorksController extends Controller{
             else $price = $data[0]->price;
         }else $price = 0;
         
-        if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
+        
+        
+        if(empty($data)) $resI = $this->insertSerfLink($serf_id, $user_id, $ts, $price);
             
         // проверка на нажатие уже просмотренных ссылок
         if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
         
-        $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
+        $resU = $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
+            
+        // обновить баланс пользователя
+        if($resI || $resU) 
+            
+        
+        
+        
         
     }
     
@@ -140,8 +149,13 @@ class WorksController extends Controller{
            'sum' => $price
         ]);
                 
-        if($res_id){debug($res_id);exit();}
-        else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
+        if($res_id){
+            
+            return true;
+            
+            //debug($res_id);exit();
+        
+        }else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
     }
     
     public function updateSerfLink($data, $serf_id, $user_id, $ts, $price){
@@ -163,8 +177,13 @@ class WorksController extends Controller{
 
         ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
         
-        if($res){debug($res);exit();}
-        else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
+        if($res){
+            
+            return true;
+            
+            //debug($res);exit();
+            
+        }else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
     }
     
     
