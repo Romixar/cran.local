@@ -694,7 +694,7 @@ class Controller{
         return false;
     }
     
-    public function updateRefBalances($tax,$bonus){
+    public function updateRefBalances($tax,$bonus, $b=true){
         $mod = new User();
         $tax = round(($tax * $bonus), 3); // сумма отчисления рефереру (прибавится к его балансу)
         
@@ -712,14 +712,20 @@ class Controller{
         
             
         $_SESSION['user']['balance'] += $bonus; // баланс реферала
+        
+        if($b){
+            $_SESSION['user']['b'] += 1;// количество бонусов реферала
             
-        $_SESSION['user']['b'] += 1;// количество бонусов реферала
+            $b = 1;
+        }else $b = 0;
+            
+        
             
         // обновляем баланс и бонус у реферера и юзера
         $res = $mod->update2Balances([
             $_SESSION['user']['ref_id'] => [ $tax, 0 ],
                 
-            $_SESSION['user']['id'] => [ $bonus, 1 ] 
+            $_SESSION['user']['id'] => [ $bonus, $b ] 
         ]);   
         if($res) return true;
         else return false;

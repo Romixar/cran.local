@@ -102,18 +102,29 @@ class WorksController extends Controller{
         
         
         
-        if(empty($data)) $resI = $this->insertSerfLink($serf_id, $user_id, $ts, $price);
+        if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
             
         // проверка на нажатие уже просмотренных ссылок
         if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
         
-        $resU = $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
-            
-        // обновить баланс пользователя
-        if($resI || $resU) 
-            
+        $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
         
         
+        
+        
+    }
+    
+    public function updateBalances($price){// обновить баланс пользователя и реферера если есть
+        
+        $tax = $this->getRefTax($price);/// % отчисления реферерру, если он есть
+            
+        //debug($tax);
+            
+        $this->updateRefBalances($tax,$price,false);
+        
+        $this->getAlertJS('На ваш баланс зачислено '.$price.' руб.!');
+            
+        //die;
         
         
     }
@@ -151,7 +162,9 @@ class WorksController extends Controller{
                 
         if($res_id){
             
-            return true;
+            $this->updateBalances($price);
+            
+            //return true;
             
             //debug($res_id);exit();
         
@@ -179,7 +192,9 @@ class WorksController extends Controller{
         
         if($res){
             
-            return true;
+            $this->updateBalances($price);
+            
+            //return true;
             
             //debug($res);exit();
             
