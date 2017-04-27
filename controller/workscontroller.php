@@ -15,7 +15,11 @@ class WorksController extends Controller{
         
         $data = $this->getSerfing();
         
-        //debug($data);
+        //debug($data);die;
+        
+        
+        
+        
 
         
         $content = $this->getHtmlSerf($data);
@@ -48,12 +52,21 @@ class WorksController extends Controller{
         
         $mod = new Serfing();
         
+        $yes_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        $tod_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
+        
+        $user_id = $_SESSION['user']['id'];
+        //$user_id = 4;
+        
+        $fields = '`serfing`.`id`,`n`,`v`,`timer`,`url`,`title`,`desc`,`price`,`history_s`.`serf_ids`,
+        `history_s`.`dates_views`';
+        
         // сначала пробую извлечь из serfing и history_s
+        $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts);
         
         
-        
-        
-        return $mod->find('*');
+        if(empty($data)) return $mod->find('*');// если нет, значит сегодня ещё не серфил
+        else return $data;
     }
     
     public function getHtmlSerf($data){
@@ -61,6 +74,19 @@ class WorksController extends Controller{
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
+            
+            $cl = '';// класс для помещенных
+            
+            if($data[$i]->serf_ids){ // если уже были просмотренные у юзера
+                
+                $serf_ids = substr($data[$i]->serf_ids,0,-1);
+                
+                $arr_ids = explode(',',$serf_ids);
+                
+                if(in_array($data[$i]->id,$arr_ids)) $cl = ' disabled';
+                
+                
+            }
             
             
             $str .= $this->view->prerender('serf',[
@@ -72,6 +98,7 @@ class WorksController extends Controller{
                 'title'=>$data[$i]->title,
                 'price'=>$data[$i]->price,
                 'desc'=>$data[$i]->desc,
+                'cl'=>$cl,
                 'rand'=>rand(1,4),
             ]);
             

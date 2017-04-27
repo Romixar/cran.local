@@ -54,13 +54,31 @@ class DB{
     }
     
     
-    'SELECT `title`,`n`,`v`,`history_s`.`serf_ids`
+//    'SELECT `title`,`n`,`v`,`history_s`.`serf_ids`
+//    
+//    FROM `serfing` JOIN `history_s`
+//
+//    WHERE `history_s`.`user_id` = 4
+//                
+//    AND `history_s`.`date_add` BETWEEN 1489730699 AND 1489780699'
+        
+    public function findSerfLinks($fields, $user_id, $yes_ts, $tod_ts){
+        
+        $sql = 'SELECT '.$fields.'
     
-    FROM `serfing` JOIN `history_s`
+                FROM `'.static::$table.'` JOIN `history_s`
 
-    WHERE `history_s`.`user_id` = 4
+                WHERE `history_s`.`user_id` = '.$user_id.'
                 
-    AND `history_s`.`date_add` BETWEEN 1489730699 AND 1489780699'
+                AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
+        
+    
+        //echo $sql; die;
+        
+        $res = $this->select($sql);
+        if(!empty($res)) return $res;
+        return false;
+    }
     
     
     public function findSerfData($fields, $serf_id, $user_id, $yes_ts, $tod_ts){
