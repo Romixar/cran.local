@@ -176,6 +176,17 @@ class DB{
         return $sth->rowCount();
     }
     
+    public function updateViewSerf($serf_id){
+        
+        $sql = 'INSERT INTO `'.static::$table.'` ( `id`, `v` )  VALUES('.$serf_id.',1) ON DUPLICATE KEY UPDATE `v` = `v` + VALUES(`v`)';
+        
+        $sth = $this->dbh->query($sql);
+        
+        return $sth->rowCount();
+        
+        
+    }
+    
     public function updateRefUsers($ids){
         
         for($i=0; $i<count($ids); $i++) $str .= '('.$ids[$i].',0,0,0),';

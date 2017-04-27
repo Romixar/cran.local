@@ -2,6 +2,8 @@
 <?php $serf_id = $_GET['serf_id']; ?>
 <?php $price = $_GET['price']; ?>
 <?php $rand = $_GET['rand']; ?>
+<?php $url = $_GET['url']; ?>
+<?php $title = $_GET['title']; ?>
 
 <!doctype html>
 
@@ -27,7 +29,7 @@
     
     var serf_id = <?= $serf_id ?>;
     var price = <?= $price ?>;
-    var rand = <?= $rand ?>
+    var rand = <?= $rand ?>;
     
     $(document).ready(function(){
         
@@ -48,7 +50,24 @@
 <body>
     <div id="serfframe">
 
-        <p>Здесь будет таймер обратного отсчета <span id="timer"><?= $timer ?></span> сек.</p>
+        <p><span id="sp1">Ждите... </span><span id="timer"><?= $timer ?></span><span id="sp3"> сек.</span></p>
+        <div id="dopinfo">
+           <div id="inserf">
+              
+              <p>Описание: <span id="serfdesc"><?= $title ?></span><br/>
+
+              URL: <span id="serfurl"><a href="http://<?= $url ?>">http://<?= $url ?></a></span></p>
+               
+           </div>
+            
+            <div id="banner">
+                
+                Здесь будет ваша реклама!<br/>
+                Место 500х70px сдается в аренду<br/>
+                Серфссылка - описание 100 символов, URL 30 символов, тело не > 30
+                
+            </div>
+        </div>
     </div>    
   
 </body>

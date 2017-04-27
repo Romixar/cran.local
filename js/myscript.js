@@ -29,6 +29,8 @@
             
             flagView = false; // остановить отслеживание статусов вкладки
             
+            $('div#dopinfo').css('width','50%');
+            
             replFrameContent();
         }
          
@@ -38,11 +40,13 @@
             
         var statuses = '';
 
-        var stopTxt = '<b style="color:red">Нарушен просмотр! Деньги не зачислены!</b>';
+        var stopTxt = '<b style="color:red">Нарушен просмотр!<br/>Деньги не зачислены!</b>';
 
         if(e.status == 'hidden') statuses += e.status;
                 
         if(statuses == 'hidden'){// сработает только после первого hidden
+            
+            $('div#dopinfo').css('width','50%');
                     
             d("serfframe").innerHTML = stopTxt;
                     
@@ -56,8 +60,6 @@
 
 
     function failedView(){
-
-        
         
         if(serf_id != undefined){
             
@@ -65,11 +67,7 @@
         
             post_query('addserfview', '&serf_id='+str+'&view=0');
             
-            
-            
         }
-        
-
         
     }
       
@@ -79,7 +77,7 @@
         
         var content = '';
         
-        d('serfframe').innerHTML = '';
+        $('div#serfframe p').text('');
         
         if(mes) content = '<b style="color:blue">'+mes+'</b>';
         else{
@@ -90,19 +88,17 @@
                 
                 var btns = getHtmlButtons(rand, price);
             
-                //content = '<p>Получите за просмотр:</p><button id="getserfpay">'+price+' руб.</button>';
-                content = '<p>Получите за просмотр:</p>'+btns;
-                
+                content = '<p style="font-size:12px">Получите за просмотр:</p>'+btns;    
             }
         }
         
-        d('serfframe').innerHTML = content;
+        $('div#serfframe').append(content);
         
     }
 
     function getHtmlButtons(rand, price){
         
-        var str = '<p id="btns">';
+        var str = '<p id="btns" style="font-size:12px;color:black">';
         var p;
         
         for(var i=1; i<5; i++){
@@ -119,9 +115,6 @@
         
         e.preventDefault();
         
-//        console.log(e.target.id);
-//        
-//        console.log(rand);
         
         if(e.target.id == rand && serf_id != undefined){
             
@@ -134,18 +127,6 @@
             post_query('addserfview', '&serf_id='+serf_id+'&view=0');
             
         }
-        
-//        if(serf_id != undefined){
-//            
-//            var str = serf_id;
-//        
-//            post_query('addserfview', '&serf_id='+str+'&view=1');
-//            
-//            
-//            
-//        }
-        
-        
         
     });
 

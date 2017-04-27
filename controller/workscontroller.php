@@ -66,6 +66,7 @@ class WorksController extends Controller{
                 'url'=>$data[$i]->url,
                 'title'=>$data[$i]->title,
                 'price'=>$data[$i]->price,
+                'desc'=>$data[$i]->desc,
                 'rand'=>rand(1,4),
             ]);
             
@@ -102,6 +103,8 @@ class WorksController extends Controller{
         }else $price = 0;
         
         
+        // отчечаю просмотр в таблице serfing
+        if($this->acceptView($serf_id) != 2) $this->getAlertJS('Ошибка обновления просмотра ссылки!');
         
         if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
             
@@ -112,6 +115,14 @@ class WorksController extends Controller{
         
         
         
+        
+    }
+    
+    public function acceptView($serf_id){
+        
+        $mod = new Serfing();
+        
+        return $mod->updateViewSerf($serf_id);
         
     }
     
@@ -127,7 +138,6 @@ class WorksController extends Controller{
         
         $this->replFrameContent('На ваш баланс зачислено '.$balance.' руб.!');
         
-        //$this->getAlertJS('На ваш баланс зачислено '.$balance.' руб.!');
         
     }
     

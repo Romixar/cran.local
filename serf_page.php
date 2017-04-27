@@ -38,10 +38,12 @@
  
      <?php $price = $_GET['price']; ?>
      <?php $rand = $_GET['rand']; ?>
-
-     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>&rand=<?= $rand ?>" name="TIMER" noresize noborder>
-
+     <?php $title = $_GET['title']; ?>
      <?php $url = (isset($_GET['url'])) ? $_GET['url'] : $_SERVER['HTTP_HOST']; ?>
+
+     <frame id="resultFrame" src="timer.php?timer=<?= $timer ?>&serf_id=<?= $serf_id ?>&price=<?= $price ?>&rand=<?= $rand ?>&url=<?= $url ?>&title=<?= $title ?>" name="TIMER" noresize noborder>
+
+     
 
      <frame src="http://<?= $url ?>" name="CONTENT">
      
