@@ -77,15 +77,13 @@ class WorksController extends Controller{
         
         for($i=0; $i<count($data); $i++){
             
-            $cl = '';// класс для помещенных
-            
             $ost = $data[$i]->n - $data[$i]->v; // осталось просмотров
             
-            $cl = ($ost == 0) ? ' disabled' : '';
+            $cl = ($ost == 0) ? ' disabled' : '';// класс для посещенных
             
-            if($data[$i]->serf_ids){ // если уже были просмотренные у юзера
+            if($data[$i]->serf_ids && $cl == ''){ // если уже были просмотренные у юзера
                     
-                if(!$this->checkSerfLink2($data[$i]->id, $data[$i])) $cl = ' disabled';
+                if(!$this->checkSerfLink($data[$i]->id, $data[$i])) $cl = ' disabled';
                 
             }
             
@@ -133,7 +131,8 @@ class WorksController extends Controller{
         if($this->data['view']){// просмотр прерван или нет
                 
             if(empty($data)) $price = $this->getSerfPrice($serf_id);
-            else $price = $data[0]->price;
+            else $price = ($data[0]->n == $data[0]->v) ? 0 : $data[0]->price;
+        
         }else $price = 0;
         
         
@@ -143,7 +142,7 @@ class WorksController extends Controller{
         if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
             
         // проверка на нажатие уже просмотренных ссылок
-        if(!$this->checkSerfLink($serf_id, $data)) $this->getAlertJS('Ошибка! Ссылка уже просмотрена.');
+        if(!$this->checkSerfLink($serf_id, $data[0])) $this->getAlertJS('Ссылка уже просмотрена!');
         
         $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
         
@@ -183,7 +182,8 @@ class WorksController extends Controller{
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
-        $f = '`user_id`,`serf_ids`,`dates_views`,`date_add`,`sum`,`serfing`.`price`,`serfing`.`period`';
+        $f = '`user_id`,`serf_ids`,`dates_views`,`date_add`,`sum`,
+        `serfing`.`price`,`serfing`.`period`,`serfing`.`n`,`serfing`.`v`';
         
         return $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);
         
@@ -209,10 +209,6 @@ class WorksController extends Controller{
         if($res_id){
             
             $this->updateBalances($price);
-            
-            //return true;
-            
-            //debug($res_id);exit();
         
         }else $this->getAlertJS('Ошибка добавления в БД просмотренной ссылки!');
     }
@@ -240,40 +236,11 @@ class WorksController extends Controller{
             
             $this->updateBalances($price);
             
-            //return true;
-            
-            //debug($res);exit();
-            
         }else $this->getAlertJS('Ошибка обновления в БД просмотренных ссылок!');
     }
-    
-    
+
     
     public function checkSerfLink($serf_id, $data){
-        
-        $serf_ids = substr($data[0]->serf_ids,0,-1);
-        
-        $arr = explode(',',$serf_ids);
-        
-        if(in_array($serf_id, $arr)){
-            
-            $dates_views = substr($data[0]->dates_views,0,-1);
-            
-            $arr_dates = explode(',',$dates_views);
-            
-            foreach($arr as $k => $v){
-                
-                if($v == $serf_id) $ts_view = $arr_dates[$k];// TS когда была просмотрена ссылка
-            }
-            
-            if(($ts_view + $data[0]->period) > time()) return false; // нельзя просматривать
-            else return true;
-        }
-        return true;
-        
-    }
-    
-    public function checkSerfLink2($serf_id, $data){
         
         $serf_ids = substr($data->serf_ids,0,-1);
         
@@ -301,9 +268,11 @@ class WorksController extends Controller{
         
         $serf = new Serfing();
         
-        $data = $serf->find('`id`,`price`','`id`='.$serf_id);
+        $data = $serf->find('`id`,`price`,`n`,`v`','`id`='.$serf_id);
         
-        return $data[0]->price;
+        $price = ($data[0]->n == $data[0]->v) ? 0 : $data[0]->price;
+        
+        return $price;
         
     }
     
