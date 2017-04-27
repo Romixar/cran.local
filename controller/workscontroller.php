@@ -12,8 +12,8 @@ class WorksController extends Controller{
         $this->meta_desc = 'Страница Задания / работы мета описание';
         $this->meta_key = 'Страница Задания / работы мета кей';
 
+        if(isset($_SESSION['user'])) $data = $this->getSerfing();
         
-        $data = $this->getSerfing();
         
         //debug($data);die;
         
@@ -79,6 +79,10 @@ class WorksController extends Controller{
             
             $cl = '';// класс для помещенных
             
+            $ost = $data[$i]->n - $data[$i]->v; // осталось просмотров
+            
+            $cl = ($ost == 0) ? ' disabled' : '';
+            
             if($data[$i]->serf_ids){ // если уже были просмотренные у юзера
                     
                 if(!$this->checkSerfLink2($data[$i]->id, $data[$i])) $cl = ' disabled';
@@ -87,16 +91,17 @@ class WorksController extends Controller{
             
             
             $str .= $this->view->prerender('serf',[
-                'i'=>$i,
-                'id'=>$data[$i]->id,
-                'n'=>$data[$i]->n,
-                'timer'=>$data[$i]->timer,
-                'url'=>$data[$i]->url,
-                'title'=>$data[$i]->title,
-                'price'=>$data[$i]->price,
-                'desc'=>$data[$i]->desc,
-                'cl'=>$cl,
-                'rand'=>rand(1,4),
+                'i'    => $i,
+                'id'   => $data[$i]->id,
+                'n'    => $data[$i]->n,
+                'ost'  => $ost,
+                'timer'=> $data[$i]->timer,
+                'url'  => $data[$i]->url,
+                'title'=> $data[$i]->title,
+                'price'=> $data[$i]->price,
+                'desc' => $data[$i]->desc,
+                'cl'   => $cl,
+                'rand' => rand(1,4),
             ]);
             
             

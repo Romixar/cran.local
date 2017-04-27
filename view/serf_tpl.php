@@ -18,7 +18,7 @@
              <p>Адрес: http://<span class="url"><?= $url ?></span></p>
              <p>Описание: <span class="desc"><?= $desc ?></span></p>
              <p>Количество просмотров (всего): <?= $n ?></p>
-             <p>Осталось просмотров: 65</p>
+             <p>Осталось просмотров: <span class="ost"><?= $ost ?></span></p>
          </div>
     </div>
 </div>

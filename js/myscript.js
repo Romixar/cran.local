@@ -40,7 +40,7 @@
             
         var statuses = '';
 
-        var stopTxt = '<b style="color:red">Нарушен просмотр!<br/>Деньги не зачислены!</b>';
+        var stopTxt = '<b style="color:red">Нарушен просмотр! Деньги не зачислены!</b><br/>';
 
         if(e.status == 'hidden') statuses += e.status;
                 

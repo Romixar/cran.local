@@ -51,18 +51,21 @@
         
     }
     
-    
-     
-        
-//    $(document).on('click', 'div.panel-heading a.disabled', function(e){ 
-//        
-//        e.preventDefault();
-//        
-//    });
     $(document).on('click','a.linkserf',function(e){// нажатие на серф ссылку
         
         if($(this).hasClass('disabled')) e.preventDefault();
-        else $(this).addClass('disabled');
+        else{
+            
+            $(this).addClass('disabled');
+            
+            var sp = $(this).parent().parent().find('span.ost'); // осталось просмотров
+            
+            var ost = Number(sp.text()) - 1;
+            
+            sp.text('').text(ost);
+            
+        }
+            
         
         
     });
