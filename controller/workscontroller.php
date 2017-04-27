@@ -58,8 +58,8 @@ class WorksController extends Controller{
         $user_id = $_SESSION['user']['id'];
         //$user_id = 4;
         
-        $fields = '`serfing`.`id`,`n`,`v`,`timer`,`url`,`title`,`desc`,`price`,`history_s`.`serf_ids`,
-        `history_s`.`dates_views`';
+        $fields = '`serfing`.`id`,`n`,`v`,`timer`,`url`,`title`,`desc`,`price`,`period`,
+        `history_s`.`serf_ids`,`history_s`.`dates_views`';
         
         // сначала пробую извлечь из serfing и history_s
         $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts);
@@ -71,6 +71,8 @@ class WorksController extends Controller{
     
     public function getHtmlSerf($data){
         
+        $ts = time();
+        
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
@@ -78,13 +80,8 @@ class WorksController extends Controller{
             $cl = '';// класс для помещенных
             
             if($data[$i]->serf_ids){ // если уже были просмотренные у юзера
-                
-                $serf_ids = substr($data[$i]->serf_ids,0,-1);
-                
-                $arr_ids = explode(',',$serf_ids);
-                
-                if(in_array($data[$i]->id,$arr_ids)) $cl = ' disabled';
-                
+                    
+                if(!$this->checkSerfLink2($data[$i]->id, $data[$i])) $cl = ' disabled';
                 
             }
             
@@ -265,6 +262,30 @@ class WorksController extends Controller{
             }
             
             if(($ts_view + $data[0]->period) > time()) return false; // нельзя просматривать
+            else return true;
+        }
+        return true;
+        
+    }
+    
+    public function checkSerfLink2($serf_id, $data){
+        
+        $serf_ids = substr($data->serf_ids,0,-1);
+        
+        $arr = explode(',',$serf_ids);
+        
+        if(in_array($serf_id, $arr)){
+            
+            $dates_views = substr($data->dates_views,0,-1);
+            
+            $arr_dates = explode(',',$dates_views);
+            
+            foreach($arr as $k => $v){
+                
+                if($v == $serf_id) $ts_view = $arr_dates[$k];// TS когда была просмотрена ссылка
+            }
+            
+            if(($ts_view + $data->period) > time()) return false; // нельзя просматривать
             else return true;
         }
         return true;
