@@ -54,6 +54,15 @@ class DB{
     }
     
     
+    'SELECT `title`,`n`,`v`,`history_s`.`serf_ids`
+    
+    FROM `serfing` JOIN `history_s`
+
+    WHERE `history_s`.`user_id` = 4
+                
+    AND `history_s`.`date_add` BETWEEN 1489730699 AND 1489780699'
+    
+    
     public function findSerfData($fields, $serf_id, $user_id, $yes_ts, $tod_ts){
         
         $sql = 'SELECT '.$fields.'

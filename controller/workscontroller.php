@@ -48,6 +48,11 @@ class WorksController extends Controller{
         
         $mod = new Serfing();
         
+        // сначала пробую извлечь из serfing и history_s
+        
+        
+        
+        
         return $mod->find('*');
     }
     

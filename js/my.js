@@ -50,7 +50,22 @@
         }
         
     }
-
+    
+    
+     
+        
+//    $(document).on('click', 'div.panel-heading a.disabled', function(e){ 
+//        
+//        e.preventDefault();
+//        
+//    });
+    $(document).on('click','a.linkserf',function(e){// нажатие на серф ссылку
+        
+        if($(this).hasClass('disabled')) e.preventDefault();
+        else $(this).addClass('disabled');
+        
+        
+    });
     
     
     
