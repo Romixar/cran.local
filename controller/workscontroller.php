@@ -12,17 +12,17 @@ class WorksController extends Controller{
         $this->meta_desc = 'Страница Задания / работы мета описание';
         $this->meta_key = 'Страница Задания / работы мета кей';
 
-        if(isset($_SESSION['user'])) $data = $this->getSerfing();
+        if(isset($_SESSION['user'])){
+            
+            $data = $this->getSerfing();
+            
+            $content = $this->getHtmlSerf($data);
+            
+        }else $content = $this->getEmptyContent();// если пользователь не авторизован
+        
         
         
         //debug($data);die;
-        
-        
-        
-        
-
-        
-        $content = $this->getHtmlSerf($data);
 
         
         $names = $this->getTabs('class="active"','names');
@@ -70,18 +70,21 @@ class WorksController extends Controller{
     
     public function getHtmlSerf($data){
         
+        $fl = 0;// чтобы узнать были ли полные итерации
+        
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
             
+            $ost = $data[$i]->n - $data[$i]->v; // если уже были просмотренные у юзера
+            
             $cl = ''; // будет класс для неактивных серфинг ссылок
             
-            if(($data[$i]->n - $data[$i]->v) == 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){ // если уже были просмотренные у юзера
+            if($ost == 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){
                 $cl = ' disabled';
                 continue; // не будет выводиться просмотренные ссылки
             }
 
-            
             $str .= $this->view->prerender('serf',[
                 'i'    => $i,
                 'id'   => $data[$i]->id,
@@ -96,12 +99,22 @@ class WorksController extends Controller{
                 'rand' => rand(1,4),
             ]);
             
-            
+            $fl = 1;
         }
         
-        $str .= '</div>';
+        $str .= ($fl) ? '</div>' : $this->getEmptyContent($fl).'</div>';
+
         return $str;
         
+    }
+    
+    public function getEmptyContent($fl=1){
+        
+        $str1 = '<p>Для авторизованных пользователей в этом разделе доступен заработок</p>';
+        
+        $str2 = '<div class="noserf">Ссылок для серфинга пока нет. Проверьте позже.</div>';
+        
+        return ($fl) ? $str1 : $str2;
     }
     
     
