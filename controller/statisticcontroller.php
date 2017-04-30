@@ -48,7 +48,7 @@ class StatisticController extends Controller{
         
         $mod = new History_s();
         
-        $data = $mod->find('*','`user_id`='.$_SESSION['user']['id']);
+        $data = $mod->find('*','`user_id`='.$_SESSION['user']['id'],'`date_add` DESC');
         
         
         $content = $this->getHTMLTabSerfing($data,['Дата','Кол-во','Сумма']);

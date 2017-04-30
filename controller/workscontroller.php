@@ -10,21 +10,39 @@ class WorksController extends Controller{
 
         if(isset($_SESSION['user'])){
             
-            $data = $this->getSerfing();
+            $content = $this->getHtmlSerf($this->getSerfing()); //  серфинг ссылки
             
-            $content = $this->getHtmlSerf($data);
+        
+            $staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
             
-        }else $content = $this->getEmptyContent();// если пользователь не авторизован
+            
+        }else{
+            $content = $this->getEmptyContent();// если пользователь не авторизован
+            $staticlinks = '';
+        }
+        
+        
+        
         
         
         
         //debug($data);die;
 
         
+        
+        
         $names = $this->getTabs('class="active"','names');
         $tabs = $this->getTabs(' in active','tabs',$content);
 
-        $this->render('works',compact('names','tabs'));
+        $this->render('works',compact('names','tabs','staticlinks'));
+    }
+    
+    public function getContextLinks(){
+        
+        $mod = new Contextlinks();
+        
+        return $mod->find('*');
+        
     }
 
     public function getSerfing(){
@@ -85,6 +103,32 @@ class WorksController extends Controller{
 
         return $str;
         
+    }
+    
+    public function getHtmlStaticLinks($data){
+        
+        $str = '<div class="panel-group serf" id="collapse-group">';
+        
+        for($i=0; $i<count($data); $i++){
+            
+            $str .= $this->view->prerender('static',[
+                
+                'i'    => $i,
+                'id'   => $data[$i]->id,
+                'n'    => $data[$i]->n,
+                'ost'  => $data[$i]->n - $data[$i]->v,
+                'url'  => $data[$i]->url,
+                'title'=> $data[$i]->title,
+                'desc' => $data[$i]->desc,
+                
+            ]);
+            
+            
+        }
+        
+        $str .= '</div>';
+        
+        return $str;
     }
     
     public function getEmptyContent($fl=1){

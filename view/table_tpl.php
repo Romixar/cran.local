@@ -7,5 +7,4 @@
      <tbody>
          <?= $trs ?>
      </tbody>
-      
 </table>

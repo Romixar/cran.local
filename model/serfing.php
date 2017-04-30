@@ -1,4 +1,3 @@
-
 <?php
 
 class Serfing extends DB{
