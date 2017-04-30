@@ -1,5 +1,11 @@
 <table class="table table-hover b_list">
-      
-    <?= $content ?>
+     <thead>
+        <tr>
+            <?= $ths ?>
+        </tr>
+     </thead>
+     <tbody>
+         <?= $trs ?>
+     </tbody>
       
 </table>

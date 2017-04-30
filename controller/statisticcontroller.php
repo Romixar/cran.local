@@ -65,7 +65,7 @@ class StatisticController extends Controller{
     
     public function getHTMLTabSerfing($data,$arrhead){
 
-        $str = $this->getTableHead($arrhead);
+        $ths = $this->getTableHead($arrhead);
         
         for($i=0; $i<count($data); $i++){
             
@@ -76,23 +76,20 @@ class StatisticController extends Controller{
             
             $tds = '<td>'.$data[$i]->date_add.'</td><td>'.$qnt.'</td><td>'.$data[$i]->sum.'</td>';
             
-            $str .= '<tr>'.$tds.'</tr>';
+            $trs .= '<tr>'.$tds.'</tr>';
         }
         
-        $content .= $str.'</tbody>';
         
         
         
-        return $this->view->prerender('table',compact('content'));
+        return $this->view->prerender('table',compact('ths','trs'));
     }
     
     public function getTableHead($arrhead){
-        
-        $ths = '<thead><tr>';
             
         for($j=0; $j<count($arrhead); $j++) $ths .= '<th>'.$arrhead[$j].'</th>';
             
-        return $ths.'</tr></thead><tbody>';
+        return $ths;
     }
     
     
