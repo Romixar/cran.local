@@ -583,6 +583,42 @@ class MainController extends Controller{
         
     }
     
+    public function actionAddreklam(){
+        
+        $this->title = 'Размещение рекламы';
+        $this->meta_desc = 'Страница размещение рекламы мета описание';
+        $this->meta_key = 'Страница размещение рекламы мета кей';
+        
+        $typeReklams = [
+            
+            0 => 'Статические ссылки',
+            1 => 'Динамические ссылки',
+            2 => 'Контекстные ссылки',
+            
+        ];
+        
+        $list = $this->getListServices($typeReklams);
+        
+        
+        
+        
+        
+        $this->render('addreklam',compact('list'));
+    }
+    
+    public function getListServices($typeReklams){
+        
+        $str = '<ul>';
+        
+        for($i=0; $i<count($typeReklams); $i++){
+            
+            $str .= '<li><a href="#" id="serv'.$i.'">'.$typeReklams[$i].'</a></li>';
+            
+        }
+        
+        return $str.'</ul>';
+    }
+    
 
     
     

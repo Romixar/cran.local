@@ -8,10 +8,8 @@ class Router{
         '/statistic' => 'statistic/index',
         '/faq' => 'main/faq',
         '/works' => 'works/index',
-        
-        //'/serf_page.php' => 'works/index',
-        
         '/reklams' => 'main/reklams',
+        '/addreklam' => 'main/addreklam',
         '/contacts' => 'main/contacts',
         '/refpage' => 'main/refpage',
         '/refmanage' => 'main/refmanage',

@@ -34,6 +34,7 @@ class Controller{
             $ref2Lvl = '';
             $refstock = '';
             $mystats = '';
+            $addrek = '';
             $reg = '<a href="/registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
@@ -55,9 +56,11 @@ class Controller{
             $ref2Lvl = '<a href="/ref2lvl" class="btn btn-primary btn-xs" role="button">Рефералы 2-го ур-ня</a>';
             $refstock = '<a href="/refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
             $mystats = '<a href="/mystats" class="btn btn-primary btn-xs" role="button">Моя статистика</a>';
+            $addrek = '<a href="/addreklam" class="btn btn-primary btn-xs" role="button">Подать рекламу</a>';
             
         }
-        $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl','refstock','mystats');
+        $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl',
+                             'refstock','mystats','addrek');
         
             
         $this->sysmes = Session::flash('sysmes');
