@@ -17,6 +17,9 @@
     <p>
         <?= $ref2Lvl ?>
     </p>
+    <p>
+        <?= $mystats ?>
+    </p>
             
             
     <div><p>текст</p></div>

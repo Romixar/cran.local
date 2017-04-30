@@ -583,6 +583,28 @@ class MainController extends Controller{
         
     }
     
+    public function actionMystats(){
+        
+        $this->title = 'Страница моя статистика';
+        $this->meta_desc = 'Страница моя статистика мета описание';
+        $this->meta_key = 'Страница моя статистика мета кей';
+        
+        
+        $content = 'Пока нет ничего';
+        
+        // собирать статистику по заработку
+        
+        
+        
+        
+        
+        $names = $this->getTabs('class="active"','names');
+        $tabs = $this->getTabs(' in active','tabs',$content);
+        
+        
+        $this->render('my_stats',compact('names','tabs'));
+    }
+    
     
     
     

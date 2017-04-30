@@ -17,6 +17,7 @@ class Router{
         '/refmanage' => 'main/refmanage',
         '/ref2lvl' => 'main/ref2lvl',
         '/refstock' => 'main/refstock',
+        '/mystats' => 'main/mystats',
         '/login' => 'main/login',
         '/profile' => 'main/profile',
         '/logout' => 'main/logout',

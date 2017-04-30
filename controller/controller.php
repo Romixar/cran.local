@@ -13,6 +13,8 @@ class Controller{
     public $meta_key;
     
     public $r_b; // рефбэк пользователя
+    
+    public $nmsWorks = ['Серфинг','Задания','Тесты','Конкурсы','новый таб'];
 
     
     public function __construct(){
@@ -31,6 +33,7 @@ class Controller{
             $manageRef = '';
             $ref2Lvl = '';
             $refstock = '';
+            $mystats = '';
             $reg = '<a href="/registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
@@ -51,9 +54,10 @@ class Controller{
             $manageRef = '<a href="/refmanage" id="refmanage" class="btn btn-primary btn-xs" role="button">Мои рефералы</a>';
             $ref2Lvl = '<a href="/ref2lvl" class="btn btn-primary btn-xs" role="button">Рефералы 2-го ур-ня</a>';
             $refstock = '<a href="/refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
+            $mystats = '<a href="/mystats" class="btn btn-primary btn-xs" role="button">Моя статистика</a>';
             
         }
-        $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl','refstock');
+        $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl','refstock','mystats');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -769,9 +773,21 @@ class Controller{
     
     
     
-    
-    
-    
+    public function getTabs($class,$tpl,$content=''){ // табы для видов заработка
+        
+        $arr = $this->nmsWorks;
+        
+        for($i=0; $i<count($arr); $i++){
+            $cl = ($i == 0) ? $class : '';
+            
+            $content = ($i == 0) ? $content : '';
+            
+            $name = $arr[$i];
+            
+            $str .= $this->view->prerender($tpl,compact('i','cl','name','content'));
+        }
+        return $str;
+    }
     
     public function getRating(){
         

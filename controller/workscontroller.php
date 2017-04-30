@@ -2,10 +2,6 @@
 
 class WorksController extends Controller{
     
-    public $nmsWorks = ['Серфинг','Задания','Тесты','Конкурсы','новый таб'];
-    
-    
-    
     
     public function actionIndex(){
         $this->title = 'Страница Задания / работы';
@@ -30,24 +26,7 @@ class WorksController extends Controller{
 
         $this->render('works',compact('names','tabs'));
     }
-    
-    
-    public function getTabs($class,$tpl,$content=''){
-        
-        $arr = $this->nmsWorks;
-        
-        for($i=0; $i<count($arr); $i++){
-            $cl = ($i == 0) ? $class : '';
-            
-            $content = ($i == 0) ? $content : '';
-            
-            $name = $arr[$i];
-            
-            $str .= $this->view->prerender($tpl,compact('i','cl','name','content'));
-        }
-        return $str;
-    }
-    
+
     public function getSerfing(){
         
         $mod = new Serfing();
@@ -80,7 +59,7 @@ class WorksController extends Controller{
             
             $cl = ''; // будет класс для неактивных серфинг ссылок
             
-            if($ost == 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){
+            if($ost <= 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){
                 $cl = ' disabled';
                 continue; // не будет выводиться просмотренные ссылки
             }
