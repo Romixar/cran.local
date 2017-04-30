@@ -37,6 +37,64 @@ class StatisticController extends Controller{
         
     }
     
+    public function actionMystats(){
+        
+        $this->title = 'Страница моя статистика';
+        $this->meta_desc = 'Страница моя статистика мета описание';
+        $this->meta_key = 'Страница моя статистика мета кей';
+        
+        
+        // собирать статистику по заработку
+        
+        $mod = new History_s();
+        
+        $data = $mod->find('*','`user_id`='.$_SESSION['user']['id']);
+        
+        
+        $content = $this->getHTMLTabSerfing($data,['Дата','Кол-во','Сумма']);
+        
+        
+        
+        
+        $names = $this->getTabs('class="active"','names');
+        $tabs = $this->getTabs(' in active','tabs',$content);
+        
+        
+        $this->render('my_stats',compact('names','tabs'));
+    }
+    
+    public function getHTMLTabSerfing($data,$arrhead){
+
+        $str = $this->getTableHead($arrhead);
+        
+        for($i=0; $i<count($data); $i++){
+            
+            $qnt = count(explode(',',substr($data[$i]->serf_ids,0,-1)));
+            
+            
+            
+            
+            $tds = '<td>'.$data[$i]->date_add.'</td><td>'.$qnt.'</td><td>'.$data[$i]->sum.'</td>';
+            
+            $str .= '<tr>'.$tds.'</tr>';
+        }
+        
+        $content .= $str.'</tbody>';
+        
+        
+        
+        return $this->view->prerender('table',compact('content'));
+    }
+    
+    public function getTableHead($arrhead){
+        
+        $ths = '<thead><tr>';
+            
+        for($j=0; $j<count($arrhead); $j++) $ths .= '<th>'.$arrhead[$j].'</th>';
+            
+        return $ths.'</tr></thead><tbody>';
+    }
+    
     
     
     
