@@ -56,7 +56,6 @@ class WorksController extends Controller{
         $tod_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
         $user_id = $_SESSION['user']['id'];
-        //$user_id = 4;
         
         $fields = '`serfing`.`id`,`n`,`v`,`timer`,`url`,`title`,`desc`,`price`,`period`,
         `history_s`.`serf_ids`,`history_s`.`dates_views`';
@@ -71,22 +70,17 @@ class WorksController extends Controller{
     
     public function getHtmlSerf($data){
         
-        $ts = time();
-        
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
             
-            $ost = $data[$i]->n - $data[$i]->v; // осталось просмотров
+            $cl = ''; // будет класс для неактивных серфинг ссылок
             
-            $cl = ($ost == 0) ? ' disabled' : '';// класс для посещенных
-            
-            if($data[$i]->serf_ids && $cl == ''){ // если уже были просмотренные у юзера
-                    
-                if(!$this->checkSerfLink($data[$i]->id, $data[$i])) $cl = ' disabled';
-                
+            if(($data[$i]->n - $data[$i]->v) == 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){ // если уже были просмотренные у юзера
+                $cl = ' disabled';
+                continue; // не будет выводиться просмотренные ссылки
             }
-            
+
             
             $str .= $this->view->prerender('serf',[
                 'i'    => $i,
@@ -240,7 +234,7 @@ class WorksController extends Controller{
     }
 
     
-    public function checkSerfLink($serf_id, $data){
+    public function checkSerfLink($serf_id, $data){// проверка времени просмотра ссылки
         
         $serf_ids = substr($data->serf_ids,0,-1);
         
