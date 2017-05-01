@@ -705,8 +705,20 @@ class MainController extends Controller{
     public function addStaticLink(){// размещение статич ссылки рекламодателем
         
         
-        debug($this->data);die;
+        $mod = new Contextlinks();
         
+        $res = $mod->insert([
+            
+            'opt' => $this->data['opt'],
+            'url' => $this->data['url'],
+            'title' => $this->data['desc'],
+            'period' => $this->data['qntday'] * 24 * 60 * 60,
+            'h' => $this->data['h'],
+            
+        ]);
+        
+        if($res) $this->respJson($this->sysMessage('success','Статическая ссылка успешно добавлена!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
     
 

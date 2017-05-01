@@ -1196,7 +1196,7 @@
     
     function viewMessage(mes){
         
-        console.log(mes);
+        console.log('попал '+mes);
         
         var al = $('div.alert');
 
