@@ -635,7 +635,7 @@ class MainController extends Controller{
         $select = [
             0 => [
                 'label' => 'Выделение красным',
-                'id' => 'qntday',
+                'id' => 'linkselect',
             ],
             1 => [
                 'Да (+ 25 руб.)',

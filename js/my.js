@@ -13,6 +13,8 @@
     var patEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i;
     var patErrLogin = /(admin|moderator)/i;
     
+    var patUrl = /https?:\/\/([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    
     var elem; // объект кнопка
     var textButton = ''; // текст нажатой кнопки
     
@@ -66,6 +68,45 @@
             
         }
             
+        
+        
+    });
+    
+    $(document).on('click','a#addstaticlink',function(e){// создание статич ссылки
+        
+        e.preventDefault();
+        
+        submit = true;
+        
+        var url = $('#url');
+        var desc = $('#desc');
+        var qntday = $('#qntday');
+        
+        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
+        
+        if(!patUrl.test(url.val())) validMessage(url, 'ERR_URL');
+        
+        
+        if(desc.val().length > 60) validMessage(desc, 'ERR_LEN');
+        
+        
+        if(qntday.val() === '') validMessage(qntday, 'ERR_EMP');
+        
+        
+        
+        
+        
+        
+        
+        
+        if(submit) console.log('разрешаю отправить');
+        else console.log('НЕ разрешаю отправить');
+
+        
+        
+        //console.log('клик - '+url.val()+' - '+desc.val()+' - '+qntday.val()+' - '+opt.val());
+        
+        
         
         
     });
@@ -1083,6 +1124,7 @@
             'ERR_PSW': 'Пароль должен быть от 5 до 15 символов!',
             'ERR_LOG': 'Недопустимое слово в Вашем логине!',
             'ERR_ERR': 'Поле заполнено не верно!',
+            'ERR_URL': 'Ссылка указана не верно!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
