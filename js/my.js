@@ -123,30 +123,34 @@
         return false;
     }
     
-    //if($('input#qntday')) calcReklForm();
-    
-    $(document).on("change", 'select#linkselect', function(){
+    $(document).on("focusout", 'input#qntday', function(){ // потеря фокуса дни статич ссылки
         
-        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
-
-        calcReklForm(Number(opt));
-        
+        calcReklForm();
     });
     
-    function calcReklForm(opt){
+    $(document).on("change", 'select#linkselect', function(){// выбор селект статич ссылки
+        
+        calcReklForm();
+    });
+    
+    function calcReklForm(){
+        
+        var qntday = Number($('#qntday').val());
+
+        if(isNaN(qntday)) return; // если введено не число то выход
+        
+        var total;
         
         var sum;
         
+        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
         
+        if(Number(opt)) sum = 0;
+        else sum = 5 * qntday; // прибавим по 5 руб?день за выделение
+            
+        total = (qntday * 20) + sum;
         
-        sum = (opt) ? 0 : 25;
-        
-        
-
-
-        
-        
-        $('span#sum').text('').text(sum);
+        $('span#sum').text('').text(total);
     }
     
     

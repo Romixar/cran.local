@@ -624,7 +624,7 @@ class MainController extends Controller{
                 'id' => 'qntday',
                 'name' => 'qntday',
                 'plh' => '',
-                'val' => '5',
+                'val' => '10',
                 
             ],
             
@@ -638,7 +638,7 @@ class MainController extends Controller{
                 'id' => 'linkselect',
             ],
             1 => [
-                'Да (+ 25 руб.)',
+                'Да (+ 5 руб./день)',
                 'Нет'
             ]
         ];
