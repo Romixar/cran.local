@@ -1,11 +1,5 @@
 <p><?= $label ?>:</p>
 <p>
     <span></span>
-    <input type="text" id="<?= $inpid ?>" name="<?= $inpname ?>" placeholder="<?= $inplh ?>" />    
+    <input type="text" id="<?= $id ?>" name="<?= $name ?>" value="<?= $val ?>" placeholder="<?= $plh ?>" />    
 </p>
-<!--
-<p>Пароль:</p>
-<p>
-    <span></span>
-    <input type="password" id="password" name="password" placeholder="Ваш пароль" />
-</p>-->

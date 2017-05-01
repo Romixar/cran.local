@@ -605,31 +605,46 @@ class MainController extends Controller{
             0 => [
                 
                 'label' => 'URL сайта',
-                'inpid' => 'url',
-                'inpname' => 'url',
-                'inplh' => 'http://example.ru',
+                'id' => 'url',
+                'name' => 'url',
+                'plh' => 'http://example.ru',
                 
             ],
             1 => [
                 
                 'label' => 'Описание',
-                'inpid' => 'desc',
-                'inpname' => 'desc',
-                'inplh' => 'Описание рекламной ссылки',
+                'id' => 'desc',
+                'name' => 'desc',
+                'plh' => 'Описание рекламной ссылки',
                 
             ],
             2 => [
                 
                 'label' => 'Количество дней показа',
-                'inpid' => 'qntday',
-                'inpname' => 'qntday',
-                'inplh' => 'Сколько дней будет показываться',
+                'id' => 'qntday',
+                'name' => 'qntday',
+                'plh' => '',
+                'val' => '5',
                 
             ],
             
         ];
         
-        $form = $this->getForm($params);// ,$button
+        $button = ['addstaticlink','Создать статическую ссылку'];
+        
+        $select = [
+            0 => [
+                'label' => 'Выделение красным',
+                'id' => 'qntday',
+            ],
+            1 => [
+                'Да (+ 25 руб.)',
+                'Нет'
+            ]
+        ];
+        
+        
+        $form = $this->getForm($params,$button,$select);
         
         
         $this->render('addreklam',compact('list','form'));
@@ -648,42 +663,43 @@ class MainController extends Controller{
         return $str.'</ul>';
     }
     
-    public function getForm($params,$button=''){
-        
-//        $label = 'URL сайта';
-//        
-//        $inpid = 'url';
-//            
-//        $inpname = 'url';
-//        
-//        $inplh = 'http://example.ru';
+    public function getForm($params,$button,$select=''){
         
         for($i=0; $i<count($params); $i++){
             
             $arr = [];
             
-            
-            foreach($params[$i] as $k => $v){
+            foreach($params[$i] as $k => $v) $arr[$k] = $v;
                 
-                $arr[$k] = $v;
-                
-            }
-            
             $inputs .= $this->view->prerender('inpform',$arr);
-            
         }
         
+        $select = ($select) ? $this->getSelect($select) : '';
         
-        //$inputs = $this->view->prerender('inpform',compact('label','inpid','inpname','inplh'));
+        return $this->view->prerender('reklform',[
+                   'butid' => $button[0],
+                   'butname'=> $button[1],
+                   'inputs' => $inputs,
+                   'select' => $select,
+               ]);
+    }
+    
+    public function getSelect($select){
         
+        for($i=0; $i<count($select[1]); $i++){
+            
+            $sel = ($i) ? '' : 'selected';
+            
+            $str .= '<option '.$sel.' value="'.$i.'">'.$select[1][$i].'</option>';
+        }
         
-        
-        $butid = 'addstaticlink';
-        
-        $butname = 'Создать статическую ссылку';
-        
-        
-        return $this->view->prerender('reklform',compact('butid','butname','inputs'));
+        return $this->view->prerender('select',[
+            
+            'label' => $select[0]['label'],
+            'id' => $select[0]['id'],
+            'opt' => $str,
+            
+        ]);
     }
     
 
