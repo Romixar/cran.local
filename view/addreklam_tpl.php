@@ -4,3 +4,12 @@
 <div class="services">
     <?= $list ?>
 </div>
+
+
+
+
+<div class="form">
+    
+    <?= $form ?>
+    
+</div>

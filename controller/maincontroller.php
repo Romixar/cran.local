@@ -599,11 +599,40 @@ class MainController extends Controller{
         
         $list = $this->getListServices($typeReklams);
         
+
+        $params = [
+            
+            0 => [
+                
+                'label' => 'URL сайта',
+                'inpid' => 'url',
+                'inpname' => 'url',
+                'inplh' => 'http://example.ru',
+                
+            ],
+            1 => [
+                
+                'label' => 'Описание',
+                'inpid' => 'desc',
+                'inpname' => 'desc',
+                'inplh' => 'Описание рекламной ссылки',
+                
+            ],
+            2 => [
+                
+                'label' => 'Количество дней показа',
+                'inpid' => 'qntday',
+                'inpname' => 'qntday',
+                'inplh' => 'Сколько дней будет показываться',
+                
+            ],
+            
+        ];
+        
+        $form = $this->getForm($params);// ,$button
         
         
-        
-        
-        $this->render('addreklam',compact('list'));
+        $this->render('addreklam',compact('list','form'));
     }
     
     public function getListServices($typeReklams){
@@ -617,6 +646,44 @@ class MainController extends Controller{
         }
         
         return $str.'</ul>';
+    }
+    
+    public function getForm($params,$button=''){
+        
+//        $label = 'URL сайта';
+//        
+//        $inpid = 'url';
+//            
+//        $inpname = 'url';
+//        
+//        $inplh = 'http://example.ru';
+        
+        for($i=0; $i<count($params); $i++){
+            
+            $arr = [];
+            
+            
+            foreach($params[$i] as $k => $v){
+                
+                $arr[$k] = $v;
+                
+            }
+            
+            $inputs .= $this->view->prerender('inpform',$arr);
+            
+        }
+        
+        
+        //$inputs = $this->view->prerender('inpform',compact('label','inpid','inpname','inplh'));
+        
+        
+        
+        $butid = 'addstaticlink';
+        
+        $butname = 'Создать статическую ссылку';
+        
+        
+        return $this->view->prerender('reklform',compact('butid','butname','inputs'));
     }
     
 
