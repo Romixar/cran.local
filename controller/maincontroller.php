@@ -702,6 +702,13 @@ class MainController extends Controller{
         ]);
     }
     
+    public function addStaticLink(){// размещение статич ссылки рекламодателем
+        
+        
+        debug($this->data);die;
+        
+    }
+    
 
     
     

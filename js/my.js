@@ -76,13 +76,32 @@
         
         e.preventDefault();
         
-        submit = true;
+        elem = $(this);
+        textButton = $(this).text();
         
         var url = $('#url');
         var desc = $('#desc');
         var qntday = $('#qntday');
-        
+                
         var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
+        
+        if(validStaticLink(url,desc,qntday)){
+            
+            viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+            
+            var str = '&url='+url.val()+'&desc='+desc.val()+'&qntday='+qntday.val()+'&opt='+opt;
+            
+            post_query('add_statlink', str);
+            
+            return;
+        }
+    });
+    
+    function validStaticLink(url,desc,qntday){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
+        
+        var days;
         
         if(!patUrl.test(url.val())) validMessage(url, 'ERR_URL');
         
@@ -93,24 +112,18 @@
         if(qntday.val() === '') validMessage(qntday, 'ERR_EMP');
         
         
+        if(qntday.val().indexOf(' ') !== -1) days = qntday.val().replace(" ","");
+        else days = qntday.val();
         
         
+        if(!regP.test(days)) validMessage(qntday, 'ERR_DIG');
         
         
-        
-        
-        if(submit) console.log('разрешаю отправить');
-        else console.log('НЕ разрешаю отправить');
 
         
-        
-        //console.log('клик - '+url.val()+' - '+desc.val()+' - '+qntday.val()+' - '+opt.val());
-        
-        
-        
-        
-    });
-    
+        if(submit) return true;
+        return false;
+    }
     
     
     
@@ -1125,6 +1138,7 @@
             'ERR_LOG': 'Недопустимое слово в Вашем логине!',
             'ERR_ERR': 'Поле заполнено не верно!',
             'ERR_URL': 'Ссылка указана не верно!',
+            'ERR_DIG': 'В поле должны быть только цифры!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
