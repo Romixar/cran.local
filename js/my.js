@@ -23,7 +23,7 @@
     var p_id; // ID комментария родителя
     var childs = false;// есть ли дети у коммента
     
-    var regP = /^\d{1,4}(\.){0,1}\d{1,4}$/; // регулярка цены
+    var regP = /^\d{1,4}(\.){0,1}\d{0,4}$/; // регулярка цены
     var tableRefs; // модальное окно с выбором рефералалов
     var trRefs; // строка выбранного реферала
     var buyID; // ID покупаемого реферала
@@ -80,6 +80,7 @@
         textButton = $(this).text();
         
         var url = $('#url');
+        var h;
         var desc = $('#desc');
         var qntday = $('#qntday');
                 
@@ -89,7 +90,15 @@
             
             viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
             
-            var str = '&url='+url.val()+'&desc='+desc.val()+'&qntday='+qntday.val()+'&opt='+opt;
+            if(qntday.val().indexOf(' ') !== -1) qntday = qntday.val().replace(" ","");
+            else qntday = qntday.val();
+            
+            h = (url.val()[4] == 's') ? 1 : 0; // уточню протокол
+            
+            url = url.val().substr((url.val().indexOf('//'))+2);// обрезка протокола
+            
+            var str = '&url='+$.trim(url)+'&h='+h+'&desc='+$.trim(desc.val())+
+                      '&qntday='+qntday+'&opt='+opt;
             
             post_query('add_statlink', str);
             
@@ -103,26 +112,41 @@
         
         var days;
         
-        if(!patUrl.test(url.val())) validMessage(url, 'ERR_URL');
-        
-        
-        if(desc.val().length > 60) validMessage(desc, 'ERR_LEN');
-        
-        
+        if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
+        if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
         if(qntday.val() === '') validMessage(qntday, 'ERR_EMP');
-        
-        
         if(qntday.val().indexOf(' ') !== -1) days = qntday.val().replace(" ","");
         else days = qntday.val();
-        
-        
         if(!regP.test(days)) validMessage(qntday, 'ERR_DIG');
-        
-        
-
         
         if(submit) return true;
         return false;
+    }
+    
+    //if($('input#qntday')) calcReklForm();
+    
+    $(document).on("change", 'select#linkselect', function(){
+        
+        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
+
+        calcReklForm(Number(opt));
+        
+    });
+    
+    function calcReklForm(opt){
+        
+        var sum;
+        
+        
+        
+        sum = (opt) ? 0 : 25;
+        
+        
+
+
+        
+        
+        $('span#sum').text('').text(sum);
     }
     
     
