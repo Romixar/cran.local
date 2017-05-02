@@ -768,28 +768,56 @@ class MainController extends Controller{
     
     public function addViewStaticLink(){// зафиксировать просмотр статич ссылки
         
+        $link_id = $this->data['linkId'];
+        $user_id = $_SESSION['user']['id'];
+        
         $mod = new History_st();
         
         $ts = time();
+        
+        
         // вставка либо обновление истории просмотра (неделя на строку)
+        $data = $this->getStaticLinkOnDay($link_id, $user_id);
+        
+        
+        
+        
+        
+        
+        debug($data);die;
         
         
         
         $res = $mod->insert([
-            'user_id' => $_SESSION['user']['id'],
-            'view_ids' => $this->data['linkId'].',',
+            'user_id' => $user_id,
+            'view_ids' => $link_id.',',
             'dates_views' => $ts.',',
             'date_add' => $ts,
         ]);
         
         
         
-        if($res) $this->respJson($this->sysMessage('success','Статическая ссылка просмотр!'));
+        if($res) $this->respJson($this->sysMessage('success','Статическая ссылка просмотр добавлен!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
         
         
         debug($this->data);die;
         
+        
+    }
+    
+    public function getStaticLinkOnDay($link_id, $user_id){
+        
+        $mod = new History_st();
+        
+        // период текущая неделя
+        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        $week_ts = mktime(0,0,0,date('m'),(date('d')+7),date('Y'));// TS полночи ч\з неделю
+        
+        $f = '`history_st`.`user_id`,`view_ids`,`dates_views`,`history_st`.`date_add`,
+             `contextlinks`.`period`,`contextlinks`.`n`,`contextlinks`.`v`';
+        
+        return $mod->findStaticLinkData($f, $link_id, $user_id, $yesterday_ts, $week_ts);
         
     }
 
