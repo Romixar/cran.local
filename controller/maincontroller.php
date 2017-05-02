@@ -768,6 +768,25 @@ class MainController extends Controller{
     
     public function addViewStaticLink(){// зафиксировать просмотр статич ссылки
         
+        $mod = new History_st();
+        
+        $ts = time();
+        // вставка либо обновление истории просмотра (неделя на строку)
+        
+        
+        
+        $res = $mod->insert([
+            'user_id' => $_SESSION['user']['id'],
+            'view_ids' => $this->data['linkId'].',',
+            'dates_views' => $ts.',',
+            'date_add' => $ts,
+        ]);
+        
+        
+        
+        if($res) $this->respJson($this->sysMessage('success','Статическая ссылка просмотр!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
+        
         
         debug($this->data);die;
         

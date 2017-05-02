@@ -178,19 +178,13 @@
     
     $(document).on('click','div.serf a.static',function(e){// клик по статич ссылке
         
-        //e.preventDefault();
-        
-        //console.log(e.target.id);
+        e.preventDefault();
         
         var linkId = Number(e.target.id);
         
-        if(isNaN(linkId)){
-            viewMessage(getTplMes('Ошибка отправки ID статической ссылки!','danger'));
-            return;
-        }
-        post_query('addview_statlink', '&linkId='+linkId);
-        
-        
+        if(!isNaN(linkId)) post_query('addview_statlink', '&linkId='+linkId);
+        else viewMessage(getTplMes('Ошибка отправки ID статической ссылки!','danger'));
+        return;
     });
     
     
