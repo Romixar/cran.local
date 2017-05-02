@@ -765,6 +765,14 @@ class MainController extends Controller{
         
         return ($qntday * 20) + $sumopt;
     }
+    
+    public function addViewStaticLink(){// зафиксировать просмотр статич ссылки
+        
+        
+        debug($this->data);die;
+        
+        
+    }
 
     
     

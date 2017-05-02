@@ -106,6 +106,7 @@ class Controller{
         
         if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
         if(isset($data['add_statlink_f'])) $this->addStaticLink();// размещение статич ссылки
+        if(isset($data['addview_statlink_f'])) $this->addViewStaticLink();// просмотр статич ссылки
 
         
     }

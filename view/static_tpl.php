@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
 
-    <a href="http://<?= $url ?>" class="linkserf" target="_blank">
+    <a id="<?= $id ?>" href="http://<?= $url ?>" class="static" target="_blank">
         <?= $title ?>
     </a>
 
