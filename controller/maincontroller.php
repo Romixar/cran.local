@@ -704,6 +704,11 @@ class MainController extends Controller{
     
     public function addStaticLink(){// размещение статич ссылки рекламодателем
         
+        // проверить наличие средств на рекламном счёте
+        
+        
+        
+        
         
         $mod = new Contextlinks();
         

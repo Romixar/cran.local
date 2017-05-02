@@ -90,8 +90,8 @@
             
             viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
             
-            if(qntday.val().indexOf(' ') !== -1) qntday = qntday.val().replace(" ","");
-            else qntday = qntday.val();
+            qntday = qntday.val();
+            qntday = qntday.replace(".","").replace(" ","");
             
             h = (url.val()[4] == 's') ? 1 : 0; // уточню протокол
             
@@ -101,7 +101,6 @@
                       '&qntday='+qntday+'&opt='+opt;
             
             post_query('add_statlink', str);
-            
             return;
         }
     });
@@ -114,9 +113,13 @@
         
         if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
         if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
-        if(qntday.val() === '') validMessage(qntday, 'ERR_EMP');
-        if(qntday.val().indexOf(' ') !== -1) days = qntday.val().replace(" ","");
-        else days = qntday.val();
+        
+        days = qntday.val();
+        
+        if(days === '') validMessage(qntday, 'ERR_EMP');
+        
+        days = days.replace(".","").replace(" ","");
+        
         if(!regP.test(days)) validMessage(qntday, 'ERR_DIG');
         
         if(submit) return true;
@@ -135,7 +138,9 @@
     
     function calcReklForm(){
         
-        var qntday = Number($('#qntday').val());
+        var qntday = $('#qntday').val();
+        
+        qntday = Number(qntday.replace(".","").replace(" ",""));
 
         if(isNaN(qntday)) return; // если введено не число то выход
         
@@ -1196,15 +1201,11 @@
     
     function viewMessage(mes){
         
-        console.log('попал '+mes);
-        
         var al = $('div.alert');
 
         if(al) al.remove();
         
         $(document).find('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения
-        
-        //$('div.main div.col-md-12 h4:first').after(mes);// вывод сист сообщения
     }
     
     function clearAndRepl(img, change){// подстановка в DOM e-mail и img
