@@ -221,8 +221,6 @@ class DB{
         $sth = $this->dbh->query($sql);
         
         return $sth->rowCount();
-        
-        
     }
     
     public function updateRefUsers($ids){

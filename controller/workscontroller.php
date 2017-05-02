@@ -168,7 +168,7 @@ class WorksController extends Controller{
         }else $price = 0;
         
         
-        // отчечаю просмотр в таблице serfing
+        // отмечаю просмотр в таблице serfing
         if($this->acceptView($serf_id) != 2) $this->getAlertJS('Ошибка обновления просмотра ссылки!');
         
         if(empty($data)) $this->insertSerfLink($serf_id, $user_id, $ts, $price);
