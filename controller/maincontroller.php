@@ -705,6 +705,9 @@ class MainController extends Controller{
     public function addStaticLink(){// размещение статич ссылки рекламодателем
         
         // проверить наличие средств на рекламном счёте
+        if(!$this->validReklBalance()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        
+        // списать средства с рекламного счета юзера
         
         
         
@@ -724,6 +727,18 @@ class MainController extends Controller{
         
         if($res) $this->respJson($this->sysMessage('success','Статическая ссылка успешно добавлена!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
+    }
+    
+    public function validReklBalance(){// проверить наличие средств на рекламном счёте
+        
+        $qntday = $this->data['qntday'];
+        
+        $sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
+        
+        $totalsum = ($qntday * 20) + $sumopt;
+        
+        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
+        else return true;
     }
     
 
@@ -824,6 +839,7 @@ class MainController extends Controller{
             $rating = number_format($_SESSION['user']['rating'],2,',',''); ///   текущий рейтинг
             
             $balance = number_format($_SESSION['user']['balance'], 3, ',', ' ');
+            $ac2 = number_format($_SESSION['user']['acnt2'], 2, ',', ' ');
             
             $referer = ($_SESSION['user']['ref_id']) ? $this->getLoginOnID($_SESSION['user']['ref_id']) : 'нет';
             $ref_b = ($_SESSION['user']['ref_id']) ? $_SESSION['user']['ref_b'].'%' : '';
@@ -849,7 +865,7 @@ class MainController extends Controller{
             $usersettings = $this->view->prerender('settings',compact('ip','wal','ref_url','email','text'));
             $userstats = $this->view->prerender('stats');
             
-            $this->render('profile',compact('img','login','status','rating','balance','referer','ref_b','date_ref','b','date_reg','date_act','usersettings','userstats'));
+            $this->render('profile',compact('img','login','status','rating','balance','ac2','referer','ref_b','date_ref','b','date_reg','date_act','usersettings','userstats'));
         }
     }
     

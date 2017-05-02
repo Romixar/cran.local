@@ -45,11 +45,12 @@ class Controller{
             $s = $_SESSION['user']['status'];
             $img = ($_SESSION['user']['img']) ? $_SESSION['user']['img'] : 'no-user-image.gif';
             $b = number_format($_SESSION['user']['balance'],3,',',' ');
+            $ac2 = number_format($_SESSION['user']['acnt2'],2,',',' ');
             $lg = $_SESSION['user']['login'];
             $r = number_format($_SESSION['user']['rating'],2,'.',' ');
             $up_r = $this->getButtonRating();
             
-            $m_pr = $this->view->prerender('mini_profile',compact('img','s','lg','b','r','up_r'));
+            $m_pr = $this->view->prerender('mini_profile',compact('img','s','lg','b','ac2','r','up_r'));
             
             $reg = '';
             $manageRef = '<a href="/refmanage" id="refmanage" class="btn btn-primary btn-xs" role="button">Мои рефералы</a>';
@@ -251,6 +252,7 @@ class Controller{
             $_SESSION['user']['status'] = $data[0]->status;
             $_SESSION['user']['rating'] = $data[0]->rating;
             $_SESSION['user']['balance'] = $data[0]->balance;
+            $_SESSION['user']['acnt2'] = $data[0]->acnt2;
             $_SESSION['user']['ref_id'] = $data[0]->ref_id;
             $_SESSION['user']['ref_b'] = $data[0]->ref_b;
             $_SESSION['user']['set_r_b'] = $data[0]->set_r_b;

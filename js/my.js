@@ -79,6 +79,11 @@
         elem = $(this);
         textButton = $(this).text();
         
+//        if(!validReklBalance()){
+//            viewMessage(getTplMes('Недостаточно средств на рекламном счёте!','danger'));
+//            return;
+//        }
+        
         var url = $('#url');
         var h;
         var desc = $('#desc');
@@ -156,6 +161,18 @@
         total = (qntday * 20) + sum;
         
         $('span#sum').text('').text(total);
+    }
+    
+    function validReklBalance(){
+        
+        var acnt2 = $('span#acnt2').text();
+        
+        acnt2 = Number(acnt2.replace(",",".").replace(" ",""));
+        
+        var totalsum = Number($('span#sum').text());
+        
+        if((acnt2 - totalsum) >= 0) return true;
+        else return false;
     }
     
     
