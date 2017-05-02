@@ -79,10 +79,10 @@
         elem = $(this);
         textButton = $(this).text();
         
-//        if(!validReklBalance()){
-//            viewMessage(getTplMes('Недостаточно средств на рекламном счёте!','danger'));
-//            return;
-//        }
+        if(!validReklBalance()){
+            viewMessage(getTplMes('Недостаточно средств на рекламном счёте!','danger'));
+            return;
+        }
         
         var url = $('#url');
         var h;

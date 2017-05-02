@@ -708,22 +708,24 @@ class MainController extends Controller{
         if(!$this->validReklBalance()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        
+        if(!$this->UpdateReklBalance())$this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         
         
         
         $mod = new Contextlinks();
         
-        $res = $mod->insert([
-            
-            'opt' => $this->data['opt'],
-            'url' => $this->data['url'],
-            'title' => $this->data['desc'],
-            'period' => $this->data['qntday'] * 24 * 60 * 60,
-            'h' => $this->data['h'],
-            
-        ]);
+        $res = 1;
+        
+//        $res = $mod->insert([
+//            
+//            'opt' => $this->data['opt'],
+//            'url' => $this->data['url'],
+//            'title' => $this->data['desc'],
+//            'period' => $this->data['qntday'] * 24 * 60 * 60,
+//            'h' => $this->data['h'],
+//            
+//        ]);
         
         if($res) $this->respJson($this->sysMessage('success','Статическая ссылка успешно добавлена!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
@@ -731,16 +733,36 @@ class MainController extends Controller{
     
     public function validReklBalance(){// проверить наличие средств на рекламном счёте
         
-        $qntday = $this->data['qntday'];
-        
-        $sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
-        
-        $totalsum = ($qntday * 20) + $sumopt;
+        $totalsum = $this->getSumStaticLink();
         
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
     }
     
+    public function UpdateReklBalance(){
+        
+        $totalsum = $this->getSumStaticLink();
+
+        $u = new User();
+        
+        $_SESSION['user']['acnt2'] -= $totalsum;
+        
+        $res = $u->update([
+            'acnt2' => $_SESSION['user']['acnt2'],
+        ],'`id`='.$_SESSION['user']['id']);
+        
+        if($res) return true;
+        return false;        
+    }
+    
+    public function getSumStaticLink(){
+        
+        $qntday = $this->data['qntday'];
+        
+        $sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
+        
+        return ($qntday * 20) + $sumopt;
+    }
 
     
     
