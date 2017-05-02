@@ -714,9 +714,7 @@ class MainController extends Controller{
         
         
         $mod = new Contextlinks();
-        
-        //$res = 1;
-        
+
         $res = $mod->insert([
             
             'user_id' => $_SESSION['user']['id'],
@@ -765,91 +763,7 @@ class MainController extends Controller{
         
         return ($qntday * 20) + $sumopt;
     }
-    
-    public function addViewStaticLink(){// зафиксировать просмотр статич ссылки
-        
-        $link_id = $this->data['linkId'];
-        $user_id = $_SESSION['user']['id'];
-        
-        $ts = time();
-        
-        if(!is_int($link_id) && !preg_match('/^\d{1,10}$/',$link_id)) $this->getAlertJS('Ошибка ID!');
-        
-        // вставка либо обновление истории просмотра (неделя на строку)
-        $data = $this->getStaticLinkOnDay($link_id, $user_id);
-        
-        // ошибка, т.к. в сутки (неделю) только по одной строке на юзера
-        if(!empty($data) && count($data) != 1) $this->getAlertJS('Ошибка БД!');
-        
-        //обновление просмотра v
-        if($this->acceptStaticView($link_id) != 2) $this->getAlertJS('Ошибка БД!');
-        
-        if(empty($data)) $res = $this->insertStaticLink($link_id, $user_id, $ts);
-        else $res = $this->updateStaticLink($data, $link_id, $user_id, $ts);
-        
-        
-        
-        
-        //debug($data);die;
-        
-        
-        
-        
-        
-        
-        
-        if($res) $this->respJson($this->sysMessage('success','Статическая ссылка просмотр добавлен!'));
-        else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
 
-        
-        
-    }
-    
-    public function acceptStaticView($link_id){
-        
-        $mod = new Contextlinks();
-        
-        return $mod->updateViewSerf($link_id);
-    }
-    
-    public function insertStaticLink($link_id, $user_id, $ts){
-        $mod = new History_st();
-        return $mod->insert([
-                   'user_id' => $user_id,
-                   'view_ids' => $link_id.',',
-                   'dates_views' => $ts.',',
-                   'date_add' => $ts,
-               ]);
-    }
-    
-    public function updateStaticLink($data, $link_id, $user_id, $ts){
-        $mod = new History_st();
-        
-        // добавляю к уже просмотренным юзером ссылкам, еще одну
-        $view_ids = $data[0]->view_ids.$link_id.',';
-            
-        return $mod->update([
-                   'view_ids' => $view_ids,
-                   'dates_views' => $data[0]->dates_views.$ts.',',
-                   'date_add' => $ts,
-
-               ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
-    }
-    
-    public function getStaticLinkOnDay($link_id, $user_id){
-        
-        $mod = new History_st();
-        
-        // период текущая неделя
-        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
-        $week_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи ч\з неделю
-        
-        $f = '`history_st`.`user_id`,`view_ids`,`dates_views`,`history_st`.`date_add`,
-             `contextlinks`.`period`,`contextlinks`.`n`,`contextlinks`.`v`';
-        
-        return $mod->findStaticLinkData($f, $link_id, $user_id, $yesterday_ts, $week_ts);
-        
-    }
 
     
     
@@ -1066,9 +980,15 @@ class MainController extends Controller{
     
     public function addSerfView(){
         
-        $mod = new WorksController();
-        $mod->addSerfView();
+        $wctrl = new WorksController();
+        $wctrl->addSerfView();
     }
+    public function addViewStaticLink(){
+        
+        $wctrl = new WorksController();
+        $wctrl->addViewStaticLink();
+    }
+    
     
     
     
