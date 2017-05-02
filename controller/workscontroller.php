@@ -111,6 +111,8 @@ class WorksController extends Controller{
         
         for($i=0; $i<count($data); $i++){
             
+            if(($data[$i]->date_add + $data[$i]->period) <= time()) continue;
+            
             $str .= $this->view->prerender('static',[
                 
                 'i'    => $i,

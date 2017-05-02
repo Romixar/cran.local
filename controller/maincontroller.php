@@ -715,17 +715,19 @@ class MainController extends Controller{
         
         $mod = new Contextlinks();
         
-        $res = 1;
+        //$res = 1;
         
-//        $res = $mod->insert([
-//            
-//            'opt' => $this->data['opt'],
-//            'url' => $this->data['url'],
-//            'title' => $this->data['desc'],
-//            'period' => $this->data['qntday'] * 24 * 60 * 60,
-//            'h' => $this->data['h'],
-//            
-//        ]);
+        $res = $mod->insert([
+            
+            'user_id' => $_SESSION['user']['id'],
+            'opt' => $this->data['opt'],
+            'title' => $this->data['desc'],
+            'url' => $this->data['url'],
+            'h' => $this->data['h'],
+            'period' => $this->data['qntday'] * 24 * 60 * 60,
+            'date_add'=>time(),
+            
+        ]);
         
         if($res) $this->respJson($this->sysMessage('success','Статическая ссылка успешно добавлена!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
