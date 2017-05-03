@@ -16,13 +16,15 @@ class WorksController extends Controller{
             $staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
             
             
+            
+            
         }else{
             $content = $this->getEmptyContent();// если пользователь не авторизован
             $staticlinks = '';
         }
         
         
-        
+        $content .= $this->view->prerender('staticlinks',compact('staticlinks'));
         
         
         
@@ -34,7 +36,7 @@ class WorksController extends Controller{
         $names = $this->getTabs('class="active"','names');
         $tabs = $this->getTabs(' in active','tabs',$content);
 
-        $this->render('works',compact('names','tabs','staticlinks'));
+        $this->render('works',compact('names','tabs'));
     }
     
     public function getContextLinks(){
@@ -117,11 +119,9 @@ class WorksController extends Controller{
                 
                 'i'    => $i,
                 'id'   => $data[$i]->id,
-                'n'    => $data[$i]->n,
-                'ost'  => $data[$i]->n - $data[$i]->v,
+                'v'    => $data[$i]->v,
                 'url'  => $data[$i]->url,
                 'title'=> $data[$i]->title,
-                'desc' => $data[$i]->desc,
                 
             ]);
             
