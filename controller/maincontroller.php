@@ -609,8 +609,6 @@ class MainController extends Controller{
     
     public function getOrderFormStaticLink(){
         
-        debug($this->data);die;
-        
         $head = '<h4>Разместить статическую ссылку</h4>';
 
         $params = [
@@ -656,11 +654,12 @@ class MainController extends Controller{
             ]
         ];
         
+
+        $param = [];
+        $param[0] = 'orderForm';
+        $param[1] = $head.$this->getForm($params,$button,$select);
         
-        $formcontent = $head.$this->getForm($params,$button,$select);
-        
-        
-        
+        $this->respJson2($param);
     }
     
     public function getListServices($typeReklams){
@@ -678,18 +677,20 @@ class MainController extends Controller{
     
     public function getForm($params,$button,$select=''){
         
+        $view = new Viewcontroller();
+        
         for($i=0; $i<count($params); $i++){
             
             $arr = [];
             
             foreach($params[$i] as $k => $v) $arr[$k] = $v;
-                
-            $inputs .= $this->view->prerender('inpform',$arr);
+            
+            $inputs .= $view->prerender('inpform',$arr);
         }
         
         $select = ($select) ? $this->getSelect($select) : '';
         
-        return $this->view->prerender('reklform',[
+        return $view->prerender('reklform',[
                    'butid' => $button[0],
                    'butname'=> $button[1],
                    'inputs' => $inputs,
@@ -699,6 +700,8 @@ class MainController extends Controller{
     
     public function getSelect($select){
         
+        $view = new Viewcontroller();
+        
         for($i=0; $i<count($select[1]); $i++){
             
             $sel = ($i) ? '' : 'selected';
@@ -706,7 +709,7 @@ class MainController extends Controller{
             $str .= '<option '.$sel.' value="'.$i.'">'.$select[1][$i].'</option>';
         }
         
-        return $this->view->prerender('select',[
+        return $view->prerender('select',[
             
             'label' => $select[0]['label'],
             'id' => $select[0]['id'],

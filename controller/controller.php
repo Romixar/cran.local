@@ -907,12 +907,21 @@ class Controller{
     
     public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false, $auto=false,$id=false){
         echo json_encode([
+
             'sysmes'=>$sysmes,
             'flname'=>$flname,
             'changeEm'=>$changeEm,
             'mycookie'=>$mycookie,
             'auto'=>$auto,
             'lastID'=>$id,
+            
+        ]);
+        exit();
+    }
+    public function respJson2($param){
+        echo json_encode([
+            
+            $param[0] => $param[1],
             
         ]);
         exit();

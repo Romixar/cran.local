@@ -206,6 +206,12 @@
         
     });
     
+    function orderForm(data){// вывод формы заказа рекламы
+        
+        $('div#order').text('').append(data);
+        
+    }
+    
     
     
     
@@ -1150,6 +1156,7 @@
                         
                         if($('a#addref')) $('a#addref').remove();// кнопка Хочу стать рефералом
                         
+                        if(obj.orderForm) orderForm(obj.orderForm);// форма заказа вида рекламы
 
                             
                         
