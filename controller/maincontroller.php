@@ -589,6 +589,8 @@ class MainController extends Controller{
         $this->meta_desc = 'Страница размещение рекламы мета описание';
         $this->meta_key = 'Страница размещение рекламы мета кей';
         
+        
+        
         $typeReklams = [
             
             0 => 'Статические ссылки',
@@ -599,6 +601,17 @@ class MainController extends Controller{
         
         $list = $this->getListServices($typeReklams);
         
+        
+        
+        
+        $this->render('addreklam',compact('list'));
+    }
+    
+    public function getOrderFormStaticLink(){
+        
+        debug($this->data);die;
+        
+        $head = '<h4>Разместить статическую ссылку</h4>';
 
         $params = [
             
@@ -644,10 +657,10 @@ class MainController extends Controller{
         ];
         
         
-        $form = $this->getForm($params,$button,$select);
+        $formcontent = $head.$this->getForm($params,$button,$select);
         
         
-        $this->render('addreklam',compact('list','form'));
+        
     }
     
     public function getListServices($typeReklams){

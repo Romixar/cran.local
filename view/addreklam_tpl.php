@@ -5,11 +5,15 @@
     <?= $list ?>
 </div>
 
+<div id="order">
 
 
-<h4>Разместить статическую ссылку</h4>
-<div class="form">
+    <?//= $form ?>
+
     
-    <?= $form ?>
+    
+    
+    
     
 </div>
+

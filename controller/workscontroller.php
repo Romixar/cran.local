@@ -12,29 +12,18 @@ class WorksController extends Controller{
             
             $content = $this->getHtmlSerf($this->getSerfing()); //  серфинг ссылки
             
-        
             $staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
             
+            $content .= $this->view->prerender('staticlinks',compact('staticlinks'));
             
             
+        }else $content = $this->getEmptyContent();// если пользователь не авторизован
             
-        }else{
-            $content = $this->getEmptyContent();// если пользователь не авторизован
-            $staticlinks = '';
-        }
-        
-        
-        $content .= $this->view->prerender('staticlinks',compact('staticlinks'));
         
         
         
-        //debug($data);die;
-
-        
-        
-        
-        $names = $this->getTabs('class="active"','names');
-        $tabs = $this->getTabs(' in active','tabs',$content);
+        $names = $this->getTabs('class="active"','names');// названия вкладок
+        $tabs = $this->getTabs(' in active','tabs',$content);// содержимое первой активной вкладки
 
         $this->render('works',compact('names','tabs'));
     }
@@ -84,7 +73,7 @@ class WorksController extends Controller{
                 continue; // не будет выводиться просмотренные ссылки
             }
 
-            $str .= $this->view->prerender('serf',[
+            $str .= $this->view->prerender('serf_link',[
                 'i'    => $i,
                 'id'   => $data[$i]->id,
                 'n'    => $data[$i]->n,
@@ -115,7 +104,7 @@ class WorksController extends Controller{
             
             if(($data[$i]->date_add + $data[$i]->period) <= time()) continue;
             
-            $str .= $this->view->prerender('static',[
+            $str .= $this->view->prerender('st_link',[
                 
                 'i'    => $i,
                 'id'   => $data[$i]->id,

@@ -188,6 +188,24 @@
     });
     
     
+    $(document).on('click','div.services a',function(e){// клик на заказ какой нибудь рекламы
+        
+        e.preventDefault();
+        
+        if(e.target.id == 'serv0') post_query('getOrderStLink', '&request=orderForm0');
+        if(e.target.id == 'serv1') post_query('getOrderCntxtLink', '&request=orderForm1');
+        if(e.target.id == 'serv2') post_query('getOrderSerfLink', '&request=orderForm2');
+        if(e.target.id == 'serv3') post_query('getOrderStLink', '&request=orderForm3');
+        if(e.target.id == 'serv4') post_query('getOrderStLink', '&request=orderForm4');
+        if(e.target.id == 'serv5') post_query('getOrderStLink', '&request=orderForm5');
+        if(e.target.id == 'serv6') post_query('getOrderStLink', '&request=orderForm6');
+        
+        
+        return;
+        
+        
+    });
+    
     
     
     
