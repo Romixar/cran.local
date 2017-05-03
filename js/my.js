@@ -261,7 +261,7 @@
         var opt = $('#cntxtselect option:selected').val();// выбранный селект индекс опшина
         
         if(Number(opt)) sum = 0;
-        else sum = 15; // прибавим 15 руб. за выделение
+        else sum = 0.15 * qntserf; // прибавим 0.15 руб. за кажд переход
             
         total = (qntserf * 0.5) + sum;// 1 просмотр 0,5 руб.
         
