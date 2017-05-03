@@ -610,6 +610,8 @@ class MainController extends Controller{
     public function getOrderFormStaticLink(){
         
         $head = '<h4>Разместить статическую ссылку</h4>';
+        
+        $desc = '<p>Размещаются на определенное количество дней. При этом количество переходов по ним может быть неограниченное. Вы получаете именно заинтересованных посетителей на свой проект. Ссылка появится на странице - Задания / Серфинг сайтов.</p>';
 
         $params = [
             
@@ -657,7 +659,7 @@ class MainController extends Controller{
 
         $param = [];
         $param[0] = 'orderForm';
-        $param[1] = $head.$this->getForm($params,$button,$select);
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select);
         
         $this->respJson2($param);
     }
@@ -724,7 +726,8 @@ class MainController extends Controller{
         if(!$this->validReklBalance()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance())$this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
+        if(!$this->UpdateReklBalance($this->getSumStaticLink()))
+            $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         
         
@@ -754,14 +757,20 @@ class MainController extends Controller{
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
     }
-    
-    public function UpdateReklBalance(){
+    public function validReklBalance2(){
+        $totalsum = $this->getSumCntxtLink();
         
-        $totalsum = $this->getSumStaticLink();
+        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
+        else return true;
+    }
+    
+    public function UpdateReklBalance($sum){
+        
+        //$totalsum = $this->getSumStaticLink();
 
         $u = new User();
         
-        $_SESSION['user']['acnt2'] -= $totalsum;
+        $_SESSION['user']['acnt2'] -= $sum;
         
         $res = $u->update([
             'acnt2' => $_SESSION['user']['acnt2'],
@@ -778,6 +787,130 @@ class MainController extends Controller{
         $sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
         
         return ($qntday * 20) + $sumopt;
+    }
+    public function getSumCntxtLink(){
+        
+        $qntserf = $this->data['qntserf'];
+        
+        $sumopt = ($this->data['opt']) ? 0 : 15;
+        
+        return ($qntserf * 0.5) + $sumopt;
+    }
+    
+    public function addCntxtLink(){// размещение контекстной ссылки рекламодателем
+        
+        //debug($this->data);die;
+        
+        
+        // проверить наличие средств на рекламном счёте
+        if(!$this->validReklBalance2()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        
+        // списать средства с рекламного счета юзера
+        if(!$this->UpdateReklBalance($this->getSumCntxtLink()))
+            $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
+        
+        
+        
+        
+        $mod = new Contextlinks();
+
+        $res = $mod->insert([
+            
+            'user_id' => $_SESSION['user']['id'],
+            'opt' => $this->data['opt'],
+            'title' => $this->data['title'],
+            'desc' => $this->data['desc'],
+            'url' => $this->data['url'],
+            'h' => $this->data['h'],
+            'n' => $this->data['qntserf'],
+            'date_add'=>time(),
+            
+        ]);
+        
+        if($res) $this->respJson($this->sysMessage('success','Контекстная ссылка успешно добавлена!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
+        
+        
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public function getOrderFormCntxtLink(){
+        
+        $head = '<h4>Разместить контекстную ссылку</h4>';
+        
+        $desc = '<p>Здесь текст будет другой</p>';
+
+        $params = [
+            
+            0 => [
+                
+                'label' => 'URL сайта',
+                'id' => 'url',
+                'name' => 'url',
+                'plh' => 'http://example.ru',
+                
+            ],
+            1 => [
+                
+                'label' => 'Заголовок',
+                'id' => 'title',
+                'name' => 'title',
+                'plh' => 'Заголовок ссылки',
+                
+            ],
+            2 => [
+                
+                'label' => 'Описание',
+                'id' => 'desc',
+                'name' => 'desc',
+                'plh' => 'Описание ссылки',
+                
+            ],
+            3 => [
+                
+                'label' => 'Количество переходов',
+                'id' => 'qntserf',
+                'name' => 'qntserf',
+                'plh' => '',
+                'val' => '100',
+                
+            ],
+            
+        ];
+        
+        $button = ['addcntxtlink','Создать контекстную ссылку'];
+        
+        $select = [
+            0 => [
+                'label' => 'Выделение красным',
+                'id' => 'cntxtselect',
+            ],
+            1 => [
+                'Да (+ 15 руб.)',
+                'Нет'
+            ]
+        ];
+        
+        
+        
+        
+        $param = [];
+        $param[0] = 'orderForm';
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select);
+        
+        $this->respJson2($param);
     }
 
 

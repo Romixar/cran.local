@@ -176,6 +176,109 @@
     }
     
     
+    $(document).on('click','a#addcntxtlink',function(e){// создание контекстной ссылки
+        
+        e.preventDefault();
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        if(!validReklBalance()){
+            viewMessage(getTplMes('Недостаточно средств на рекламном счёте!','danger'));
+            return;
+        }
+        
+        var url = $('#url');
+        var h;
+        var title = $('#title');
+        var desc = $('#desc');
+        var qntserf = $('#qntserf');
+                
+        var opt = $('#cntxtselect option:selected').val();// выбранный селект индекс опшина
+        
+        if(validCntxtLink(url,title,desc,qntserf)){
+            
+            viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+            
+            qntserf = qntserf.val();
+            qntserf = qntserf.replace(".","").replace(" ","");
+            
+            h = (url.val()[4] == 's') ? 1 : 0; // уточню протокол
+            
+            url = url.val().substr((url.val().indexOf('//'))+2);// обрезка протокола
+            
+            var str = '&url='+$.trim(url)+'&h='+h+'&title='+$.trim(title.val())+'&desc='
+                      +$.trim(desc.val())+'&qntserf='+qntserf+'&opt='+opt;
+            
+            post_query('add_cntxtlink', str);
+            return;
+        }
+    });
+    
+    function validCntxtLink(url,title,desc,qntserf){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
+        
+        var days;
+        
+        if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
+        if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
+        
+        days = qntserf.val();
+        
+        if(days === '') validMessage(qntserf, 'ERR_EMP');
+        
+        days = days.replace(".","").replace(" ","");
+        
+        if(!regP.test(days)) validMessage(qntserf, 'ERR_DIG');
+        
+        if(submit) return true;
+        return false;
+    }
+    
+    $(document).on("focusout", 'input#qntserf', function(){ // потеря фокуса дни статич ссылки
+        
+        calcReklForm2();
+    });
+    
+    $(document).on("change", 'select#cntxtselect', function(){// выбор селект контекст ссылки
+        
+        calcReklForm2();
+    });
+    
+    function calcReklForm2(){
+        
+        var qntserf = $('#qntserf').val();
+        
+        qntserf = Number(qntserf.replace(".","").replace(" ",""));
+
+        if(isNaN(qntserf)) return; // если введено не число то выход
+        
+        var total;
+        
+        var sum;
+        
+        var opt = $('#cntxtselect option:selected').val();// выбранный селект индекс опшина
+        
+        if(Number(opt)) sum = 0;
+        else sum = 15; // прибавим 15 руб. за выделение
+            
+        total = (qntserf * 0.5) + sum;// 1 просмотр 0,5 руб.
+        
+        $('span#sum').text('').text(total);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     $(document).on('click','div.serf a.static',function(e){// клик по статич ссылке
         
         e.preventDefault();
@@ -187,15 +290,14 @@
         return;
     });
     
-    
     $(document).on('click','div.services a',function(e){// клик на заказ какой нибудь рекламы
         
         e.preventDefault();
         
         if(e.target.id == 'serv0') post_query('getOrderStLink', '&request=orderForm0');
-        if(e.target.id == 'serv1') post_query('getOrderCntxtLink', '&request=orderForm1');
-        if(e.target.id == 'serv2') post_query('getOrderSerfLink', '&request=orderForm2');
-        if(e.target.id == 'serv3') post_query('getOrderStLink', '&request=orderForm3');
+        if(e.target.id == 'serv1') post_query('getOrderSerfLink', '&request=orderForm1');
+        if(e.target.id == 'serv2') post_query('getOrderCntxtLink', '&request=orderForm2');
+        if(e.target.id == 'serv3') post_query('getOrderCntxtLink', '&request=orderForm3');
         if(e.target.id == 'serv4') post_query('getOrderStLink', '&request=orderForm4');
         if(e.target.id == 'serv5') post_query('getOrderStLink', '&request=orderForm5');
         if(e.target.id == 'serv6') post_query('getOrderStLink', '&request=orderForm6');

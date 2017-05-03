@@ -109,6 +109,10 @@ class Controller{
         if(isset($data['getOrderStLink_f']))$this->getOrderFormStaticLink();//запрос формы зак ст ссыл
         if(isset($data['add_statlink_f'])) $this->addStaticLink();// размещение статич ссылки
         if(isset($data['addview_statlink_f'])) $this->addViewStaticLink();// просмотр статич ссылки
+        
+        if(isset($data['getOrderCntxtLink_f']))$this->getOrderFormCntxtLink();//дать форму зак конт ссыл
+        if(isset($data['add_cntxtlink_f']))$this->addCntxtLink();//размещение контекстн ссылки
+        
 
         
     }
