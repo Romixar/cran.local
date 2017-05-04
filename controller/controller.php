@@ -114,6 +114,7 @@ class Controller{
         
         if(isset($data['getOrderCntxtLink_f']))$this->getOrderFormCntxtLink();//дать форму зак конт ссыл
         if(isset($data['add_cntxtlink_f']))$this->addCntxtLink();//размещение контекстн ссылки
+        if(isset($data['addview_cntxtlink_f'])) $this->addViewCntxtLink();// просмотр контекстн ссылки
         
 
         
@@ -139,7 +140,7 @@ class Controller{
             
             $h = ($data[$i]->h) ? 'https://' : 'http://';
             
-            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt'.$data[$i]->id.'">'.$data[$i]->title.'</a></p>';
+            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt_'.$data[$i]->id.'" class="cntxt" >'.$data[$i]->title.'</a></p>';
             
             
         }

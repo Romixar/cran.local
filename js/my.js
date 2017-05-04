@@ -289,6 +289,17 @@
         else viewMessage(getTplMes('Ошибка отправки ID статической ссылки!','danger'));
         return;
     });
+    $(document).on('click','div#cntxt_rekl a.cntxt',function(e){// клик по контекстн ссылке
+        
+        e.preventDefault();
+        
+        var pos = e.target.id.indexOf('_');
+        var linkId = Number(e.target.id.substr(pos+1));
+        
+        if(!isNaN(linkId)) post_query('addview_cntxtlink', '&linkId='+linkId);
+        else viewMessage(getTplMes('Ошибка отправки ID контекстной ссылки!','danger'));
+        return;
+    });
     
     $(document).on('click','div.services a',function(e){// клик на заказ какой нибудь рекламы
         

@@ -771,8 +771,6 @@ class MainController extends Controller{
     }
     
     public function UpdateReklBalance($sum){
-        
-        //$totalsum = $this->getSumStaticLink();
 
         $u = new User();
         
@@ -788,18 +786,12 @@ class MainController extends Controller{
     
     public function getSumStaticLink($qntday,$opt){
         
-        //$qntday = $this->data['qntday'];
-        
-        //$sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
         $sumopt = ($opt) ? 0 : (5 * $qntday);
         
         return ($qntday * 20) + $sumopt;
     }
     public function getSumCntxtLink($qntserf, $opt){
         
-        //$qntserf = $this->data['qntserf'];
-        
-        //$sumopt = ($this->data['opt']) ? 0 : (0.15 * $qntserf);
         $sumopt = ($opt) ? 0 : (0.15 * $qntserf);
         
         return ($qntserf * 0.5) + $sumopt;
@@ -1141,14 +1133,16 @@ class MainController extends Controller{
     
     
     public function addSerfView(){
-        
         $wctrl = new WorksController();
         $wctrl->addSerfView();
     }
     public function addViewStaticLink(){
-        
         $wctrl = new WorksController();
         $wctrl->addViewStaticLink();
+    }
+    public function addViewCntxtLink(){
+        $wctrl = new WorksController();
+        $wctrl->addViewCntxtLink();
     }
     
     

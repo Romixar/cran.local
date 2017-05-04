@@ -384,8 +384,58 @@ class WorksController extends Controller{
         return $mod->findStaticLinkData($f, $link_id, $user_id, $yesterday_ts, $week_ts);
         
     }
+    public function getCntxtLinkOnDay($link_id, $user_id){
+        
+        $mod = new History_c();
+        
+        // период текущая неделя
+        $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        $week_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи ч\з неделю
+        
+        $f = '`history_c`.`user_id`,`view_ids`,`dates_views`,`history_c`.`date_add`,
+             `contextlinks`.`period`,`contextlinks`.`n`,`contextlinks`.`v`';
+        
+        return $mod->findCntxtLinkData($f, $link_id, $user_id, $yesterday_ts, $week_ts);
+        
+        
+        
+    }
     
     
+    public function addViewCntxtLink(){
+        
+        
+        //debug($this->data);die;
+        
+        
+        
+        $link_id = $this->data['linkId'];
+        $user_id = $_SESSION['user']['id'];
+        
+        $ts = time();
+        
+        if(!is_int($link_id) && !preg_match('/^\d{1,10}$/',$link_id))
+            $this->respJson($this->sysMessage('danger','Ошибка ID контекстной ссылки!'));
+        
+        // вставка либо обновление истории просмотра (неделя на строку)
+        $data = $this->getCntxtLinkOnDay($link_id, $user_id);
+        
+        // ошибка, т.к. в сутки (неделю) только по одной строке на юзера   обновление просмотра v
+        if((!empty($data) && count($data) != 1) || ($this->acceptCntxtView($link_id) != 2))
+            $this->respJson($this->sysMessage('danger','Ошибка извлечения из БД!'));
+        
+
+        if(empty($data)) $res = $this->insertCntxtLink($link_id, $user_id, $ts);
+        else $res = $this->updateCntxtLink($data, $link_id, $user_id, $ts);
+        
+        if($res) exit('Зафиксирован неоплачиваемый просмотр!');
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
+        
+        
+        
+        
+        
+    }
     
     
     

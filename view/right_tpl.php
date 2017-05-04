@@ -6,7 +6,7 @@
       <?= $reg ?>
    </p>
    
-   <div>
+   <div id="cntxt_rekl">
     
        <?= $links ?>
 
