@@ -15,6 +15,7 @@ class Controller{
     public $r_b; // рефбэк пользователя
     
     public $nmsWorks = ['Серфинг','Задания','Тесты','Конкурсы','новый таб'];
+    
 
     
     public function __construct(){
@@ -58,10 +59,11 @@ class Controller{
             $refstock = '<a href="/refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
             $mystats = '<a href="/mystats" class="btn btn-primary btn-xs" role="button">Моя статистика</a>';
             $addrek = '<a href="/addreklam" class="btn btn-primary btn-xs" role="button">Подать рекламу</a>';
+            $links = $this->getCntxtLinks();
             
         }
         $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl',
-                             'refstock','mystats','addrek');
+                             'refstock','mystats','addrek','links');
         
             
         $this->sysmes = Session::flash('sysmes');

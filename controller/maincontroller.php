@@ -488,7 +488,7 @@ class MainController extends Controller{
         $this->render('ref_page',compact('refpage'));
     }
     
-    public function delLastRef($data){
+    public function delLastRef($data){ // удаление последнего реферера со стены рефереров
         
         if(count($data) > 15){
             
@@ -834,6 +834,29 @@ class MainController extends Controller{
         
         
         
+    }
+    
+    public function getCntxtLinks(){
+        
+        $mod = new Contextlinks();
+        
+        $data = $mod->find('*');
+        
+        return $this->getHtmlCntxtLinks($data);
+        
+        
+    }
+    public function getHtmlCntxtLinks($data){
+        
+        for($i=0; $i<count($data); $i++){
+            
+            $h = ($data[$i]->h) ? 'https://' : 'http://';
+            
+            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt'.$data[$i]->id.'">'.$data[$i]->title.'</a></p>';
+            
+            
+        }
+        return $str;
     }
     
     
