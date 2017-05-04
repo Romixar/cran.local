@@ -656,10 +656,12 @@ class MainController extends Controller{
             ]
         ];
         
+        $sum = $this->getSumStaticLink(10,0); //на 10 дней и с выделением
+        
 
         $param = [];
         $param[0] = 'orderForm';
-        $param[1] = $head.$desc.$this->getForm($params,$button,$select);
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum);
         
         $this->respJson2($param);
     }
@@ -723,11 +725,14 @@ class MainController extends Controller{
     
     public function addStaticLink(){// размещение статич ссылки рекламодателем
         
+        $qntday = $this->data['qntday'];
+        $opt = $this->data['opt'];
+        
         // проверить наличие средств на рекламном счёте
         if(!$this->validReklBalance()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumStaticLink()))
+        if(!$this->UpdateReklBalance($this->getSumStaticLink($qntday,$opt)))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         
@@ -753,7 +758,7 @@ class MainController extends Controller{
     
     public function validReklBalance(){// проверить наличие средств на рекламном счёте
         
-        $totalsum = $this->getSumStaticLink();
+        $totalsum = $this->getSumStaticLink($this->data['qntday'],$this->data['opt']);
         
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
@@ -781,11 +786,12 @@ class MainController extends Controller{
         return false;        
     }
     
-    public function getSumStaticLink(){
+    public function getSumStaticLink($qntday,$opt){
         
-        $qntday = $this->data['qntday'];
+        //$qntday = $this->data['qntday'];
         
-        $sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
+        //$sumopt = ($this->data['opt']) ? 0 : (5 * $qntday);
+        $sumopt = ($opt) ? 0 : (5 * $qntday);
         
         return ($qntday * 20) + $sumopt;
     }
