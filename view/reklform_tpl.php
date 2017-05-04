@@ -4,7 +4,7 @@
     <?= $select ?>
     <div id="total">
         <p>Всего:
-            <span id="sum">250</span> руб.
+            <span id="sum"><?= $sum ?></span> руб.
         </p>
     </div>
     <p>

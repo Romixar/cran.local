@@ -677,7 +677,7 @@ class MainController extends Controller{
         return $str.'</ul>';
     }
     
-    public function getForm($params,$button,$select=''){
+    public function getForm($params,$button,$select='',$sum=''){
         
         $view = new Viewcontroller();
         
@@ -697,6 +697,7 @@ class MainController extends Controller{
                    'butname'=> $button[1],
                    'inputs' => $inputs,
                    'select' => $select,
+                   'sum' => $sum,
                ]);
     }
     
@@ -758,7 +759,7 @@ class MainController extends Controller{
         else return true;
     }
     public function validReklBalance2(){
-        $totalsum = $this->getSumCntxtLink();
+        $totalsum = $this->getSumCntxtLink($this->data['qntserf'],$this->data['opt']);
         
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
@@ -788,25 +789,27 @@ class MainController extends Controller{
         
         return ($qntday * 20) + $sumopt;
     }
-    public function getSumCntxtLink(){
+    public function getSumCntxtLink($qntserf, $opt){
         
-        $qntserf = $this->data['qntserf'];
+        //$qntserf = $this->data['qntserf'];
         
-        $sumopt = ($this->data['opt']) ? 0 : (0.15 * $qntserf);
+        //$sumopt = ($this->data['opt']) ? 0 : (0.15 * $qntserf);
+        $sumopt = ($opt) ? 0 : (0.15 * $qntserf);
         
         return ($qntserf * 0.5) + $sumopt;
     }
     
     public function addCntxtLink(){// размещение контекстной ссылки рекламодателем
         
-        //debug($this->data);die;
+        $qntserf = $this->data['qntserf'];
+        $opt = $this->data['opt'];
         
         
         // проверить наличие средств на рекламном счёте
         if(!$this->validReklBalance2()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumCntxtLink()))
+        if(!$this->UpdateReklBalance($this->getSumCntxtLink($qntserf,$opt)))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         
@@ -836,28 +839,7 @@ class MainController extends Controller{
         
     }
     
-    public function getCntxtLinks(){
-        
-        $mod = new Contextlinks();
-        
-        $data = $mod->find('*');
-        
-        return $this->getHtmlCntxtLinks($data);
-        
-        
-    }
-    public function getHtmlCntxtLinks($data){
-        
-        for($i=0; $i<count($data); $i++){
-            
-            $h = ($data[$i]->h) ? 'https://' : 'http://';
-            
-            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt'.$data[$i]->id.'">'.$data[$i]->title.'</a></p>';
-            
-            
-        }
-        return $str;
-    }
+    
     
     
     
@@ -915,6 +897,8 @@ class MainController extends Controller{
         
         $button = ['addcntxtlink','Создать контекстную ссылку'];
         
+        $sum = $this->getSumCntxtLink(100,0);// сумма на 100 просмотров и выделенная
+        
         $select = [
             0 => [
                 'label' => 'Выделение красным',
@@ -931,7 +915,7 @@ class MainController extends Controller{
         
         $param = [];
         $param[0] = 'orderForm';
-        $param[1] = $head.$desc.$this->getForm($params,$button,$select);
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum);
         
         $this->respJson2($param);
     }

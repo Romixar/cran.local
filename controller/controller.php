@@ -118,6 +118,33 @@ class Controller{
 
         
     }
+
+    public function getCntxtLinks(){
+        
+        $title = '<p>Контекстная реклама</p>';
+        
+        $mod = new Contextlinks();
+        
+        $data = $mod->find('*');
+        
+        return $title.$this->getHtmlCntxtLinks($data);
+        
+        
+    }
+    public function getHtmlCntxtLinks($data){
+        
+        for($i=0; $i<count($data); $i++){
+            
+            if($data[$i]->period) continue;// выведу только контекстные
+            
+            $h = ($data[$i]->h) ? 'https://' : 'http://';
+            
+            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt'.$data[$i]->id.'">'.$data[$i]->title.'</a></p>';
+            
+            
+        }
+        return $str;
+    }
     
 
 
