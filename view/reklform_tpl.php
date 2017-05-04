@@ -1,7 +1,7 @@
 <div class="form">
    
     <?= $inputs ?>
-    <?= $select ?>
+    <?= $selects ?>
     <div id="total">
         <p>Всего:
             <span id="sum"><?= $sum ?></span> руб.

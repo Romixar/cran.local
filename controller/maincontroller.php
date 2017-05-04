@@ -679,9 +679,11 @@ class MainController extends Controller{
         return $str.'</ul>';
     }
     
-    public function getForm($params,$button,$select='',$sum=''){
+    public function getForm($params,$button,$select='',$sum='',$arrk=''){
         
         $view = new Viewcontroller();
+        
+        
         
         for($i=0; $i<count($params); $i++){
             
@@ -692,35 +694,57 @@ class MainController extends Controller{
             $inputs .= $view->prerender('inpform',$arr);
         }
         
-        $select = ($select) ? $this->getSelect($select) : '';
+        if(is_array($arrk)){
+            
+            for($j=0; $j<count($arrk); $j++) $selects .= $this->getSelect($select, $arrk[$j]);
+            
+        }else $selects = ($select) ? $this->getSelect($select) : '';
         
         return $view->prerender('reklform',[
                    'butid' => $button[0],
                    'butname'=> $button[1],
                    'inputs' => $inputs,
-                   'select' => $select,
+                   'selects' => $selects,
                    'sum' => $sum,
                ]);
     }
     
-    public function getSelect($select){
+    public function getSelect($select, $k=''){
         
         $view = new Viewcontroller();
         
-        for($i=0; $i<count($select[1]); $i++){
+        if($k === ''){
             
-            $sel = ($i) ? '' : 'selected';
+            for($i=0; $i<count($select[1]); $i++){
             
-            $str .= '<option '.$sel.' value="'.$i.'">'.$select[1][$i].'</option>';
+                $sel = ($i) ? '' : 'selected';
+
+                $str .= '<option '.$sel.' value="'.$i.'">'.$select[1][$i].'</option>';
+            }
+            return $view->prerender('select',[
+
+                'label' => $select[0]['label'],
+                'id' => $select[0]['id'],
+                'opt' => $str,
+
+            ]);
+        }else{
+            
+            for($i=0; $i<count($select[$k][1]); $i++){
+            
+                if($k == 1 && $i == 6) $sel = 'selected';
+                else $sel = ($i) ? '' : 'selected';
+
+                $str .= '<option '.$sel.' value="'.$i.'">'.$select[$k][1][$i].'</option>';
+            }
+            return $view->prerender('select',[
+
+                'label' => $select[$k][0]['label'],
+                'id' => $select[$k][0]['id'],
+                'opt' => $str,
+
+            ]);
         }
-        
-        return $view->prerender('select',[
-            
-            'label' => $select[0]['label'],
-            'id' => $select[0]['id'],
-            'opt' => $str,
-            
-        ]);
     }
     
     public function addStaticLink(){// размещение статич ссылки рекламодателем
@@ -796,6 +820,13 @@ class MainController extends Controller{
         
         return ($qntserf * 0.5) + $sumopt;
     }
+    public function getSumSerfLink($qntserflink, $opt, $optunlim){
+        
+//        $sumopt = ($opt) ? 0 : (0.01 * $qntserflink);
+//        
+//        return ($qntserflink * 0.05) + $sumopt;
+        return 1000;
+    }
     
     public function addCntxtLink(){// размещение контекстной ссылки рекламодателем
         
@@ -829,26 +860,9 @@ class MainController extends Controller{
         ]);
         
         if($res) $this->respJson($this->sysMessage('success','Контекстная ссылка успешно добавлена!'));
-        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
-        
-        
-        
-        
-        
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));        
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     public function getOrderFormCntxtLink(){
         
         $head = '<h4>Разместить контекстную ссылку</h4>';
@@ -914,6 +928,105 @@ class MainController extends Controller{
         $param = [];
         $param[0] = 'orderForm';
         $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum);
+        
+        $this->respJson2($param);
+    }
+    
+    public function getOrderFormSerfLink(){
+        
+        
+        $head = '<h4>Разместить динамическую ссылку</h4>';
+        
+        $desc = '<p>Это ссылки с определенным количеством переходов по ним. Вы гарантировано получите заказанное количество посетителей на свой сайт. Все посетители по вашей ссылке будут уникальными в течении 24 часов. Ссылка размещается на странице Работа / Серфинг.</p>';
+
+        $params = [
+            
+            0 => [
+                
+                'label' => 'URL сайта',
+                'id' => 'url',
+                'name' => 'url',
+                'plh' => 'http://example.ru',
+                
+            ],
+            1 => [
+                
+                'label' => 'Заголовок',
+                'id' => 'title',
+                'name' => 'title',
+                'plh' => 'Заголовок ссылки',
+                
+            ],
+            2 => [
+                
+                'label' => 'Описание',
+                'id' => 'desc',
+                'name' => 'desc',
+                'plh' => 'Описание ссылки',
+                
+            ],
+            3 => [
+                
+                'label' => 'Количество просмотров (в сут.)',
+                'id' => 'qntserflink',
+                'name' => 'qntserflink',
+                'plh' => '',
+                'val' => '500',
+                
+            ],
+            
+        ];
+        
+        $button = ['addserflink','Создать динамическую ссылку'];
+        
+        $sum = $this->getSumSerfLink(500,0,0);// сумма на 500 просмотров и выделенная, безлимит
+        
+        $select = [
+            0 => [    
+                0 => [
+                    'label' => 'Безлимитка',
+                    'id' => 'unlimselect',
+                ],
+                1 => [
+                    'Да (на 30 дней) 1000 руб.',
+                    'Да (на 3 недели) 800 руб.',
+                    'Да (на 2 недели) 600 руб.',
+                    'Да (на 1 неделю) 400 руб.',
+                    'Нет'
+                ]
+            ],
+            1 => [    
+                0 => [
+                    'label' => 'Время просмотра',
+                    'id' => 'timeviewselect',
+                ],
+                1 => [
+                    '20 сек. (0.06 руб./ за 1 просмотр)',
+                    '25 сек. (0.06 руб./ за 1 просмотр)',
+                    '30 сек. (0.06 руб./ за 1 просмотр)',
+                    '35 сек. (0.06 руб./ за 1 просмотр)',
+                    '40 сек. (0.06 руб./ за 1 просмотр)',
+                    '50 сек. (0.06 руб./ за 1 просмотр)',
+                    '60 сек. (0.06 руб./ за 1 просмотр)',
+                ]
+            ],
+            2 => [    
+                0 => [
+                    'label' => 'Выделение красным',
+                    'id' => 'serfselect',
+                ],
+                1 => [
+                    'Да (+ 0.01 руб./ за просмотр)',
+                    'Нет'
+                ]
+            ]
+        ];
+        
+        $arrk = [0,1,2];// порядок вывода селектов
+        
+        $param = [];
+        $param[0] = 'orderForm';
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum,$arrk);
         
         $this->respJson2($param);
     }

@@ -116,6 +116,9 @@ class Controller{
         if(isset($data['add_cntxtlink_f']))$this->addCntxtLink();//размещение контекстн ссылки
         if(isset($data['addview_cntxtlink_f'])) $this->addViewCntxtLink();// просмотр контекстн ссылки
         
+        
+        if(isset($data['getOrderSerfLink_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
+        
 
         
     }
