@@ -118,6 +118,26 @@ class DB{
         return false;
     }
     
+    public function findCntxtLinkData($f, $link_id, $user_id, $yes_ts, $week_ts){
+        
+        $sql = 'SELECT '.$f.'
+                FROM `'.static::$table.'`
+                JOIN `contextlinks`
+                WHERE `contextlinks`.`id` = '.$link_id.'
+                AND `history_c`.`user_id` = '.$user_id.'
+                AND `history_c`.`date_add` BETWEEN '.$yes_ts.' AND '.$week_ts.'
+                AND `contextlinks`.`period` = 0';
+        
+        //echo $sql;//die;
+        
+        $res = $this->select($sql);
+        if(!empty($res)) return $res;
+        return false;
+        
+        
+        
+    }
+    
     public function findEmail($em){
         
         $sql = "SELECT * FROM `users` WHERE `email` = '".$em."'";

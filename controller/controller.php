@@ -136,7 +136,7 @@ class Controller{
         
         for($i=0; $i<count($data); $i++){
             
-            if($data[$i]->period) continue;// выведу только контекстные
+            if($data[$i]->period || $data[$i]->v >= $data[$i]->n) continue;// выведу только контекстные
             
             $h = ($data[$i]->h) ? 'https://' : 'http://';
             

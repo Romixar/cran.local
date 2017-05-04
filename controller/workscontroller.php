@@ -328,7 +328,7 @@ class WorksController extends Controller{
         $data = $this->getStaticLinkOnDay($link_id, $user_id);
         
         // ошибка, т.к. в сутки (неделю) только по одной строке на юзера   обновление просмотра v
-        if((!empty($data) && count($data) != 1) || ($this->acceptStaticView($link_id) != 2))
+        if((!empty($data) && count($data) != 1) || ($this->acceptLinkView($link_id) != 2))
             $this->respJson($this->sysMessage('danger','Ошибка извлечения из БД!'));
         
 
@@ -339,7 +339,7 @@ class WorksController extends Controller{
         else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
     }
     
-    public function acceptStaticView($link_id){
+    public function acceptLinkView($link_id){
         
         $mod = new Contextlinks();
         
@@ -420,8 +420,10 @@ class WorksController extends Controller{
         // вставка либо обновление истории просмотра (неделя на строку)
         $data = $this->getCntxtLinkOnDay($link_id, $user_id);
         
+        //debug($data);//die;
+        
         // ошибка, т.к. в сутки (неделю) только по одной строке на юзера   обновление просмотра v
-        if((!empty($data) && count($data) != 1) || ($this->acceptCntxtView($link_id) != 2))
+        if((!empty($data) && count($data) != 1) || ($this->acceptLinkView($link_id) != 2))
             $this->respJson($this->sysMessage('danger','Ошибка извлечения из БД!'));
         
 
@@ -435,6 +437,30 @@ class WorksController extends Controller{
         
         
         
+    }
+    
+    public function insertCntxtLink($link_id, $user_id, $ts){
+        $mod = new History_c();
+        return $mod->insert([
+                   'user_id' => $user_id,
+                   'view_ids' => $link_id.',',
+                   'dates_views' => $ts.',',
+                   'date_add' => $ts,
+               ]);
+    }
+    
+    public function updateCntxtLink($data, $link_id, $user_id, $ts){
+        $mod = new History_c();
+        
+        // добавляю к уже просмотренным юзером ссылкам, еще одну
+        $view_ids = $data[0]->view_ids.$link_id.',';
+            
+        return $mod->update([
+                   'view_ids' => $view_ids,
+                   'dates_views' => $data[0]->dates_views.$ts.',',
+                   'date_add' => $ts,
+
+               ],'`user_id` = '.$user_id.' AND `date_add` = '.$data[0]->date_add);
     }
     
     
