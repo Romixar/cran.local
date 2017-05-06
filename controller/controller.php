@@ -118,7 +118,7 @@ class Controller{
         
         
         if(isset($data['getOrderSerfLink_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
-        
+        if(isset($data['add_dynamlink_f'])) $this->addDynamLink();// размещение статич ссылки
 
         
     }

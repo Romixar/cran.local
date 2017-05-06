@@ -141,7 +141,7 @@
         calcReklForm();
     });
     
-    function calcReklForm(){
+    function calcReklForm(){ // калькулятор статич ссылки
         
         var qntday = $('#qntday').val();
         
@@ -246,7 +246,7 @@
         calcReklForm2();
     });
     
-    function calcReklForm2(){
+    function calcReklForm2(){ // калькулятор контекстной ссылки
         
         var qntserf = $('#qntserf').val();
         
@@ -267,6 +267,152 @@
         
         $('span#sum').text('').text(total);
     }
+    
+    $(document).on("focusout", 'input#qntserflink', function(){ // потеря фокуса серФИНГ ссылки
+        
+        calcReklForm3();
+    });
+    
+    $(document).on("change", 'select#unlimselect', function(){// выбор селект БЕЗЛИМИТКА
+        
+        calcReklForm3();
+    });
+    $(document).on("change", 'select#timeviewselect', function(){// выбор селект вр СЕРФИНГА
+        
+        calcReklForm3();
+    });
+    $(document).on("change", 'select#serfselect', function(){// выбор селект СЕРФИНГ ссылки
+        
+        calcReklForm3();
+    });
+    
+    function calcReklForm3(){ // калькулятор динамич-й ссылки СЕРФИНГА
+        
+        var qntserf = $('#qntserflink').val();
+        
+        qntserf = Number(qntserf.replace(".","").replace(" ",""));
+        
+        if(isNaN(qntserf)) return; // если введено не число то выход
+
+        var total;
+        
+        var sum0, sum1, sum2;
+        
+        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
+        var opttime = $('#timeviewselect option:selected').val();// селект индекс опшина вр просмотра
+        var opt = $('#serfselect option:selected').val();// выбранный селект индекс опшина
+        
+        
+        switch(Number(optunlim)){
+            
+            case 0: sum0 = 1000;
+                break;
+            case 1: sum0 = 800;
+                break;
+            case 2: sum0 = 600;
+                break;
+            case 3: sum0 = 400;
+                break;
+            case 4: sum0 = 0;
+                break;
+            
+        }
+        
+        switch(Number(opttime)){
+            
+            case 0: sum1 = 0.06 * qntserf;
+                break;
+            case 1: sum1 = 0.06 * qntserf;
+                break;
+            case 2: sum1 = 0.06 * qntserf;
+                break;
+            case 3: sum1 = 0.06 * qntserf;
+                break;
+            case 4: sum1 = 0.06 * qntserf;
+                break;
+            case 5: sum1 = 0.06 * qntserf;
+                break;
+            case 6: sum1 = 0.06 * qntserf;
+                break;
+            
+        }
+        
+        if(Number(opt)) sum2 = 0;
+        else sum2 = 0.01 * qntserf; // прибавим 0.01 руб. за кажд проссмотр
+        
+        if(optunlim != 4) total = sum0;
+        else total = sum0 + sum1 + sum2;
+        
+        $('span#sum').text('').text(total);
+    }
+    
+    $(document).on('click','a#addserflink',function(e){// создание СЕРФИНГ ссылки
+        
+        e.preventDefault();
+        
+        elem = $(this);
+        textButton = $(this).text();
+        
+        if(!validReklBalance()){
+            viewMessage(getTplMes('Недостаточно средств на рекламном счёте!','danger'));
+            return;
+        }
+        
+        var url = $('#url');
+        var h;
+        var title = $('#title');
+        var desc = $('#desc');
+        var qntserf = $('#qntserflink');
+                
+        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
+        var opttime = $('#timeviewselect option:selected').val();// селект индекс опшина вр просмотра
+        var opt = $('#serfselect option:selected').val();// выбранный селект индекс опшина
+        
+        if(validDynamLink(url,title,desc,qntserf)){
+            
+            viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
+            
+            qntserf = qntserf.val();
+            qntserf = qntserf.replace(".","").replace(" ","");
+            
+            h = (url.val()[4] == 's') ? 1 : 0; // уточню протокол
+            
+            url = url.val().substr((url.val().indexOf('//'))+2);// обрезка протокола
+            
+            var str = '&url='+$.trim(url)+'&h='+h+'&title='+$.trim(title.val())+'&desc='
+                      +$.trim(desc.val())+'&qntserf='+qntserf+'&optunlim='+optunlim+'&opttime='
+                      +opttime+'&opt='+opt;
+            
+            post_query('add_dynamlink', str);
+            return;
+        }
+    });
+    
+    function validDynamLink(url,title,desc,qntserf){
+        
+        submit = true;// запрет второй отправки (по ENTER например)
+        
+        var days;
+        
+        if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
+        if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
+        
+        days = qntserf.val();
+        
+        if(days === '') validMessage(qntserf, 'ERR_EMP');
+        
+        days = days.replace(".","").replace(" ","");
+        
+        if(!regP.test(days)) validMessage(qntserf, 'ERR_DIG');
+        
+        if(submit) return true;
+        return false;
+    }
+    
+    
+    
+    
+    
     
     
     

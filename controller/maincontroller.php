@@ -793,6 +793,12 @@ class MainController extends Controller{
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
     }
+    public function validReklBalance3(){
+        $totalsum = $this->getSumSerfLink($this->data['qntserf'],$this->data['optunlim'],$this->data['opttime'],$this->data['opt']);
+        
+        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
+        else return true;
+    }
     
     public function UpdateReklBalance($sum){
 
@@ -820,12 +826,47 @@ class MainController extends Controller{
         
         return ($qntserf * 0.5) + $sumopt;
     }
-    public function getSumSerfLink($qntserflink, $opt, $optunlim){
+    public function getSumSerfLink($qntserf,$optunlim,$opttime='',$opt=''){
         
-//        $sumopt = ($opt) ? 0 : (0.01 * $qntserflink);
-//        
-//        return ($qntserflink * 0.05) + $sumopt;
-        return 1000;
+        switch($optunlim){
+            case 0: $sum0 = 1000;
+                break;
+            case 1: $sum0 = 800;
+                break;
+            case 2: $sum0 = 600;
+                break;
+            case 3: $sum0 = 400;
+                break;
+            case 4: $sum0 = 0;
+                break;
+        }
+        
+        if(empty($opttime)) $opttime = 0;
+        
+        switch($opttime){
+            case 0: $sum1 = 0.06 * $qntserf;
+                break;
+            case 1: $sum1 = 0.06 * $qntserf;
+                break;
+            case 2: $sum1 = 0.06 * $qntserf;
+                break;
+            case 3: $sum1 = 0.06 * $qntserf;
+                break;
+            case 4: $sum1 = 0.06 * $qntserf;
+                break;
+            case 5: $sum1 = 0.06 * $qntserf;
+                break;
+            case 6: $sum1 = 0.06 * $qntserf;
+                break;
+        }
+        
+        if($opt) $sum2 = 0;
+        else $sum2 = 0.01 * $qntserf;
+        
+        if($optunlim != 4) $total = $sum0;
+        else $total = $sum0 + $sum1 + $sum2;
+
+        return $total;
     }
     
     public function addCntxtLink(){// размещение контекстной ссылки рекламодателем
@@ -979,7 +1020,8 @@ class MainController extends Controller{
         
         $button = ['addserflink','Создать динамическую ссылку'];
         
-        $sum = $this->getSumSerfLink(500,0,0);// сумма на 500 просмотров и выделенная, безлимит
+        $sum = $this->getSumSerfLink(500,0);// сумма на 500 просмотров и выделенная, безлимит
+        
         
         $select = [
             0 => [    
@@ -1029,6 +1071,89 @@ class MainController extends Controller{
         $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum,$arrk);
         
         $this->respJson2($param);
+    }
+    
+    public function addDynamLink(){
+        
+        //debug($this->data);die;
+        
+        
+        $qntserf = $this->data['qntserf'];
+        $optunlim = $this->data['optunlim'];
+        $opttime = $this->data['opttime'];
+        $opt = $this->data['opt'];
+        
+        
+        // проверить наличие средств на рекламном счёте
+        if(!$this->validReklBalance3()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        
+        
+        // списать средства с рекламного счета юзера
+        if(!$this->UpdateReklBalance($this->getSumSerfLink($qntserf,$optunlim,$opttime,$opt)))
+            $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
+
+            
+        switch($this->data['opttime']){
+            case 0: $timer = 20;
+                $price = 0.04;
+                break;
+            case 1: $timer = 25;
+                $price = 0.04;
+                break;
+            case 2: $timer = 30;
+                $price = 0.04;
+                break;
+            case 3: $timer = 35;
+                $price = 0.04;
+                break;
+            case 4: $timer = 40;
+                $price = 0.04;
+                break;
+            case 5: $timer = 50;
+                $price = 0.04;;
+                break;
+            case 6: $timer = 60;
+                $price = 0.04;
+                break;
+        }
+        
+        switch($this->data['optunlim']){ // период показа ссылки
+            
+            case 0: $period = 30 * 24 * 60 * 60;
+                break;
+            case 1: $period = 21 * 24 * 60 * 60;
+                break;
+            case 2: $period = 14 * 24 * 60 * 60;
+                break;
+            case 3: $period = 7 * 24 * 60 * 60;
+                break;
+            case 4: $period = 24 * 60 * 60; // по умолчанию на суткм
+                break;         
+        }
+        
+        
+        
+        
+        $mod = new Serfing();
+
+        $res = $mod->insert([
+            
+            'user_id' => $_SESSION['user']['id'],
+            'opt' => $this->data['opt'],
+            'title' => $this->data['title'],
+            'desc' => $this->data['desc'],
+            'url' => $this->data['url'],
+            'h' => $this->data['h'],
+            'n' => $this->data['qntserf'],
+            'period' => $period,
+            'timer' => $timer,
+            'price' => $price,
+            'date_add'=>time(),
+            
+        ]);
+        
+        if($res) $this->respJson($this->sysMessage('success','Динамическая ссылка успешно добавлена!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
 
 
