@@ -45,14 +45,14 @@ class WorksController extends Controller{
         
         $user_id = $_SESSION['user']['id'];
         
-        $fields = '`serfing`.`id`,`n`,`v`,`timer`,`url`,`title`,`desc`,`price`,`period`,
+        $fields = '`serfing`.`id`,`opt`,`n`,`v`,`timer`,`h`,`url`,`title`,`desc`,`price`,`period`,
         `history_s`.`serf_ids`,`history_s`.`dates_views`';
         
         // сначала пробую извлечь из serfing и history_s
         $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts);
         
         
-        if(empty($data)) return $mod->find('*');// если нет, значит сегодня ещё не серфил
+        if(empty($data)) return $mod->find('*');// если нет, значит юзер сегодня ещё не серфил
         else return $data;
     }
     
@@ -66,12 +66,14 @@ class WorksController extends Controller{
             
             $ost = $data[$i]->n - $data[$i]->v; // если уже были просмотренные у юзера
             
-            $cl = ''; // будет класс для неактивных серфинг ссылок
-            
             if($ost <= 0 || ($data[$i]->serf_ids && !$this->checkSerfLink($data[$i]->id, $data[$i]))){
                 $cl = ' disabled';
                 continue; // не будет выводиться просмотренные ссылки
             }
+            
+            $url = ($data[$i]->h) ? 'https://'.$data[$i]->url : 'http://'.$data[$i]->url;
+            
+            $cl = ($data[$i]->opt) ? ' red' : '';//будет класс для неактивных серфинг ссылок и выдел-е
 
             $str .= $this->view->prerender('serf_link',[
                 'i'    => $i,
@@ -79,7 +81,7 @@ class WorksController extends Controller{
                 'n'    => $data[$i]->n,
                 'ost'  => $ost,
                 'timer'=> $data[$i]->timer,
-                'url'  => $data[$i]->url,
+                'url'  => $url,
                 'title'=> $data[$i]->title,
                 'price'=> $data[$i]->price,
                 'desc' => $data[$i]->desc,
@@ -166,10 +168,6 @@ class WorksController extends Controller{
         if(!$this->checkSerfLink($serf_id, $data[0])) $this->getAlertJS('Ссылка уже просмотрена!');
         
         $this->updateSerfLink($data, $serf_id, $user_id, $ts, $price);
-        
-        
-        
-        
     }
     
     public function acceptView($serf_id){
@@ -191,11 +189,9 @@ class WorksController extends Controller{
         
         
         $this->replFrameContent('На ваш баланс зачислено '.$balance.' руб.!');
-        
-        
     }
     
-    public function getSerfDataOnDay($serf_id, $user_id){
+    public function getSerfDataOnDay($serf_id, $user_id){// данные о серф ссылке за сутки
         
         $mod = new History_s();
         
@@ -210,7 +206,7 @@ class WorksController extends Controller{
         
     }
     
-    public function insertSerfLink($serf_id, $user_id, $ts, $price){
+    public function insertSerfLink($serf_id, $user_id, $ts, $price){// просмотр серф ссылки
         
         $mod = new History_s();
             
@@ -396,19 +392,11 @@ class WorksController extends Controller{
              `contextlinks`.`period`,`contextlinks`.`n`,`contextlinks`.`v`';
         
         return $mod->findCntxtLinkData($f, $link_id, $user_id, $yesterday_ts, $week_ts);
-        
-        
-        
     }
     
     
     public function addViewCntxtLink(){
-        
-        
-        //debug($this->data);die;
-        
-        
-        
+
         $link_id = $this->data['linkId'];
         $user_id = $_SESSION['user']['id'];
         
@@ -420,8 +408,6 @@ class WorksController extends Controller{
         // вставка либо обновление истории просмотра (неделя на строку)
         $data = $this->getCntxtLinkOnDay($link_id, $user_id);
         
-        //debug($data);//die;
-        
         // ошибка, т.к. в сутки (неделю) только по одной строке на юзера   обновление просмотра v
         if((!empty($data) && count($data) != 1) || ($this->acceptLinkView($link_id) != 2))
             $this->respJson($this->sysMessage('danger','Ошибка извлечения из БД!'));
@@ -432,11 +418,6 @@ class WorksController extends Controller{
         
         if($res) exit('Зафиксирован неоплачиваемый просмотр!');
         else $this->respJson($this->sysMessage('danger','Ошибка добавления просмотра ссылки!'));
-        
-        
-        
-        
-        
     }
     
     public function insertCntxtLink($link_id, $user_id, $ts){

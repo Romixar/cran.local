@@ -1073,15 +1073,12 @@ class MainController extends Controller{
         $this->respJson2($param);
     }
     
-    public function addDynamLink(){
-        
-        //debug($this->data);die;
-        
-        
+    public function addDynamLink(){// размещение динамической ссылки рекламодателем
+
         $qntserf = $this->data['qntserf'];
-        $optunlim = $this->data['optunlim'];
-        $opttime = $this->data['opttime'];
-        $opt = $this->data['opt'];
+        $optunlim = $this->data['optunlim'];// выбор безлимитки
+        $opttime = $this->data['opttime'];// выбор времени и цены
+        $opt = $this->data['opt'];  // выделять КРАСНЫМ или нет
         
         
         // проверить наличие средств на рекламном счёте
@@ -1092,47 +1089,9 @@ class MainController extends Controller{
         if(!$this->UpdateReklBalance($this->getSumSerfLink($qntserf,$optunlim,$opttime,$opt)))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
 
-            
-        switch($this->data['opttime']){
-            case 0: $timer = 20;
-                $price = 0.04;
-                break;
-            case 1: $timer = 25;
-                $price = 0.04;
-                break;
-            case 2: $timer = 30;
-                $price = 0.04;
-                break;
-            case 3: $timer = 35;
-                $price = 0.04;
-                break;
-            case 4: $timer = 40;
-                $price = 0.04;
-                break;
-            case 5: $timer = 50;
-                $price = 0.04;;
-                break;
-            case 6: $timer = 60;
-                $price = 0.04;
-                break;
-        }
+        $this->getTimerAndPrice($this->data['opttime'], $timer, $price);
         
-        switch($this->data['optunlim']){ // период показа ссылки
-            
-            case 0: $period = 30 * 24 * 60 * 60;
-                break;
-            case 1: $period = 21 * 24 * 60 * 60;
-                break;
-            case 2: $period = 14 * 24 * 60 * 60;
-                break;
-            case 3: $period = 7 * 24 * 60 * 60;
-                break;
-            case 4: $period = 24 * 60 * 60; // по умолчанию на суткм
-                break;         
-        }
-        
-        
-        
+        $period = $this->getPeriod($this->data['optunlim']);
         
         $mod = new Serfing();
 
@@ -1155,6 +1114,30 @@ class MainController extends Controller{
         if($res) $this->respJson($this->sysMessage('success','Динамическая ссылка успешно добавлена!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
+    
+    public function getTimerAndPrice($opttime, &$timer, &$price){
+        switch($opttime){
+            case 0: $timer = 20; $price = 0.04; break;// время и цена СЕРФссылки для пользователя
+            case 1: $timer = 25; $price = 0.04; break;
+            case 2: $timer = 30; $price = 0.04; break;
+            case 3: $timer = 35; $price = 0.04; break;
+            case 4: $timer = 40; $price = 0.04; break;
+            case 5: $timer = 50; $price = 0.04; break;
+            case 6: $timer = 60; $price = 0.04; break;
+        }
+    }
+    public function getPeriod($optunlim){
+        
+        switch($optunlim){ // период показа ссылки   
+            case 0: $period = 30 * 24 * 60 * 60; break;
+            case 1: $period = 21 * 24 * 60 * 60; break;
+            case 2: $period = 14 * 24 * 60 * 60; break;
+            case 3: $period = 7 * 24 * 60 * 60; break;
+            case 4: $period = 24 * 60 * 60; break;// по умолчанию на суткм
+        }
+        return $period;
+    }
+    
 
 
     
