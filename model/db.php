@@ -62,7 +62,7 @@ class DB{
 //                
 //    AND `history_s`.`date_add` BETWEEN 1489730699 AND 1489780699'
         
-    public function findSerfLinks($fields, $user_id, $yes_ts, $tod_ts){
+    public function findSerfLinks($fields, $user_id, $yes_ts, $tod_ts, $mon_ts){
         
         $sql = 'SELECT '.$fields.'
     
@@ -70,10 +70,11 @@ class DB{
 
                 WHERE `history_s`.`user_id` = '.$user_id.'
                 
-                AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts;
+                AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts.'
+                AND `serfing`.`date_add` > '.$mon_ts;
         
     
-        //echo $sql; die;
+        //echo $sql; //die;
         
         $res = $this->select($sql);
         if(!empty($res)) return $res;
@@ -96,7 +97,7 @@ class DB{
     //  1492808400 - полночь 21.04
         
         
-    echo $sql; //die;
+    //echo $sql; //die;
         $res = $this->select($sql);
         if(!empty($res)) return $res;
         return false;
@@ -250,7 +251,7 @@ class DB{
         
         $sql = 'INSERT INTO `'.static::$table.'` (`id`,`k`,`v`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`)';
         
-        //echo $sql;die;
+        echo $sql;//die;
         
         $sth = $this->dbh->query($sql);
         

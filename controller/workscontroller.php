@@ -43,13 +43,17 @@ class WorksController extends Controller{
         $yes_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $tod_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
+        $mon_ts = time() - (31 * 24 * 60 * 60);
+        
         $user_id = $_SESSION['user']['id'];
         
-        $fields = '`serfing`.`id`,`opt`,`n`,`v`,`timer`,`h`,`url`,`title`,`desc`,`price`,`period`,
-        `history_s`.`serf_ids`,`history_s`.`dates_views`';
+        $fields = '`serfing`.`id`,`opt`,`n`,`v`,`k`,`timer`,`h`,`url`,`title`,`desc`,`price`,`period`,
+                  `serfing`.`date_add`,`history_s`.`serf_ids`,`history_s`.`dates_views`';
+        
+        
         
         // сначала пробую извлечь из serfing и history_s за послед сутки
-        $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts);
+        $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts, $mon_ts);
         
         
         
@@ -64,6 +68,8 @@ class WorksController extends Controller{
     
     public function addZeroSerfingView($data){// присвоить 0 v у которых прошли сутки
         
+        //debug($data);die;
+        
         $yes_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         
         $tmp = [];// ключ (ID ссылки) => знач-е (k кол-во уже прошедших суток)
@@ -73,17 +79,21 @@ class WorksController extends Controller{
             if(($data[$i]->date_add + 24 * 60 * 60) > time()) continue;// не прошли сутки с подачи
             
             if(($data[$i]->date_add + $data[$i]->period) < time()) continue;// давно истек период
-                
-                
+            
+            
             // найти TS полночи того дня когда была добавлена ссылка
             $polnoch = mktime(0,0,0,date('m',$data[$i]->date_add),date('d',$data[$i]->date_add),date('Y',$data[$i]->date_add));
                 
             // из TS сегодняшней полночи вычесть полночь date_add и разделить на сек в сут.
-            $days = ($yes_ts - $polnoch) / (24 * 60 * 60);// ск-ко прошло полных суток
+            $days = ($yes_ts - $polnoch) / (24 * 60 * 60);// кол-во полных суток до сегодняш полночи
             
-            //if($days >= ($data[$i]->period / (24 * 60 * 60))) continue;// ограничение
+            $perioddays = $data[$i]->period / (24 * 60 * 60);// кол-во пол сут периода ссылки
+            
+
+            
+            if($days > $perioddays) continue;// ограничение на окончание
                 
-            if($data[$i]->k !== $days){// Обнулить v у этой ссылки и установить k
+            if($data[$i]->k != $days){// Обнулить v у этой ссылки и установить k
                 
                 $tmp[$data[$i]->id] = $days;
                 
@@ -94,12 +104,8 @@ class WorksController extends Controller{
             
         }
         
-        // обнуляю v и обновляю k в БД
-        if(!empty($tmp) && !$this->udateSerfViewsOnDay($tmp)){
-            
-            $this->respJson($this->sysMessage('danger','Ошибка обновления серфинг ссылки!'));
-        }
-            
+        if(!empty($tmp) && !$this->udateSerfViewsOnDay($tmp))// обнуляю v и обновляю k в БД
+            $this->sysMessage2('danger','Ошибка обновления серфинг ссылки!');
         
         return $data;
         
@@ -111,7 +117,6 @@ class WorksController extends Controller{
         
         if($mod->setSerfZero($tmp)) return true;
         return false;
-        
     }
     
     
@@ -122,6 +127,8 @@ class WorksController extends Controller{
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
+            
+            if(($data[$i]->date_add + $data[$i]->period) < time()) continue;// давно истек период
             
             $ost = $data[$i]->n - $data[$i]->v; // если уже были просмотренные у юзера
             

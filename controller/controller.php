@@ -939,8 +939,15 @@ class Controller{
     
     public function sysMessage($type,$mes){
         $view = new ViewController();
+        
+        //$this->sysmes = $view->prerender('message',compact('type','mes'));
 
-        return $view->prerender('message',compact('type','mes')); 
+        return $view->prerender('message',compact('type','mes'));
+    }
+    public function sysMessage2($type,$mes){
+        $view = new ViewController();
+        
+        $this->sysmes = $view->prerender('message',compact('type','mes'));
     }
     
     public function respJson($sysmes=false, $flname=false, $changeEm=true, $mycookie=false, $auto=false,$id=false){
