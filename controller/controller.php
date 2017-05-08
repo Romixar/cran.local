@@ -106,7 +106,7 @@ class Controller{
         if(isset($data['buy_refstock_f'])) $this->buyRefStock();// покупка реферала с биржи
         
         
-        if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
+        
         
         if(isset($data['getOrderStLink_f']))$this->getOrderFormStaticLink();//запрос формы зак ст ссыл
         if(isset($data['add_statlink_f'])) $this->addStaticLink();// размещение статич ссылки
@@ -119,6 +119,7 @@ class Controller{
         
         if(isset($data['getOrderSerfLink_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
         if(isset($data['add_dynamlink_f'])) $this->addDynamLink();// размещение статич ссылки
+        if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
 
         
     }

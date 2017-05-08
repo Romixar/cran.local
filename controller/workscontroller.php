@@ -48,13 +48,56 @@ class WorksController extends Controller{
         $fields = '`serfing`.`id`,`opt`,`n`,`v`,`timer`,`h`,`url`,`title`,`desc`,`price`,`period`,
         `history_s`.`serf_ids`,`history_s`.`dates_views`';
         
-        // сначала пробую извлечь из serfing и history_s
+        // сначала пробую извлечь из serfing и history_s за послед сутки
         $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts);
         
         
-        if(empty($data)) return $mod->find('*');// если нет, значит юзер сегодня ещё не серфил
-        else return $data;
+        
+        
+        if(empty($data)) $data = $mod->find('*');// если нет, значит юзер сегодня ещё не серфил
+        
+        $data = $this->addZeroSerfingView($data);// обнуление просмотров v, если начались нов сутки
+        
+        
+        return $data;
     }
+    
+    public function addZeroSerfingView($data){// присвоить 0 v у которых прошли сутки
+        
+        $yes_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
+        
+        $tmp = [];// ключ (ID ссылки) => знач-е (k кол-во уже прошедших суток)
+        
+        for($i=0; $i<count($data); $i++){// если у периода серф ссылки прошли сутки, то обнул V
+            
+            if(($data[$i]->date_add + 24 * 60 * 60) > time()) continue;// не прошли сутки с подачи
+            
+            if(($data[$i]->date_add + $data[$i]->period) < time()) continue;// давно истек период
+                
+                
+            // найти TS полночи того дня когда была добавлена ссылка
+            $polnoch = mktime(0,0,0,date('m',$data[$i]->date_add),date('d',$data[$i]->date_add),date('Y',$data[$i]->date_add));
+                
+            // из TS сегодняшней полночи вычесть полночь date_add и разделить на сек в сут.
+            $days = ($yes_ts - $polnoch) / (24 * 60 * 60);// ск-ко прошло полных суток
+                
+            if($data[$i]->k !== $days){// Обнулить v у этой ссылки и установить k
+                
+                $tmp[$data[$i]->id] = $days;
+                
+                $data[$i]->k = $days;// кол-во полных пройденных суток
+                
+                $data[$i]->v = 0;
+            }
+            
+        }
+        
+        debug($tmp);//die;
+        debug($data);die;
+        
+        return $data;
+    }
+    
     
     public function getHtmlSerf($data){
         
@@ -73,7 +116,7 @@ class WorksController extends Controller{
             
             $url = ($data[$i]->h) ? 'https://'.$data[$i]->url : 'http://'.$data[$i]->url;
             
-            $cl = ($data[$i]->opt) ? ' red' : '';//будет класс для неактивных серфинг ссылок и выдел-е
+            $cl = ($data[$i]->opt) ? '' : ' red';//будет класс для неактивных серфинг ссылок и выдел-е
 
             $str .= $this->view->prerender('serf_link',[
                 'i'    => $i,
@@ -86,7 +129,7 @@ class WorksController extends Controller{
                 'price'=> $data[$i]->price,
                 'desc' => $data[$i]->desc,
                 'cl'   => $cl,
-                'rand' => rand(1,4),
+                'rand' => rand(1,4), //будет случайная кнопка с заработком
             ]);
             
             $fl = 1;
@@ -144,6 +187,8 @@ class WorksController extends Controller{
         
         if(!is_int($serf_id) && !preg_match('/^\d{1,10}$/',$serf_id)) $this->getAlertJS('Ошибка ID!');
         
+        //debug($this->data);die;
+        
         $data = $this->getSerfDataOnDay($serf_id, $user_id);
         
 
@@ -172,6 +217,8 @@ class WorksController extends Controller{
     
     public function acceptView($serf_id){
         
+        
+        
         $mod = new Serfing();
         
         return $mod->updateViewSerf($serf_id);
@@ -199,7 +246,7 @@ class WorksController extends Controller{
         $yesterday_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         $today_ts = mktime(0,0,0,date('m'),(date('d')+1),date('Y'));// TS полночи сегодн дня
         
-        $f = '`user_id`,`serf_ids`,`dates_views`,`date_add`,`sum`,
+        $f = '`history_s`.`user_id`,`serf_ids`,`dates_views`,`history_s`.`date_add`,`sum`,
         `serfing`.`price`,`serfing`.`period`,`serfing`.`n`,`serfing`.`v`';
         
         return $mod->findSerfData($f, $serf_id, $user_id, $yesterday_ts, $today_ts);

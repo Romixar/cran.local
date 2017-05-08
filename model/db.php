@@ -96,7 +96,7 @@ class DB{
     //  1492808400 - полночь 21.04
         
         
-    //echo $sql; //die;
+    echo $sql; //die;
         $res = $this->select($sql);
         if(!empty($res)) return $res;
         return false;

@@ -45,7 +45,7 @@
 
      
 
-     <frame src="http://<?= $url ?>" name="CONTENT">
+     <frame src="<?= $url ?>" name="CONTENT">
      
  </frameset>
  

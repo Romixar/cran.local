@@ -56,7 +56,7 @@
               
               <p>Описание: <span id="serfdesc"><?= $title ?></span><br/>
 
-              URL: <span id="serfurl"><a href="http://<?= $url ?>">http://<?= $url ?></a></span></p>
+              URL: <span id="serfurl"><a href="<?= $url ?>"><?= $url ?></a></span></p>
                
            </div>
             
