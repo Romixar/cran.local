@@ -80,6 +80,8 @@ class WorksController extends Controller{
                 
             // из TS сегодняшней полночи вычесть полночь date_add и разделить на сек в сут.
             $days = ($yes_ts - $polnoch) / (24 * 60 * 60);// ск-ко прошло полных суток
+            
+            //if($days >= ($data[$i]->period / (24 * 60 * 60))) continue;// ограничение
                 
             if($data[$i]->k !== $days){// Обнулить v у этой ссылки и установить k
                 
@@ -92,10 +94,24 @@ class WorksController extends Controller{
             
         }
         
-        debug($tmp);//die;
-        debug($data);die;
+        // обнуляю v и обновляю k в БД
+        if(!empty($tmp) && !$this->udateSerfViewsOnDay($tmp)){
+            
+            $this->respJson($this->sysMessage('danger','Ошибка обновления серфинг ссылки!'));
+        }
+            
         
         return $data;
+        
+    }
+    
+    public function udateSerfViewsOnDay($tmp){
+        
+        $mod = new Serfing();
+        
+        if($mod->setSerfZero($tmp)) return true;
+        return false;
+        
     }
     
     

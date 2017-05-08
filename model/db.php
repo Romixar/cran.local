@@ -242,6 +242,20 @@ class DB{
         
         return $sth->rowCount();
     }
+    public function setSerfZero($tmp){// установить 0 просмотров если прошли сутки
+        
+        foreach($tmp as $k => $v) $str .= '('.$k.','.$v.',0),';
+        
+        $str = substr($str,0,-1);
+        
+        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`k`,`v`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`)';
+        
+        //echo $sql;die;
+        
+        $sth = $this->dbh->query($sql);
+        
+        return $sth->rowCount();
+    }
     
     public function updateRefUsers($ids){
         
