@@ -47,8 +47,8 @@ class WorksController extends Controller{
         
         $user_id = $_SESSION['user']['id'];
         
-        $fields = '`serfing`.`id`,`serfing`.`user_id`,`opt`,`n`,`v`,`k`,`timer`,`h`,`url`,`title`,
-                  `desc`,`price`,`period`,`serfing`.`date_add`,`history_s`.`serf_ids`,
+        $fields = '`serfing`.`id`,`serfing`.`user_id`,`opt`,`n`,`v`,`tot_v`,`k`,`timer`,`h`,`url`,
+                  `title`,`desc`,`price`,`period`,`serfing`.`date_add`,`history_s`.`serf_ids`,
                   `history_s`.`dates_views`';
         
         
@@ -150,10 +150,13 @@ class WorksController extends Controller{
                 'i'    => $i,
                 'id'   => $data[$i]->id,
                 'n'    => $data[$i]->n,
+                'tot_v'=> $data[$i]->tot_v,
                 'ost'  => $ost,
                 'timer'=> $data[$i]->timer,
                 'url'  => $url,
                 'login'=> $arrlogins[$data[$i]->user_id],
+                'date_add'=>$this->formDate($data[$i]->date_add),
+                'date_fin'=>$this->formDate($data[$i]->date_add + $data[$i]->period),
                 'title'=> $data[$i]->title,
                 'price'=> $data[$i]->price,
                 'desc' => $data[$i]->desc,
