@@ -282,7 +282,10 @@
         var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
         
         if(optunlim != 4) validCntViews(optunlim);// валидация только кол-ва просмотров
-        
+        else{
+            $('div#order input').css('border','none');
+            $('div#order input').prev().text('');   
+        }
         calcReklForm3();
     });
     $(document).on("change", 'select#timeviewselect', function(){// выбор селект вр СЕРФИНГА
@@ -351,14 +354,12 @@
         if(optunlim != 4) total = sum0;
         else total = sum0 + sum1 + sum2;
         
-        $('span#sum').text('').text(total);
+        $('span#sum').text('').text(total.toFixed(2));
     }
     
     clearBorder2();
     
     function validCntViews(optunlim){
-        
-        //console.log('проверка!');
         
         var qntserf = $('#qntserflink').val();
         
@@ -394,7 +395,7 @@
         var opttime = $('#timeviewselect option:selected').val();// селект индекс опшина вр просмотра
         var opt = $('#serfselect option:selected').val();// выбранный селект индекс опшина
         
-        if(validDynamLink(url,title,desc,qntserf)){
+        if(validDynamLink(url,title,desc,qntserf,optunlim)){
             
             viewIcon3($(this), 'refresh gly-spin');// запуск крутилки в кнопке
             
@@ -414,7 +415,7 @@
         }
     });
     
-    function validDynamLink(url,title,desc,qntserf){
+    function validDynamLink(url,title,desc,qntserf,optunlim){
         
         submit = true;// запрет второй отправки (по ENTER например)
         
@@ -423,13 +424,16 @@
         if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
         if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
         
-        days = qntserf.val();
+        views = qntserf.val();
         
-        if(days === '') validMessage(qntserf, 'ERR_EMP');
+        if(views === '') validMessage(qntserf, 'ERR_EMP');
         
-        days = days.replace(".","").replace(" ","");
+        views = views.replace(".","").replace(" ","");
         
-        if(!regP.test(days)) validMessage(qntserf, 'ERR_DIG');
+        if(!regP.test(views)) validMessage(qntserf, 'ERR_DIG');
+        
+        if(optunlim != 4 && views > 500) validMessage(qntserf, 'ERR_QNT');
+        
         
         if(submit) return true;
         return false;
@@ -1512,7 +1516,7 @@
             'ERR_ERR': 'Поле заполнено не верно!',
             'ERR_URL': 'Ссылка указана не верно!',
             'ERR_DIG': 'В поле должны быть только цифры!',
-            'ERR_QNT': 'Превышено количество просмотров в этом поле!',
+            'ERR_QNT': 'При безлимитке не более 500 просмотров в этом поле!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
@@ -1669,6 +1673,11 @@
         
         
     }
+    
+        
+    
+
+        
     
     
     

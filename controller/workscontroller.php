@@ -128,7 +128,8 @@ class WorksController extends Controller{
         
         for($i=0; $i<count($data); $i++){
             
-            if(($data[$i]->date_add + $data[$i]->period) < time()) continue;// давно истек период
+            //if(($data[$i]->date_add + $data[$i]->period) < time()) continue;// давно истек период
+            if((time() - $data[$i]->date_add) > $data[$i]->period) continue;// давно истек период
             
             $ost = $data[$i]->n - $data[$i]->v; // если уже были просмотренные у юзера
             

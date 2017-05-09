@@ -71,7 +71,8 @@ class DB{
                 WHERE `history_s`.`user_id` = '.$user_id.'
                 
                 AND `history_s`.`date_add` BETWEEN '.$yes_ts.' AND '.$tod_ts.'
-                AND `serfing`.`date_add` > '.$mon_ts;
+                AND `serfing`.`date_add` > '.$mon_ts.'
+                ORDER BY `serfing`.`date_add` DESC';
         
     
         //echo $sql; //die;
@@ -251,7 +252,7 @@ class DB{
         
         $sql = 'INSERT INTO `'.static::$table.'` (`id`,`k`,`v`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`)';
         
-        echo $sql;//die;
+        //echo $sql;//die;
         
         $sth = $this->dbh->query($sql);
         
