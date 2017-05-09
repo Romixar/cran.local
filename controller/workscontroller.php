@@ -47,8 +47,9 @@ class WorksController extends Controller{
         
         $user_id = $_SESSION['user']['id'];
         
-        $fields = '`serfing`.`id`,`opt`,`n`,`v`,`k`,`timer`,`h`,`url`,`title`,`desc`,`price`,`period`,
-                  `serfing`.`date_add`,`history_s`.`serf_ids`,`history_s`.`dates_views`';
+        $fields = '`serfing`.`id`,`serfing`.`user_id`,`opt`,`n`,`v`,`k`,`timer`,`h`,`url`,`title`,
+                  `desc`,`price`,`period`,`serfing`.`date_add`,`history_s`.`serf_ids`,
+                  `history_s`.`dates_views`';
         
         
         
@@ -124,6 +125,9 @@ class WorksController extends Controller{
         
         $fl = 0;// чтобы узнать были ли полные итерации
         
+        $arrlogins = $this->getLoginsOnIDs($data);
+        
+        
         $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
@@ -149,12 +153,15 @@ class WorksController extends Controller{
                 'ost'  => $ost,
                 'timer'=> $data[$i]->timer,
                 'url'  => $url,
+                'login'=> $arrlogins[$data[$i]->user_id],
                 'title'=> $data[$i]->title,
                 'price'=> $data[$i]->price,
                 'desc' => $data[$i]->desc,
                 'cl'   => $cl,
                 'rand' => rand(1,4), //будет случайная кнопка с заработком
             ]);
+            
+            
             
             $fl = 1;
         }
@@ -163,6 +170,21 @@ class WorksController extends Controller{
 
         return $str;
         
+    }
+    
+    public function getLoginsOnIDs($data){
+        
+        $ids = [];// ID рекламодателей
+        
+        for($i=0; $i<count($data); $i++) $ids[] = $data[$i]->user_id;// собираю ID рекламодателей
+        
+        $mod = new User();
+        $res = $mod->findLoginOnIds($ids);
+
+        for($j=0; $j<count($res); $j++){
+            foreach($res[$j] as $k => $v) if($k == 'id') $tmp[$v] = $res[$j]['login'];
+        }
+        return $tmp;
     }
     
     public function getHtmlStaticLinks($data){

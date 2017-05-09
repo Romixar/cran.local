@@ -17,8 +17,10 @@
          <div class="panel-body">
              <p>Адрес: <span class="url"><?= $url ?></span></p>
              <p>Описание: <span class="desc"><?= $desc ?></span></p>
+             <p>Рекламодатель: <span class="user"><?= $login ?></span></p>
              <p>Количество просмотров (в сут.): <?= $n ?></p>
              <p>Осталось просмотров: <span class="ost"><?= $ost ?></span></p>
+             
          </div>
     </div>
 </div>

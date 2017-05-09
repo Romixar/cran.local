@@ -170,6 +170,17 @@ class DB{
         if(!empty($res) && count($res) == 1) return $res;
         return false;
     }
+    public function findLoginOnIds($ids){
+        
+        $sql = 'SELECT `id`,`login` FROM `'.static::$table.'` WHERE `id` IN ('.implode(',',$ids).')';
+        
+        //$res = $this->select($sql);
+        $res = $this->getArr($sql);
+        
+        if(!empty($res)) return $res;
+        return false;
+        
+    }
     
     public function find($fields, $where='', $asc='',$lim=''){
         

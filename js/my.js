@@ -422,7 +422,9 @@
         var days;
         
         if(!patUrl.test($.trim(url.val()))) validMessage(url, 'ERR_URL');
-        if($.trim(desc.val()).length > 60) validMessage(desc, 'ERR_LEN');
+        if(url.val().length > 60) validMessage(url, 'ERR_LEN');
+        if($.trim(title.val()).length > 60) validMessage(title, 'ERR_LEN');
+        if($.trim(desc.val()).length > 120) validMessage(desc, 'ERR_LEN');
         
         views = qntserf.val();
         
@@ -433,7 +435,6 @@
         if(!regP.test(views)) validMessage(qntserf, 'ERR_DIG');
         
         if(optunlim != 4 && views > 500) validMessage(qntserf, 'ERR_QNT');
-        
         
         if(submit) return true;
         return false;
