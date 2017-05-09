@@ -6,14 +6,6 @@
 </div>
 
 <div id="order">
-
-
-    <?//= $form ?>
-
-    
-    
-    
-    
     
 </div>
 

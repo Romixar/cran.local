@@ -270,10 +270,18 @@
     
     $(document).on("focusout", 'input#qntserflink', function(){ // потеря фокуса серФИНГ ссылки
         
+        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
+        
+        if(optunlim != 4) validCntViews(optunlim);// валидация только кол-ва просмотров
+        
         calcReklForm3();
     });
     
     $(document).on("change", 'select#unlimselect', function(){// выбор селект БЕЗЛИМИТКА
+        
+        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
+        
+        if(optunlim != 4) validCntViews(optunlim);// валидация только кол-ва просмотров
         
         calcReklForm3();
     });
@@ -344,6 +352,24 @@
         else total = sum0 + sum1 + sum2;
         
         $('span#sum').text('').text(total);
+    }
+    
+    clearBorder2();
+    
+    function validCntViews(optunlim){
+        
+        //console.log('проверка!');
+        
+        var qntserf = $('#qntserflink').val();
+        
+        if(optunlim == 0 && (Number(qntserf) > 500)) validMessage($('#qntserflink'), 'ERR_QNT');
+
+        if(optunlim == 1 && (Number(qntserf) > 500)) validMessage($('#qntserflink'), 'ERR_QNT');
+
+        if(optunlim == 2 && (Number(qntserf) > 500)) validMessage($('#qntserflink'), 'ERR_QNT');
+
+        if(optunlim == 3 && (Number(qntserf) > 500)) validMessage($('#qntserflink'), 'ERR_QNT');
+        
     }
     
     $(document).on('click','a#addserflink',function(e){// создание СЕРФИНГ ссылки
@@ -1486,6 +1512,7 @@
             'ERR_ERR': 'Поле заполнено не верно!',
             'ERR_URL': 'Ссылка указана не верно!',
             'ERR_DIG': 'В поле должны быть только цифры!',
+            'ERR_QNT': 'Превышено количество просмотров в этом поле!',
             
         };            
         inp.css('border','1px solid red').prev().text('').append(err[k]);
@@ -1623,6 +1650,17 @@
     function clearBorder(){
     
         $(document).on('focus', 'div.recovery input', function(e){
+        
+            $(this).css('border','none');
+            $(this).prev().text('');
+
+        });
+        
+        
+    }
+    function clearBorder2(){
+    
+        $(document).on('focus', 'div#order input', function(e){
         
             $(this).css('border','none');
             $(this).prev().text('');

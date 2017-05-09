@@ -118,7 +118,7 @@ class Controller{
         
         
         if(isset($data['getOrderSerfLink_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
-        if(isset($data['add_dynamlink_f'])) $this->addDynamLink();// размещение статич ссылки
+        if(isset($data['add_dynamlink_f'])) $this->addDynamLink();// размещение серфинг ссылки
         if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
 
         
@@ -939,8 +939,6 @@ class Controller{
     
     public function sysMessage($type,$mes){
         $view = new ViewController();
-        
-        //$this->sysmes = $view->prerender('message',compact('type','mes'));
 
         return $view->prerender('message',compact('type','mes'));
     }

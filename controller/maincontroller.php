@@ -1103,6 +1103,7 @@ class MainController extends Controller{
             'desc' => $this->data['desc'],
             'url' => $this->data['url'],
             'h' => $this->data['h'],
+            'k' => 1,// пошли первые сутки действия ссылки
             'n' => $this->data['qntserf'],
             'period' => $period,
             'timer' => $timer,
