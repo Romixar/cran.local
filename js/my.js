@@ -199,7 +199,7 @@
         return false;
     }
     
-    $(document).on("focusout", 'input#qntserf', function(){ // потеря фокуса дни статич ссылки
+    $(document).on("focusout", 'input#qntserf', function(){ // потеря фокуса дни контекст ссылки
         
         calcReklForm2();
     });
@@ -395,7 +395,7 @@
         calcReklForm4();
     });
     
-    function calcReklForm4(){ // калькулятор контекстной ссылки
+    function calcReklForm4(){ // калькулятор текстовой ссылки
         
         var qntday = $('#qnttxtday').val();
         
@@ -445,7 +445,7 @@
         
         $('span#sum').text('').text(total.toFixed(2));
     }
-    function calcReklForm2(){ // калькулятор контекстной ссылки
+    function calcReklForm2(){ // калькулятор контекст-й ссылки
         
         var qntserf = $('#qntserf').val();
         
@@ -488,28 +488,96 @@
         $('span#sum').text('').text(total);
     }
     
-    //calculateReklForm(3);
+    //calculateReklForm(0);
     
     function calculateReklForm(type){
         
+        var total, qntday, opt;
+        
+        var tarif = {
+            serv0:{
+                opt: 5,
+                cost: 20
+            },
+            serv1:{
+                opt: 1,
+                cost: 20
+            },
+            serv2:{
+                opt: 1,
+                cost: 5
+            },
+            serv3:{
+                opt: 1,
+                cost: 5
+            },
+                
+            
+        }
+        
         switch(type){
             
-            case 0: alert('статическая ссылка');
+            case 0:  /// статическая ссылка
+                
+                qntday = $('#qntday');// кол-во дн размещ
+                
+                opt = $('#linkselect option:selected');// выбранный селект индекс опшина
+                
                 break;
             case 1: alert('динамическая ссылка');
+                
+                // доп параметры взять optunlim и opttime
+                
+                
+                
+                
                 break;
-            case 2: alert('контекстная ссылка');
+            case 2:  //   контекстная ссылка
+                
+                qntday = $('#qntserf');// кол-во просмотров
+                
+                opt = $('#cntxtselect option:selected');// выбранный селект индекс опшина
+                
                 break;
-            case 3: alert('текстовая ссылка');
+                
+            case 3:  /// текстовая ссылка
+                
+                qntday = $('#qnttxtday');// кол-во дн размещ
+                
+                opt = $('#txtselect option:selected');// выбранный селект индекс опшина
+
                 break;
             
             
         }
+
+        total = getTotalSum(qntday, opt, tarif['serv'+type]);
+        
+        if(!total) return;
+        $('span#sum').text('').text(total);
+    }
+    function getTotalSum(qntday, opt, prices){
+        
+        var sum, total;
+        
+        qntday = qntday.val();
+                
+        qntday = Number(qntday.replace(".","").replace(" ",""));
         
         
+        console.log(qntday);return;
+        
+
+        if(isNaN(qntday)) return false; // если введено не число то выход
+          
+        if(Number(opt.val())) sum = 0;
+        else sum = prices.opt * qntday; // прибавим 1 руб. за кажд день выделения
+
+        total = (qntday * prices.cost) + sum;// 1 просмотр 0,5 руб./день
+        
+        return total;
         
     }
-    
     
     
     function getSumUnLim(optunlim){
