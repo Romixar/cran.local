@@ -57,9 +57,12 @@ class WorksController extends Controller{
         $data = $mod->findSerfLinks($fields, $user_id, $yes_ts, $tod_ts, $mon_ts);
         
         
+        $f = '`id`,`user_id`,`opt`,`n`,`v`,`tot_v`,`k`,`timer`,`h`,`url`,
+             `title`,`desc`,`price`,`period`,`date_add`';
         
+        $w = '`date_add` > '.(time() - 31 * 24 * 60 * 60);// за послед месяц
         
-        if(empty($data)) $data = $mod->find('*');// если нет, значит юзер сегодня ещё не серфил
+        if(empty($data)) $data = $mod->find($f,$w,'`date_add` DESC');// значит юзер сег-ня ещё не серфил
         
         $data = $this->addZeroSerfingView($data);// обнуление просмотров v, если начались нов сутки
         
@@ -69,12 +72,11 @@ class WorksController extends Controller{
     
     public function addZeroSerfingView($data){// присвоить 0 v у которых прошли сутки
         
-        //debug($data);die;
-        
         $yes_ts = mktime(0,0,0,date('m'),date('d'),date('Y'));// TS полночи этого дня
         
         $tmp = [];// ключ (ID ссылки) => знач-е (k кол-во уже прошедших суток)
         
+        $j=0;
         for($i=0; $i<count($data); $i++){// если у периода серф ссылки прошли сутки, то обнул V
             
             if(($data[$i]->date_add + 24 * 60 * 60) > time()) continue;// не прошли сутки с подачи
@@ -94,16 +96,21 @@ class WorksController extends Controller{
             
             if($days > $perioddays) continue;// ограничение на окончание
                 
-            if($data[$i]->k != $days){// Обнулить v у этой ссылки и установить k
+            if($data[$i]->k != $days){// Обнулить v у этой ссылки и установить k и tot_v
                 
-                $tmp[$data[$i]->id] = $days;
+                $tmp[$j]['id'] = $data[$i]->id;
+                $tmp[$j]['days'] = $days;
+                $tmp[$j]['tot_v'] = $data[$i]->v + $data[$i]->tot_v;// просмотры за прош сутки
                 
                 $data[$i]->k = $days;// кол-во полных пройденных суток
                 
                 $data[$i]->v = 0;
+                
+                $j++;
             }
             
         }
+
         
         if(!empty($tmp) && !$this->udateSerfViewsOnDay($tmp))// обнуляю v и обновляю k в БД
             $this->sysMessage2('danger','Ошибка обновления серфинг ссылки!');
@@ -149,7 +156,7 @@ class WorksController extends Controller{
             $str .= $this->view->prerender('serf_link',[
                 'i'    => $i,
                 'id'   => $data[$i]->id,
-                'n'    => $data[$i]->n,
+                'v'    => $data[$i]->v,
                 'tot_v'=> $data[$i]->tot_v,
                 'ost'  => $ost,
                 'timer'=> $data[$i]->timer,

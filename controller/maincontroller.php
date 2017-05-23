@@ -596,6 +596,7 @@ class MainController extends Controller{
             0 => 'Статические ссылки',
             1 => 'Динамические ссылки',
             2 => 'Контекстные ссылки',
+            3 => 'Текстовое объявление',
             
         ];
         
@@ -814,17 +815,22 @@ class MainController extends Controller{
         return false;        
     }
     
-    public function getSumStaticLink($qntday,$opt){
+    public function getSumStaticLink($qntday,$opt){// статич ссылка 20 руб в день
         
         $sumopt = ($opt) ? 0 : (5 * $qntday);
         
         return ($qntday * 20) + $sumopt;
     }
-    public function getSumCntxtLink($qntserf, $opt){
+    public function getSumCntxtLink($qntserf, $opt){// контекст ссылка 0,5 руб за переход
         
         $sumopt = ($opt) ? 0 : (0.15 * $qntserf);
         
         return ($qntserf * 0.5) + $sumopt;
+    }
+    public function getSumTxtLink($qntday,$opt){// текст объвл 5 руб в день
+        $sumopt = ($opt) ? 0 : (1 * $qntday); // 1 руб./день если выделено
+        
+        return ($qntday * 5) + $sumopt;
     }
     public function getSumSerfLink($qntserf,$optunlim,$opttime='',$opt=''){
         
@@ -1073,7 +1079,69 @@ class MainController extends Controller{
         $this->respJson2($param);
     }
     
-    public function addDynamLink(){// размещение динамической ссылки рекламодателем
+    public function getOrderFormTextLink(){
+        
+        //debug($this->data);die;
+        
+        $head = '<h4>Разместить текстовое объявление</h4>';
+        
+        $desc = '<p>Текст про текстовое объявление</p>';
+
+        $params = [
+            
+            0 => [
+                
+                'label' => 'URL сайта',
+                'id' => 'url',
+                'name' => 'url',
+                'plh' => 'http://example.ru',
+                
+            ],
+            1 => [
+                
+                'label' => 'Ваше объявление',
+                'id' => 'desc',
+                'name' => 'desc',
+                'plh' => 'Текст объявления',
+                
+            ],
+            2 => [
+                
+                'label' => 'Количество дней показа',
+                'id' => 'qnttxtday',
+                'name' => 'qntday',
+                'plh' => '',
+                'val' => '30',
+                
+            ],
+            
+        ];
+        
+        $button = ['addtxtlink','Создать текстовое объявление'];
+        
+        $sum = $this->getSumTxtLink(30,0);// сумма на 30 дн показа и выделенная
+        
+        $select = [
+            0 => [
+                'label' => 'Выделение красным',
+                'id' => 'txtselect',
+            ],
+            1 => [
+                'Да (+ 1 руб./день)',
+                'Нет'
+            ]
+        ];
+        
+        $param = [];
+        $param[0] = 'orderForm';
+        $param[1] = $head.$desc.$this->getForm($params,$button,$select,$sum);
+        
+        $this->respJson2($param);
+    }
+    
+    
+    
+    public function addDynamLink(){// размещение динамической ссылки рекламодателем (серфинг)
 
         $qntserf = $this->data['qntserf'];
         $optunlim = $this->data['optunlim'];// выбор безлимитки
@@ -1138,6 +1206,14 @@ class MainController extends Controller{
         }
         return $period;
     }
+    
+    
+    public function addTxtLink(){
+        
+        debug($this->data);die;
+        
+    }
+    
     
 
 

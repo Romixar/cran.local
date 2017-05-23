@@ -64,6 +64,8 @@ class DB{
         
     public function findSerfLinks($fields, $user_id, $yes_ts, $tod_ts, $mon_ts){
         
+//        $sql = 'SELECT `serfing`.`id`,`serfing`.`user_id`,`opt`,`n`,`v`,`tot_v`,`k`,`timer`,`h`,`url`, `title`,`desc`,`price`,`period`,`serfing`.`date_add`,`history_s`.`serf_ids`, `history_s`.`dates_views` FROM `serfing` JOIN `history_s` WHERE `history_s`.`user_id` = 4 AND `history_s`.`date_add` BETWEEN 1494450000 AND 1494536400 AND `serfing`.`date_add` > 1491801924 ORDER BY `serfing`.`date_add`';
+        
         $sql = 'SELECT '.$fields.'
     
                 FROM `'.static::$table.'` JOIN `history_s`
@@ -182,7 +184,7 @@ class DB{
         
     }
     
-    public function find($fields, $where='', $asc='',$lim=''){
+    public function find($fields, $where='', $asc='', $lim=''){
         
 //        if(strpos($fields,'`') === false){
 //            
@@ -249,7 +251,7 @@ class DB{
     
     public function updateViewSerf($serf_id){
         
-        $sql = 'INSERT INTO `'.static::$table.'` ( `id`, `v` )  VALUES('.$serf_id.',1) ON DUPLICATE KEY UPDATE `v` = `v` + VALUES(`v`)';
+        $sql = 'INSERT INTO `'.static::$table.'` ( `id`, `v`,`tot_v` ) VALUES('.$serf_id.',1,1) ON DUPLICATE KEY UPDATE `v` = `v` + VALUES(`v`), `tot_v` = `tot_v` + VALUES(`tot_v`)';
         
         $sth = $this->dbh->query($sql);
         
@@ -257,11 +259,16 @@ class DB{
     }
     public function setSerfZero($tmp){// установить 0 просмотров если прошли сутки
         
-        foreach($tmp as $k => $v) $str .= '('.$k.','.$v.',0),';
+//        $sql = 'INSERT INTO `serfing` (`id`,`k`,`v`,`tot_v`) VALUES (4,2,0,10) ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`), `tot_v` = VALUES(`tot_v`)';
+        
+        for($i=0; $i<count($tmp); $i++){
+                
+            $str .= '('.$tmp[$i]['id'].','.$tmp[$i]['days'].',0,'.$tmp[$i]['tot_v'].'),';
+        }
         
         $str = substr($str,0,-1);
         
-        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`k`,`v`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`)';
+        $sql = 'INSERT INTO `'.static::$table.'` (`id`,`k`,`v`,`tot_v`) VALUES '.$str.' ON DUPLICATE KEY UPDATE `k` = VALUES(`k`), `v` = VALUES(`v`), `tot_v` = VALUES(`tot_v`)';
         
         //echo $sql;//die;
         

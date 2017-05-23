@@ -36,6 +36,7 @@ class Controller{
             $refstock = '';
             $mystats = '';
             $addrek = '';
+            $myreklams = '';
             $reg = '<a href="/registration" class="btn btn-primary">РЕГИСТРАЦИЯ</a>';
         }else{
             $text = 'ВЫЙТИ';
@@ -59,11 +60,12 @@ class Controller{
             $refstock = '<a href="/refstock" class="btn btn-primary btn-xs" role="button">Биржа рефералов</a>';
             $mystats = '<a href="/mystats" class="btn btn-primary btn-xs" role="button">Моя статистика</a>';
             $addrek = '<a href="/addreklam" class="btn btn-primary btn-xs" role="button">Подать рекламу</a>';
+            $myreklams = '<a href="/myreklams" class="btn btn-primary btn-xs" role="button">Моя реклама</a>';
             $links = $this->getCntxtLinks();
             
         }
         $this->btn = compact('refPage','text','uri','id','m_pr','reg','manageRef','ref2Lvl',
-                             'refstock','mystats','addrek','links');
+                             'refstock','mystats','addrek','myreklams','links');
         
             
         $this->sysmes = Session::flash('sysmes');
@@ -108,19 +110,20 @@ class Controller{
         
         
         
-        if(isset($data['getOrderStLink_f']))$this->getOrderFormStaticLink();//запрос формы зак ст ссыл
+        if(isset($data['getOrderFormserv0_f']))$this->getOrderFormStaticLink();//форма зак ст ссыл
         if(isset($data['add_statlink_f'])) $this->addStaticLink();// размещение статич ссылки
         if(isset($data['addview_statlink_f'])) $this->addViewStaticLink();// просмотр статич ссылки
         
-        if(isset($data['getOrderCntxtLink_f']))$this->getOrderFormCntxtLink();//дать форму зак конт ссыл
+        if(isset($data['getOrderFormserv2_f']))$this->getOrderFormCntxtLink();//дать форму зак конт ссыл
         if(isset($data['add_cntxtlink_f']))$this->addCntxtLink();//размещение контекстн ссылки
         if(isset($data['addview_cntxtlink_f'])) $this->addViewCntxtLink();// просмотр контекстн ссылки
         
-        
-        if(isset($data['getOrderSerfLink_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
+        if(isset($data['getOrderFormserv1_f'])) $this->getOrderFormSerfLink();// форма заказа серфинга
         if(isset($data['add_dynamlink_f'])) $this->addDynamLink();// размещение серфинг ссылки
         if(isset($data['addserfview_f'])) $this->addSerfView();// просмотр серф ссылки
-
+        
+        if(isset($data['getOrderFormserv3_f'])) $this->getOrderFormTextLink();// ф заказа текст ссылки
+        if(isset($data['add_txtlink_f'])) $this->addTxtLink();// размещение текстовой ссылки-объяв
         
     }
 

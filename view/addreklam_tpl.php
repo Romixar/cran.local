@@ -7,5 +7,17 @@
 
 <div id="order">
     
+    
+    
+    
+<!--
+    <div class="input-group">
+      <span class="input-group-addon">
+        <input type="checkbox" aria-label="...">
+        С правилами размещения рекламы согласен
+      </span>
+    </div>
+-->
+
 </div>
 

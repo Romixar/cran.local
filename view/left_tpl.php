@@ -20,9 +20,14 @@
     <p>
         <?= $mystats ?>
     </p>
+    <p>
+        <?= $addrek ?>
+    </p>
+    <p>
+        <?= $myreklams ?>
+    </p>
             
-            
-    <div><p><?= $addrek ?></p></div>
+    <div></div>
     <div><p>текст</p></div>
     <div></div>
     <div></div>

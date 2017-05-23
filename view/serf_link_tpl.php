@@ -18,12 +18,12 @@
              <p>Адрес: <span class="url"><?= $url ?></span></p>
              <p>Описание: <span class="desc"><?= $desc ?></span></p>
              <p>Рекламодатель: <span class="user"><?= $login ?></span></p>
-             <p>Дата размещения: <span class="user"><?= $date_add ?></span></p>
-             <p>Дата окончания заказа: <span class="user"><?= $date_fin ?></span></p>
-             <p>Просмотрено (всего): <?= $tot_v ?></p>
-             <p>Количество просмотров (в сут.): <?= $n ?></p>
+             <p>Дата размещения: <span class="date"><?= $date_add ?></span></p>
+             <p>Дата окончания заказа: <span class="date"><?= $date_fin ?></span></p>
+             <p>Просмотрено (всего): <span class="tot_v"><?= $tot_v ?></span></p>
+             <p>Количество просмотров (за текущ. сут.): <span class="v"><?= $v ?></span></p>
              <p>Осталось просмотров: <span class="ost"><?= $ost ?></span></p>
-             <p>Таймер: <?= $timer ?></p>
+             <p>Таймер: <?= $timer ?> сек.</p>
              
          </div>
     </div>
