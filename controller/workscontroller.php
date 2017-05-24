@@ -24,8 +24,25 @@ class WorksController extends Controller{
         
         $names = $this->getTabs('class="active"','names');// названия вкладок
         $tabs = $this->getTabs(' in active','tabs',$content);// содержимое первой активной вкладки
+        
+        
+        debug($this->getTextLinks());die;
+        
+        $txtlinks = $this->getHtmlTxtLinks($this->getTextLinks());
+        
+        $txtlinks = $this->view->prerender('txtlinks',compact('txtlinks'));
+        
+        
 
-        $this->render('works',compact('names','tabs'));
+        $this->render('works',compact('names','tabs','txtlinks'));
+    }
+    
+    public function getTextLinks(){
+        
+        $mod = new Textlinks();
+        
+        return $mod->find('`desc`, `url`, `h`, `period`, `date_add`','','`date_add` DESC');
+        
     }
     
     public function getContextLinks(){
