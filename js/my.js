@@ -350,9 +350,11 @@
             qntday = qntday.val();
             qntday = qntday.replace(".","").replace(" ","");
             
+            var h = (url.val()[4] == 's') ? 1 : 0; // уточню протокол
+            
             url = url.val().substr((url.val().indexOf('//'))+2);// обрезка протокола
             
-            var str = '&url='+$.trim(url)+'&desc='+$.trim(desc.val())+
+            var str = '&url='+$.trim(url)+'&h='+h+'&desc='+$.trim(desc.val())+
                       '&qntday='+qntday+'&opt='+opt;
             
             post_query('add_txtlink', str);

@@ -913,7 +913,7 @@ class MainController extends Controller{
         ]);
         
         if($res) $this->respJson($this->sysMessage('success','Контекстная ссылка успешно добавлена!'));
-        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));        
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
 
     public function getOrderFormCntxtLink(){
@@ -1214,23 +1214,30 @@ class MainController extends Controller{
     
     public function addTxtLink(){// размещение текстовой ссылки рекламодателем
 
-        
         // проверить наличие средств на рекламном счёте
         if(!$this->validReklBalance4()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
-        $qntday = $this->data['qntday'];
-        
-        $opt = $this->data['opt'];
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumTxtLink($qntday,$opt)))
+        if(!$this->UpdateReklBalance($this->getSumTxtLink($this->data['qntday'],$this->data['opt'])))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
+        $mod = new Textlinks();
+
+        $res = $mod->insert([
+            
+            'user_id' => $_SESSION['user']['id'],
+            'opt' => $this->data['opt'],
+            'desc' => $this->data['desc'],
+            'url' => $this->data['url'],
+            'h' => $this->data['h'],
+            'period' => $this->data['qntday'] * 24 * 60 * 60,
+            'date_add'=>time(),
+            
+        ]);
         
-        
-        
-        
-        die;
+        if($res) $this->respJson($this->sysMessage('success','Текстовое объявление успешно добавлено!'));
+        else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
     
     
