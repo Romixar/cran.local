@@ -800,6 +800,12 @@ class MainController extends Controller{
         if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
         else return true;
     }
+    public function validReklBalance4(){
+        $totalsum = $this->getSumTxtLink($this->data['qntday'],$this->data['opt']);
+        
+        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
+        else return true;
+    }
     
     public function UpdateReklBalance($sum){
 
@@ -1081,8 +1087,6 @@ class MainController extends Controller{
     
     public function getOrderFormTextLink(){
         
-        //debug($this->data);die;
-        
         $head = '<h4>Разместить текстовое объявление</h4>';
         
         $desc = '<p>Текстовые объявления на Profit-System размещаются посуточно. При этом количество переходов по ним может быть неограниченное. Вы получаете именно заинтересованных посетителей на свой проект. Ссылка размещается на страницах Работа / Серфинг сайтов.</p>';
@@ -1208,10 +1212,25 @@ class MainController extends Controller{
     }
     
     
-    public function addTxtLink(){
+    public function addTxtLink(){// размещение текстовой ссылки рекламодателем
+
         
-        debug($this->data);die;
+        // проверить наличие средств на рекламном счёте
+        if(!$this->validReklBalance4()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
+        $qntday = $this->data['qntday'];
+        
+        $opt = $this->data['opt'];
+        
+        // списать средства с рекламного счета юзера
+        if(!$this->UpdateReklBalance($this->getSumTxtLink($qntday,$opt)))
+            $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
+        
+        
+        
+        
+        
+        die;
     }
     
     

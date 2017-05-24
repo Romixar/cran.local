@@ -431,14 +431,14 @@
             case 1: // динамическая ссылка
                 
                 // доп параметры взять optunlim и opttime
-                var optunlim = $('#unlimselect option:selected').val();// опшин безлимитки
+                optunlim = $('#unlimselect option:selected').val();// опшин безлимитки
         
                 sum1 = getSumOptTime($('#timeviewselect option:selected').val());// сумма за вр просм
                 
                 break;
         }
         
-        qntday = $('#qnt'+dataf['serv'+type].field);// кол-во дн размещ (просмотров)
+        qntday = $('#qnt'+dataf['serv'+type].field);// кол-во дн размещ или просмотров
         
         opt = $('#'+dataf['serv'+type].sel+'select option:selected');// выбранный селект индекс опшина
 
@@ -449,7 +449,7 @@
     }
     function getTotalSum(qntday, opt, prices, optunlim='', sum1=''){// цена заказа ссылки
         
-        var sum, total;
+        var sum;
                 
         qntday = Number((qntday.val()).replace(".","").replace(" ",""));
 
@@ -461,25 +461,20 @@
         if(optunlim != '' && sum1 != ''){ // доп параметры серфинг ссылки
             
             var sum0 = getSumUnLim(optunlim);
-        
-            if(Number(optunlim) != 4) total = sum0;
-            else total = sum0 + (sum1 * qntday) + sum;
-            
-            return total;
+            if(Number(optunlim) != 4) sum = sum0;
+            else sum = sum0 + (sum1 * qntday) + sum;
         }
-        return (qntday * prices.cost) + sum;// осн цена за 1 просмотр/день
+        return (qntday * prices.cost) + sum;// осн цена за 1 просмотр/день или показ/день
     }
-    function getSumUnLim(optunlim){
+    function getSumUnLim(optunlim){// цена за безлимитку серфинг
         
-        var unlimsums = [1000,800,600,400,0];
-        
-        return unlimsums[Number(optunlim)];
+        var arr = [1000,800,600,400,0];
+        return arr[Number(optunlim)];
     }
     function getSumOptTime(opttime){// цена за секунды просмотра серфинг
         
-        var arrprices = [0.06,0.06,0.06,0.06,0.06,0.06,0.06];
-        
-        return arrprices[Number(opttime)];
+        var arr = [0.06,0.06,0.06,0.06,0.06,0.06,0.06];
+        return arr[Number(opttime)];
     }
     
     
