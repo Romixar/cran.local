@@ -26,7 +26,6 @@ class WorksController extends Controller{
         $tabs = $this->getTabs(' in active','tabs',$content);// содержимое первой активной вкладки
         
         
-        debug($this->getTextLinks());die;
         
         $txtlinks = $this->getHtmlTxtLinks($this->getTextLinks());
         
@@ -41,7 +40,7 @@ class WorksController extends Controller{
         
         $mod = new Textlinks();
         
-        return $mod->find('`desc`, `url`, `h`, `period`, `date_add`','','`date_add` DESC');
+        return $mod->find('`id`,`desc`,`url`,`h`,`period`,`date_add`','','`date_add` DESC');
         
     }
     
@@ -233,6 +232,31 @@ class WorksController extends Controller{
             ]);
             
             
+        }
+        
+        $str .= '</div>';
+        
+        return $str;
+    }
+    
+    public function getHtmlTxtLinks($data){
+        
+        $str = '<div class="panel-group serf" id="collapse-group">';
+        
+        for($i=0; $i<count($data); $i++){
+            
+            if(($data[$i]->date_add + $data[$i]->period) <= time()) continue;
+            
+            $h = ($data[$i]->h) ? 'https://' : 'http://';
+            
+            $str .= $this->view->prerender('txt_link',[
+                
+                'i'    => $i,
+                'id'   => $data[$i]->id,
+                'url'  => $h.$data[$i]->url,
+                'desc'=> $data[$i]->desc,
+                
+            ]);
         }
         
         $str .= '</div>';
