@@ -12,9 +12,15 @@ class WorksController extends Controller{
             
             $content = $this->getHtmlSerf($this->getSerfing()); //  серфинг ссылки
             
-            $staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
+            //$staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
+            $links = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
             
-            $content .= $this->view->prerender('staticlinks',compact('staticlinks'));
+            $section = 'Статические ссылки (не оплачиваемые)';
+            
+            //$content .= $this->view->prerender('staticlinks',compact('staticlinks'));
+            $content .= $this->view->prerender('sectionlinks',compact('section','links'));
+            
+            $links = '';
             
             
         }else $content = $this->getEmptyContent();// если пользователь не авторизован
@@ -26,10 +32,10 @@ class WorksController extends Controller{
         $tabs = $this->getTabs(' in active','tabs',$content);// содержимое первой активной вкладки
         
         
+        $section = 'Текстовые объявления';
+        $links = $this->getHtmlTxtLinks($this->getTextLinks());// текст ссылки
         
-        $txtlinks = $this->getHtmlTxtLinks($this->getTextLinks());
-        
-        $txtlinks = $this->view->prerender('txtlinks',compact('txtlinks'));
+        $txtlinks = $this->view->prerender('sectionlinks',compact('section','links'));
         
         
 
@@ -214,9 +220,7 @@ class WorksController extends Controller{
     }
     
     public function getHtmlStaticLinks($data){
-        
-        $str = '<div class="panel-group serf" id="collapse-group">';
-        
+
         for($i=0; $i<count($data); $i++){
             
             if(($data[$i]->date_add + $data[$i]->period) <= time()) continue;
@@ -230,18 +234,11 @@ class WorksController extends Controller{
                 'title'=> $data[$i]->title,
                 
             ]);
-            
-            
         }
-        
-        $str .= '</div>';
-        
         return $str;
     }
     
     public function getHtmlTxtLinks($data){
-        
-        $str = '<div class="panel-group serf" id="collapse-group">';
         
         for($i=0; $i<count($data); $i++){
             
@@ -254,13 +251,10 @@ class WorksController extends Controller{
                 'i'    => $i,
                 'id'   => $data[$i]->id,
                 'url'  => $h.$data[$i]->url,
-                'desc'=> $data[$i]->desc,
+                'desc' => $data[$i]->desc,
                 
             ]);
         }
-        
-        $str .= '</div>';
-        
         return $str;
     }
     
