@@ -753,14 +753,14 @@ class MainController extends Controller{
         $qntday = $this->data['qntday'];
         $opt = $this->data['opt'];
         
+        $totsum = $this->getSumStaticLink($qntday,$opt);
+        
         // проверить наличие средств на рекламном счёте
-        if(!$this->validReklBalance()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        if(!$this->validReklBalance($totsum)) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumStaticLink($qntday,$opt)))
+        if(!$this->UpdateReklBalance($totsum))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
-        
-        
         
         
         $mod = new Contextlinks();
@@ -780,30 +780,10 @@ class MainController extends Controller{
         if($res) $this->respJson($this->sysMessage('success','Статическая ссылка успешно добавлена!'));
         else $this->respJson($this->sysMessage('danger','Ошибка добавления ссылки в БД!'));
     }
-    
-    public function validReklBalance(){// проверить наличие средств на рекламном счёте
+
+    public function validReklBalance($sum){
         
-        $totalsum = $this->getSumStaticLink($this->data['qntday'],$this->data['opt']);
-        
-        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
-        else return true;
-    }
-    public function validReklBalance2(){
-        $totalsum = $this->getSumCntxtLink($this->data['qntserf'],$this->data['opt']);
-        
-        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
-        else return true;
-    }
-    public function validReklBalance3(){
-        $totalsum = $this->getSumSerfLink($this->data['qntserf'],$this->data['optunlim'],$this->data['opttime'],$this->data['opt']);
-        
-        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
-        else return true;
-    }
-    public function validReklBalance4(){
-        $totalsum = $this->getSumTxtLink($this->data['qntday'],$this->data['opt']);
-        
-        if(($_SESSION['user']['acnt2'] - $totalsum) < 0) return false;
+        if(($_SESSION['user']['acnt2'] - $sum) < 0) return false;
         else return true;
     }
     
@@ -886,12 +866,13 @@ class MainController extends Controller{
         $qntserf = $this->data['qntserf'];
         $opt = $this->data['opt'];
         
+        $totsum = $this->getSumCntxtLink($qntserf,$opt);
         
         // проверить наличие средств на рекламном счёте
-        if(!$this->validReklBalance2()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        if(!$this->validReklBalance($totsum)) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumCntxtLink($qntserf,$opt)))
+        if(!$this->UpdateReklBalance($totsum))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         
@@ -1152,13 +1133,13 @@ class MainController extends Controller{
         $opttime = $this->data['opttime'];// выбор времени и цены
         $opt = $this->data['opt'];  // выделять КРАСНЫМ или нет
         
+        $totsum = $this->getSumSerfLink($qntserf,$optunlim,$opttime,$opt);
         
         // проверить наличие средств на рекламном счёте
-        if(!$this->validReklBalance3()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
-        
+        if(!$this->validReklBalance($totsum)) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumSerfLink($qntserf,$optunlim,$opttime,$opt)))
+        if(!$this->UpdateReklBalance($totsum))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
 
         $this->getTimerAndPrice($this->data['opttime'], $timer, $price);
@@ -1214,12 +1195,14 @@ class MainController extends Controller{
     
     public function addTxtLink(){// размещение текстовой ссылки рекламодателем
 
-        // проверить наличие средств на рекламном счёте
-        if(!$this->validReklBalance4()) $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
+        $totsum = $this->getSumTxtLink($this->data['qntday'],$this->data['opt']);
         
+        // проверить наличие средств на рекламном счёте
+        if(!$this->validReklBalance($totsum))
+            $this->respJson($this->sysMessage('danger','Недостаточно средств!'));
         
         // списать средства с рекламного счета юзера
-        if(!$this->UpdateReklBalance($this->getSumTxtLink($this->data['qntday'],$this->data['opt'])))
+        if(!$this->UpdateReklBalance($totsum))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
         $mod = new Textlinks();
