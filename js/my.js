@@ -116,12 +116,12 @@
     
     $(document).on("focusout", 'input#qntday', function(){ // потеря фокуса дни статич ссылки
         
-        calcReklForm1();
+        calculateReklForm(0);
     });
     
     $(document).on("change", 'select#linkselect', function(){// выбор селект статич ссылки
         
-        calcReklForm1();
+        calculateReklForm(0);
     });
     
     
@@ -200,13 +200,13 @@
     }
     
     $(document).on("focusout", 'input#qntserf', function(){ // потеря фокуса дни контекст ссылки
-        
-        calcReklForm2();
+
+        calculateReklForm(2);
     });
     
     $(document).on("change", 'select#cntxtselect', function(){// выбор селект контекст ссылки
-        
-        calcReklForm2();
+
+        calculateReklForm(2);
     });
     
     
@@ -217,7 +217,8 @@
         
         if(optunlim != 4) validCntViews(optunlim);// валидация только кол-ва просмотров
         
-        calcReklForm3();
+        //calcReklForm3();
+        calculateReklForm(1);
     });
     
     $(document).on("change", 'select#unlimselect', function(){// выбор селект БЕЗЛИМИТКА
@@ -229,15 +230,18 @@
             $('div#order input').css('border','none');
             $('div#order input').prev().text('');   
         }
-        calcReklForm3();
+        //calcReklForm3();
+        calculateReklForm(1);
     });
     $(document).on("change", 'select#timeviewselect', function(){// выбор селект вр СЕРФИНГА
         
-        calcReklForm3();
+        ///calcReklForm3();
+        calculateReklForm(1);
     });
     $(document).on("change", 'select#serfselect', function(){// выбор селект СЕРФИНГ ссылки
         
-        calcReklForm3();
+        //calcReklForm3();
+        calculateReklForm(1);
     });
     
     
@@ -386,113 +390,113 @@
         return false;
     }
     $(document).on("focusout", 'input#qnttxtday', function(){ // потеря фокуса дни текст ссылки
-        
-        calcReklForm4();
+
+        calculateReklForm(3);
     });
     
     $(document).on("change", 'select#txtselect', function(){// выбор селект текст ссылки
-        
-        calcReklForm4();
+
+        calculateReklForm(3);
     });
     
-    function calcReklForm4(){ // калькулятор текстовой ссылки
-        
-        var qntday = $('#qnttxtday').val();
-        
-        qntday = Number(qntday.replace(".","").replace(" ",""));
-
-        if(isNaN(qntday)) return; // если введено не число то выход
-        
-        var total;
-        
-        var sum;
-        
-        var opt = $('#txtselect option:selected').val();// выбранный селект индекс опшина
-        
-        if(Number(opt)) sum = 0;
-        else sum = 1 * qntday; // прибавим 1 руб. за кажд день выделения
-            
-        total = (qntday * 5) + sum;// 1 просмотр 0,5 руб./день
-        
-        $('span#sum').text('').text(total);
-    }
-    function calcReklForm3(){ // калькулятор динамич-й ссылки СЕРФИНГА
-        
-        var qntserf = $('#qntserflink').val();
-        
-        qntserf = Number(qntserf.replace(".","").replace(" ",""));
-        
-        if(isNaN(qntserf)) return; // если введено не число то выход
-
-        var total;
-        
-        var sum0, sum1, sum2;
-        
-        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
-        var opttime = $('#timeviewselect option:selected').val();// селект индекс опшина вр просмотра
-        var opt = $('#serfselect option:selected').val();// выбранный селект индекс опшина
-        
-        
-        sum0 = getSumUnLim(optunlim);
-        
-        sum1 = getSumOptTime(opttime) * qntserf;
-        
-        if(Number(opt)) sum2 = 0;
-        else sum2 = 0.01 * qntserf; // прибавим 0.01 руб. за кажд просмотр, если выделено
-        
-        if(Number(optunlim) != 4) total = sum0;
-        else total = sum0 + sum1 + sum2;
-        
-        $('span#sum').text('').text(total.toFixed(2));
-    }
-    function calcReklForm2(){ // калькулятор контекст-й ссылки
-        
-        var qntserf = $('#qntserf').val();
-        
-        qntserf = Number(qntserf.replace(".","").replace(" ",""));
-
-        if(isNaN(qntserf)) return; // если введено не число то выход
-        
-        var total;
-        
-        var sum;
-        
-        var opt = $('#cntxtselect option:selected').val();// выбранный селект индекс опшина
-        
-        if(Number(opt)) sum = 0;
-        else sum = 0.15 * qntserf; // прибавим 0.15 руб. за кажд переход
-            
-        total = (qntserf * 0.5) + sum;// 1 просмотр 0,5 руб.
-        
-        $('span#sum').text('').text(total);
-    }
-    function calcReklForm1(){ // калькулятор статич ссылки
-        
-        var qntday = $('#qntday').val();
-        
-        qntday = Number(qntday.replace(".","").replace(" ",""));
-
-        if(isNaN(qntday)) return; // если введено не число то выход
-        
-        var total;
-        
-        var sum;
-        
-        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
-        
-        if(Number(opt)) sum = 0;
-        else sum = 5 * qntday; // прибавим по 5 руб?день за выделение
-            
-        total = (qntday * 20) + sum;
-        
-        $('span#sum').text('').text(total);
-    }
-    
-    //calculateReklForm(0);
+//    function calcReklForm4(){ // калькулятор текстовой ссылки
+//        
+//        var qntday = $('#qnttxtday').val();
+//        
+//        qntday = Number(qntday.replace(".","").replace(" ",""));
+//
+//        if(isNaN(qntday)) return; // если введено не число то выход
+//        
+//        var total;
+//        
+//        var sum;
+//        
+//        var opt = $('#txtselect option:selected').val();// выбранный селект индекс опшина
+//        
+//        if(Number(opt)) sum = 0;
+//        else sum = 1 * qntday; // прибавим 1 руб. за кажд день выделения
+//            
+//        total = (qntday * 5) + sum;//  5 руб./день
+//        
+//        $('span#sum').text('').text(total);
+//    }
+//    function calcReklForm3(){ // калькулятор динамич-й ссылки СЕРФИНГА
+//        
+//        var qntserf = $('#qntserflink').val();
+//        
+//        qntserf = Number(qntserf.replace(".","").replace(" ",""));
+//        
+//        if(isNaN(qntserf)) return; // если введено не число то выход
+//
+//        var total;
+//        
+//        var sum0, sum1, sum2;
+//        
+//        var optunlim = $('#unlimselect option:selected').val();// селект индекс опшина безлимитки
+//        var opttime = $('#timeviewselect option:selected').val();// селект индекс опшина вр просмотра
+//        var opt = $('#serfselect option:selected').val();// выбранный селект индекс опшина
+//        
+//        
+//        sum0 = getSumUnLim(optunlim);
+//        
+//        sum1 = getSumOptTime(opttime) * qntserf;
+//        
+//        if(Number(opt)) sum2 = 0;
+//        else sum2 = 0.01 * qntserf; // прибавим 0.01 руб. за кажд просмотр, если выделено
+//        
+//        if(Number(optunlim) != 4) total = sum0;
+//        else total = sum0 + sum1 + sum2;
+//        
+//        $('span#sum').text('').text(total.toFixed(2));
+//    }
+//    function calcReklForm2(){ // калькулятор контекст-й ссылки
+//        
+//        var qntserf = $('#qntserf').val();
+//        
+//        qntserf = Number(qntserf.replace(".","").replace(" ",""));
+//
+//        if(isNaN(qntserf)) return; // если введено не число то выход
+//        
+//        var total;
+//        
+//        var sum;
+//        
+//        var opt = $('#cntxtselect option:selected').val();// выбранный селект индекс опшина
+//        
+//        if(Number(opt)) sum = 0;
+//        else sum = 0.15 * qntserf; // прибавим 0.15 руб. за кажд переход если выделено
+//            
+//        total = (qntserf * 0.5) + sum;// 1 просмотр 0,5 руб.
+//        
+//        $('span#sum').text('').text(total);
+//    }
+//    function calcReklForm1(){ // калькулятор статич ссылки
+//        
+//        var qntday = $('#qntday').val();
+//        
+//        qntday = Number(qntday.replace(".","").replace(" ",""));
+//
+//        if(isNaN(qntday)) return; // если введено не число то выход
+//        
+//        var total;
+//        
+//        var sum;
+//        
+//        var opt = $('#linkselect option:selected').val();// выбранный селект индекс опшина
+//        
+//        if(Number(opt)) sum = 0;
+//        else sum = 5 * qntday; // прибавим по 5 руб?день за выделение
+//            
+//        total = (qntday * 20) + sum;
+//        
+//        $('span#sum').text('').text(total);
+//    }
     
     function calculateReklForm(type){
         
         var total, qntday, opt;
+        
+        var optunlim, sum1 = '';
         
         var tarif = {
             serv0:{
@@ -500,12 +504,12 @@
                 cost: 20
             },
             serv1:{
-                opt: 1,
-                cost: 20
+                opt: 0.01,
+                cost: 0 // цена за просмотры считается по доп параметрам
             },
             serv2:{
-                opt: 1,
-                cost: 5
+                opt: 0.15,
+                cost: 0.5
             },
             serv3:{
                 opt: 1,
@@ -520,22 +524,23 @@
             case 0:  /// статическая ссылка
                 
                 qntday = $('#qntday');// кол-во дн размещ
-                
                 opt = $('#linkselect option:selected');// выбранный селект индекс опшина
                 
                 break;
-            case 1: alert('динамическая ссылка');
+            case 1: // динамическая ссылка
+                
+                qntday = $('#qntserflink');
+                opt = $('#serfselect option:selected');// выбранный селект индекс опшина
                 
                 // доп параметры взять optunlim и opttime
-                
-                
-                
+                var optunlim = $('#unlimselect option:selected').val();// опшин безлимитки
+        
+                sum1 = getSumOptTime($('#timeviewselect option:selected').val());// сумма за вр просм
                 
                 break;
             case 2:  //   контекстная ссылка
                 
-                qntday = $('#qntserf');// кол-во просмотров
-                
+                qntday = $('#qntserf');// кол-во переходов
                 opt = $('#cntxtselect option:selected');// выбранный селект индекс опшина
                 
                 break;
@@ -543,7 +548,6 @@
             case 3:  /// текстовая ссылка
                 
                 qntday = $('#qnttxtday');// кол-во дн размещ
-                
                 opt = $('#txtselect option:selected');// выбранный селект индекс опшина
 
                 break;
@@ -551,32 +555,32 @@
             
         }
 
-        total = getTotalSum(qntday, opt, tarif['serv'+type]);
+        total = getTotalSum(qntday, opt, tarif['serv'+type], optunlim, sum1);
         
         if(!total) return;
         $('span#sum').text('').text(total);
     }
-    function getTotalSum(qntday, opt, prices){
+    function getTotalSum(qntday, opt, prices, optunlim='', sum1=''){
         
         var sum, total;
-        
-        qntday = qntday.val();
                 
-        qntday = Number(qntday.replace(".","").replace(" ",""));
-        
-        
-        console.log(qntday);return;
-        
+        qntday = Number((qntday.val()).replace(".","").replace(" ",""));
 
         if(isNaN(qntday)) return false; // если введено не число то выход
-          
-        if(Number(opt.val())) sum = 0;
-        else sum = prices.opt * qntday; // прибавим 1 руб. за кажд день выделения
 
-        total = (qntday * prices.cost) + sum;// 1 просмотр 0,5 руб./день
+        if(Number(opt.val())) sum = 0;
+        else sum = prices.opt * qntday; // прибавим цену за кажд день выделения
         
-        return total;
+        if(optunlim != '' && sum1 != ''){ // доп параметры серфинг ссылки
+            
+            var sum0 = getSumUnLim(optunlim);
         
+            if(Number(optunlim) != 4) total = sum0;
+            else total = sum0 + (sum1 * qntday) + sum;
+            
+            return total;
+        }
+        return (qntday * prices.cost) + sum;// осн цена за 1 просмотр/день
     }
     
     
