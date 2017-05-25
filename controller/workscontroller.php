@@ -12,8 +12,14 @@ class WorksController extends Controller{
             
             $content = $this->getHtmlSerf($this->getSerfing()); //  серфинг ссылки
             
+            
+            $data = $this->getContextLinks();
+            
+            debug($data);
+            
+            
             //$staticlinks = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
-            $links = $this->getHtmlStaticLinks($this->getContextLinks());// статические ссылки
+            $links = $this->getHtmlStaticLinks($data);// статические ссылки
             
             $section = 'Статические ссылки (не оплачиваемые)';
             
@@ -46,15 +52,23 @@ class WorksController extends Controller{
         
         $mod = new Textlinks();
         
-        return $mod->find('`id`,`desc`,`url`,`h`,`period`,`date_add`','','`date_add` DESC');
+        return $mod->find('`id`,`opt`,`desc`,`url`,`h`,`period`,`date_add`','','`date_add` DESC');
         
     }
     
     public function getContextLinks(){
         
-        $mod = new Contextlinks();
+        // извлечь только статические ссылки и нужные поля
         
-        return $mod->find('*');
+        // date_add должен быть больше чем time() - (date_add + period)
+        
+//        $mod = new Contextlinks();
+//        
+//        $f = '`id`,`opt`,`title`,`desc`,`url`,`h`,`period`,`date_add`';
+//        
+//        return $mod->find($f,'`period` > 0','`date_add` DESC');
+        
+        return '';
         
     }
 
@@ -225,12 +239,17 @@ class WorksController extends Controller{
             
             if(($data[$i]->date_add + $data[$i]->period) <= time()) continue;
             
+            $h = ($data[$i]->h) ? 'https://' : 'http://';
+            
+            $cl = ($data[$i]->opt) ? '' : ' red';
+            
             $str .= $this->view->prerender('st_link',[
                 
                 'i'    => $i,
                 'id'   => $data[$i]->id,
                 'v'    => $data[$i]->v,
-                'url'  => $data[$i]->url,
+                'url'  => $h.$data[$i]->url,
+                'cl'   => $cl,
                 'title'=> $data[$i]->title,
                 
             ]);
@@ -246,11 +265,14 @@ class WorksController extends Controller{
             
             $h = ($data[$i]->h) ? 'https://' : 'http://';
             
+            $cl = ($data[$i]->opt) ? '' : ' red';
+            
             $str .= $this->view->prerender('txt_link',[
                 
                 'i'    => $i,
                 'id'   => $data[$i]->id,
                 'url'  => $h.$data[$i]->url,
+                'cl'   => $cl,
                 'desc' => $data[$i]->desc,
                 
             ]);

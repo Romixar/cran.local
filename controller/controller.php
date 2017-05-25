@@ -133,7 +133,13 @@ class Controller{
         
         $mod = new Contextlinks();
         
-        $data = $mod->find('*');
+        $f = '`id`,`opt`,`title`,`desc`,`url`,`h`,`period`,`date_add`';
+        
+        // date_add должна быть больше time() - (date_add)
+        
+        $data = $mod->find($f,'`period` = 0');
+        
+        
         
         return $title.$this->getHtmlCntxtLinks($data);
         
@@ -143,11 +149,14 @@ class Controller{
         
         for($i=0; $i<count($data); $i++){
             
-            if($data[$i]->period || $data[$i]->v >= $data[$i]->n) continue;// выведу только контекстные
+            //if($data[$i]->period || $data[$i]->v >= $data[$i]->n) continue;// выведу только контекстные
+            //if($data[$i]->period) continue;// выведу только контекстные
             
             $h = ($data[$i]->h) ? 'https://' : 'http://';
             
-            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt_'.$data[$i]->id.'" class="cntxt" >'.$data[$i]->title.'</a></p>';
+            $cl = ($data[$i]->opt) ? '' : ' red';
+            
+            $str .= '<p><a href="'.$h.$data[$i]->url.'" id="cntxt_'.$data[$i]->id.'" class="cntxt'.$cl.'" >'.$data[$i]->title.'</a></p>';
             
             
         }

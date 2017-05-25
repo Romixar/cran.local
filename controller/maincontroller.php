@@ -875,9 +875,6 @@ class MainController extends Controller{
         if(!$this->UpdateReklBalance($totsum))
             $this->respJson($this->sysMessage('danger','Ошибка обновления рекламного счета!'));
         
-        
-        
-        
         $mod = new Contextlinks();
 
         $res = $mod->insert([

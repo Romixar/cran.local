@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
 
-    <a id="<?= $id ?>" href="http://<?= $url ?>" class="static" target="_blank">
+    <a id="<?= $id ?>" href="<?= $url ?>" class="static<?= $cl ?>" target="_blank">
         <?= $title ?>
     </a>
 
@@ -14,7 +14,7 @@
     </div>
     <div id="st<?= ($i+1) ?>" class="panel-collapse collapse">
          <div class="panel-body">
-             <p>Адрес: http://<span class="url"><?= $url ?></span></p>
+             <p>Адрес: <span class="url"><?= $url ?></span></p>
              <p>Название ссылки: <span class="desc"><?= $title ?></span></p>
              <p>Количество просмотров: <?= $v ?></p>
          </div>
